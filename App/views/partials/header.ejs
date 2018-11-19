@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Homepage</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css" integrity="sha384-9gVQ4dYFwwWSjIDZnLEWnxCjeSWFphJiwGPXr1jddIhOegiu1FwO5qRGvFXOdJZ4" crossorigin="anonymous">
+  <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+  <link rel="stylesheet" type="text/css" href="../stylesheets/main.css">
+  <link rel="stylesheet" type="text/css" href="../stylesheets/custom.css">
+  <link rel="stylesheet" type="text/css" href="../stylesheets/jquery.tag-editor.css">
+  <link href="https://use.fontawesome.com/releases/v5.0.6/css/all.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css?family=Nunito:300,400,600,700|Roboto:300,400,500" rel="stylesheet">
+</head>
+
+<body>
+<!--MAIN NAVIGATION-->
+  <div class="container">
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+
+      <!--LOGO-->
+      <div class="navbar-brand">
+        <a href="/"><span>LOGO</span></a>
+      </div>
+      <!--SIGN UP / LOGIN BUTTON-->
+
+        <% if(!currentUser) { %>
+        <div class="btn btn-outline-primary ml-auto d-none d-sm-block">
+          <a href="#0" class="js-cd-panel-trigger" data-panel="main">Sign Up / Login</a>
+          </div>
+          <% } %>
+            <% if(currentUser) { %>
+            <div class="ml-auto">
+                    <form class="form-inline">
+
+                <a href="#0" class="js-cd-panel-trigger" data-panel="main">
+                  <div class="btn btn-outline-primary ml-auto d-none d-sm-block">View Recipe Book</div>
+                </a>
+                <a href="/recipes/new">
+                   <div class="btn btn-outline-primary ml-4 d-none d-sm-block">Post Your Recipe</div>
+                  </a>
+            </form>
+            </div>
+        <% } %>
+      </div>
+    </nav>
+  </div>
+  <!--END OF (MAIN NAVIGATION)-->
+
+  <!--(SECONDARY NAV)-->
+  <div class="container">
+
+    <!--SEARCH BAR:-->
+    <div class="row mx-auto my-1 searchBar">
+
+      <form action="/" class="form-inline my-2 mx-auto" method="GET">
+        <div class="col-xs-12 col-sm-12 col-md-8">
+          <div id="input_container">
+            <input class="form-control mr-sm-2" id="searchbar" name="search" type="search" placeholder="Search" aria-label="Search">
+            <i class="fa fa-search search-icon"></i>
+          </div>
+        </div>
+        <div class="col-xs-12 col-sm-12 col-md-4">
+          <button class="btn btn-outline-secondary my-2 w-100" value="Search" type="submit">Search</button>
+        </div>
+      </form>
+    </div>
+
+    <!--END SEARCH BAR-->
+    <div class="col-md-12 alert-container">
+      <% if(error && error.length > 0) { %>
+        <div class="alert alert-danger m-0 p-1 w-100" role="alert">
+          <button type="button" class="close" data-dismiss="alert" aria-label="Close">×</button>
+          <p class="mb-0 text-center">
+            <%= error %>
+          </p>
+        </div>
+        <% } %>
+          <% if(error && success.length > 0) { %>
+            <div class="alert alert-success m-0 p-1 w-100" role="alert">
+              <button type="button" class="close" data-dismiss="alert" aria-label="Close">×</button>
+              <p class="mb-0 text-center">
+                <%= success %>
+              </p>
+            </div>
+          <% } %>
+    </div>
+  </div>
+  <!--END OF (SECONDARY NAV)-->
+
+  <!--SLIDING MENU BAR-->
+  <!--NO CURRENT USER - SIGN UP SLIDEOUT-->
+  <%if(!currentUser) { %>
+    <div class="cd-panel cd-panel--from-right js-cd-panel-main">
+      <div class="container">
+        <header class="cd-panel__header">
+          <!--Create Account / Login Buttons-->
+          <div class="container">
+            <div class="row text-center">
+              <div class="col-6 accountToggleButton">
+                <h1>Sign Up</h1>
+              </div>
+              <div class="col-6 accountToggleButton">
+                <h1>Login</h1>
+              </div>
+            </div>
+            <a href="#0" class="cd-panel__close js-cd-close">Close</a>
+          </div>
+        </header>
+      </div>
+      <div class="cd-panel__container">
+        <div class="cd-panel__content">
+
+          <!--SIGN UP FORM-->
+          <div class="accountToggleContainer">
+            <h4 class="text-center font-weight-bold text-primary">Sign Up</h4>
+            <div class="dropdown-divider"></div>
+            <form action="/register" method="POST">
+              <div class="form-group text-dark"> <label>Username</label>
+                <input type="text text-dark" name="screenName" class="form-control" placeholder="different from email" minlength="4" maxlength="20" , required>
+              </div>
+              <div class="form-group text-dark" required><label>Email address</label>
+                <input type="email" name="username" class="form-control text-dark" placeholder="your.email@abc123.com" required>
+              </div>
+              <div class="form-group text-dark"> <label>Password</label>
+                <input type="password" name="password" class="form-control" placeholder="Password" autocomplete=off>
+              </div>
+              <div class="form-group avatars text-dark"> <label>Choose an Avatar</label>
+                <div class="btn-group btn-group-toggle row" data-toggle="buttons">
+                  <div class="col-xs-1">
+                    <label class="btn avatar">
+                    <input type="radio" name="avatar" value="😛" autocomplete="off">😛
+                  </label>
+                  </div>
+                  <div class="col-xs-1">
+                    <label class="btn avatar">
+                    <input type="radio" name="avatar" value="😎" autocomplete="off">😎
+                    </label>
+                  </div>
+                  <div class="col-xs-1">
+                    <label class="btn avatar">
+                    <input type="radio" name="avatar" value="🍉" autocomplete="off">🍉
+                  </label>
+                  </div>
+                  <div class="col-xs-1">
+                    <label class="btn avatar">
+                    <input type="radio" name="avatar" value="🌶" autocomplete="off">🌶
+                  </label>
+                  </div>
+                  <div class="col-xs-1">
+                    <label class="btn avatar">
+                    <input type="radio" name="avatar" value="🍅" autocomplete="off">🍅
+                  </label>
+                  </div>
+                  <div class="col-xs-1">
+                    <label class="btn avatar">
+                    <input type="radio" name="avatar" value="🍍" autocomplete="off">🍍
+                  </label>
+                  </div>
+                  <div class="col-xs-1">
+                    <label class="btn avatar">
+                    <input type="radio" name="avatar" value="🍄" autocomplete="off">🍄
+                  </label>
+                  </div>
+                  <div class="col-xs-1">
+                    <label class="btn avatar">
+                    <input type="radio" name="avatar" value="🍲" autocomplete="off">🍲
+                  </label>
+                  </div>
+                  <div class="col-xs-1">
+                    <label class="btn avatar">
+                    <input type="radio" name="avatar" value="☕" autocomplete="off">☕
+                  </label>
+                  </div>
+                  <div class="col-xs-1">
+                    <label class="btn avatar">
+                    <input type="radio" name="avatar" value="🍜" autocomplete="off">🍜
+                  </label>
+                  </div>
+                  <div class="col-xs-1">
+                    <label class="btn avatar">
+                    <input type="radio" name="avatar" value="🍷" autocomplete="off">🍷
+                    </label>
+                  </div>
+                </div>
+              </div>
+              <button type="submit" class="btn btn-secondary btn-block btn-lg my-2"><b>Create Account</b></button>
+            </form>
+          </div>
+
+          <!--LOGIN FORM:-->
+          <div class="accountToggleContainer" style="display: none">
+            <h4 class="text-center font-weight-bold text-primary">Login</h4>
+            <div class="dropdown-divider"></div>
+            <form class="px-1 py-2" action="/login" method="POST">
+              <div class="form-group">
+                <label for="nav-dropdown-email">Email</label>
+                <input type="email" class="form-control" id="nav-dropdown-email" name="username" placeholder="youremail@gmail.com" required>
+              </div>
+              <div class="form-group">
+                <label for="nav-dropdown-password">Password</label>
+                <input type="password" class="form-control" id="nav-dropdown-password" name="password" placeholder="Password" autocomplete=off required>
+              </div>
+              <div class="w-100">
+                <button type="submit" class="btn btn-secondary btn-block btn-lg my-2"><b>Sign In</b></button>
+              </div>
+            </form>
+            <div class="dropdown-divider"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  <% } %>
+  <!-- cd-panel -->
+
+
+
+    <!--CURRENT USER - Recipe Book-->
+    <%if(currentUser) { %>
+      <div class="cd-panel cd-panel--from-right js-cd-panel-main container">
+        <!--Top Header Container-->
+        <div class="row">
+          <header class="cd-panel__header container">
+            <!--Top Header-->
+              <div class="col-12 text-center">
+                <h1> <%= currentUser.screenName%>'s Recipe Book</h1>
+              </div>
+              <a href="#0" class="cd-panel__close js-cd-close">Close</a>
+          </header>
+        </div>
+
+          <div class="cd-panel__container">
+            <div class="cd-panel__content">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="container">
+                                  <div class="row">
+                                  <% if(currentUser.toMakeRecipes.length > 0) { %>
+                                  <% for(var i = 0; i < currentUser.toMakeRecipes.length; i++) { %>
+                                      <div class="col-xs-12 col-sm-6 mb-3">
+                                          <div class="card card-light w-100">
+                                              <img class="card-img-top smallImageSlideout" src="<%= currentUser.toMakeRecipes[i].image %>">
+                                              <div class="card-body smallImageSlideoutBody px-1 py-2 text-center">
+                                                  <h5 class="card-title"><%= currentUser.toMakeRecipes[i].title %></h5>
+                                                  <h6 class="card-subtitle mb-2 text-muted">Prep Time: <%= currentUser.toMakeRecipes[i].prepTime %> min.</h6>
+                                                    <form action="/recipes/<%= currentUser.toMakeRecipes[i]._id %>/made" method="POST">
+                                                      <button class="btn btn-outline-primary text-center btn-block recipe-view-button my-1">Make Recipe</button>
+                                                    </form>
+                                              </div>
+                                          </div>
+                                      </div>
+                                  <% } %>
+                                  <% } %>
+                                  </div>
+                              </div>
+                    </div>
+                </div>
+                <div class="row" id="invisible-sliding-footer"></div>
+            <!--Sliding Menu Footer-->
+              <div class="slider-footer-container">
+                <div class="slider-footer-contents container">
+                  <div class="row">
+                    <div class="col-6">
+                      <a href="#" class="btn btn-primary btn-block btn-lg my-2">Made</a>
+                    </div>
+                    <div class="col-6">
+                      <a href="#" class="btn btn-primary btn-block btn-lg my-2">To Make</a>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-12">
+                      <a href="/logout" class="btn btn-outline-danger btn-block btn-lg my-2">Logout</a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+      </div>
+    <% } %>
+
+
+
+    <div class="container w-100 py-2 d-block d-sm-none text-center fixedBottomMobile bg-light">
+          <% if(!currentUser) { %>
+            <a href="#0" class="js-cd-panel-trigger" data-panel="main">
+              <div class="btn btn-outline-primary ml-auto">Sign Up / Login</div>
+            </a>
+          <% } %>
+          <% if(currentUser) { %>
+            <a href="#0" class="js-cd-panel-trigger" data-panel="main">
+              <div class="btn btn-outline-primary ml-auto">View Recipe Book</div>
+            </a>
+          <% } %>
+    </div>

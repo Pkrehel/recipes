@@ -1,0 +1,93 @@
+<% include ./partials/header %>
+<!--MAIN CONTAINER -->
+<main role="main" class="container">
+  <!--CURRENT RESULTS TEXT CONTAINER-->
+  <div class="container-fluid py-3 px-4">
+    <div class="row">
+      <div class="col-md-12">
+        <% if(searchQuery) { %>
+          <h3 class="text-secondary">Showing Results For: <span class="text-muted"><i><%= searchQuery %></i></span></h3>
+        <% } else { %>
+          <h3 class="text-secondary">Featured Recipes</h3>
+        <% } %>
+      </div>
+    </div>
+  </div>
+  <!--End of Current Results Text Container-->
+  <!--Main Container-->
+<div class="container-fluid">
+  <div class="card-deck">
+    <% for(var i=0; i < latestRecipes.length; i++) { %>
+      <!--Beginning of Card-->
+      <div class="col-lg-4 col-md-6 col-sm-6 col-xs-12 mb-3">
+        <div class="card recipe-card">
+          <div class="card-block">
+            <a href="/recipes/<%= latestRecipes[i]._id%>">
+              <img class="img-fluid recipe-index-image" src="<%= latestRecipes[i].image %>">
+            </a>
+<!--Image Card Overlay-->
+              <div class="recipe-image-overlay pb-0">
+
+                <!--Allergens Block -->
+
+                <div class="recipe-info-block">
+
+                  <ul class="list-inline mb-2 text-center">
+                      <% latestRecipes[i].allergens.forEach(function(allergenItem){ %>
+                        <li class="list-inline-item">
+                          <%= allergenItem %>
+                        </li>
+                        <% }); %>
+                    </ul>
+                  <!--To Make Buttosn Block-->
+                  <form action="/recipes/<%= latestRecipes[i]._id %>/make" method="POST">
+                    <button class="btn btn-primary btn-block recipe-view-button my-1">+ Recipe Book</button>
+                  </form>
+
+                  <!--Chef & Date Info. -->
+                  <div class="row">
+                  <div class="col-5 m-0 p-0">
+                  <a href="/users/<%=latestRecipes[i].chef.id %>" class="card-text text-left text-muted small m-0">Chef: <%= latestRecipes[i].chef.screenName%></a>
+                  </div>
+                  <div class="col-2"></div>
+                  <div class="col-5 pull-right m-0 p-0">
+                  <p class="card-text text-right"><small class="text-muted">Posted: <%= moment(latestRecipes[i].createdAt).format("M/D/YYYY") %></small></p>
+                  </div>
+                  </div>
+                </div>
+
+              </div>
+              <a href="/recipes/<%= latestRecipes[i]._id%>">
+              <div class="card-body visibile-recipe-info p-1 mt-1">
+                <h3 class="card-title text-center mb-0">
+                  <%= latestRecipes[i].title %>
+                </h3>
+                <br>
+                <!--Prep. Time Block-->
+                <div class="recipe-info-block">
+                      <ul class="list-inline mb-2">
+                        <li class="list-inline-item">
+                          Prep Time: <%= latestRecipes[i].prepTime %> min.
+                        </li>
+                      </ul>
+                    </div>
+
+                  <!--To Make Button Block-->
+                  <form action="/recipes/<%= latestRecipes[i]._id %>" method="GET">
+                    <button class="btn btn-outline-primary text-center btn-block recipe-view-button my-1">View</button>
+                  </form>
+
+
+              </div>
+              </a>
+              <!--END OF CARD BODY-->
+            </div>
+        </div>
+      </div>
+      <!--End of Card-->
+    <% } %>
+  </div>
+</div><!--End of Card Deck-->
+</main><!--End of Page Container-->
+
+<% include ./partials/footer %>

@@ -1,0 +1,176 @@
+<% include ../partials/header %>
+
+<div class="container-fluid p-4">
+
+<div class="row mb-3">
+<!--Row 1- LEFT COLUMN-->
+  <div class="col-lg-5 col-md-5 col-xs-12 maxheightcolumn">
+    <div class="card mb-2 maxheightcolumn">
+            <div class="card-body maxheightcolumn recipe-show-primary-info">
+              <h1 class="display-6 text-primary">
+                <%= recipe.title %>
+              </h1>
+
+<!--Prep Time & Cook Time: -->
+              <p class="card-text mb-0"><small class="text-muted">Prep Time:&nbsp;<%= recipe.prepTime %>&nbsp;minutes</small></p>
+              <p class="card-text mb-0"><small class="text-muted">Cook Time:&nbsp; <%= recipe.cookTime %> &nbsp;minutes</small></p>
+              <p class="card-text m-0"><small class="text-muted">Category:&nbsp;<%= recipe.category %></small></p>
+
+            </div>
+            <div class="card-footer">
+            <div class="container text-center">
+<!--Love button & count-->
+            <div class="row mx-auto">
+
+              <div class="col-12 mb-2">
+                <form action="/recipes/<%=recipe._id%>/love" method="POST">
+
+                  <button class="btn btn-secondary rounded-circle like-btn">
+                      <i class="fas fa-heart"></i>
+                    </button>
+
+                </form>
+              </div>
+
+                <div class="col-12 font-weight-bold text-secondary">
+                  <%if(recipe.lovedBy.length === 1) { %>
+                    <p class="card-text">Loved by 1 person</p>
+                  <% } else { %>
+                    <p class="card-text">Loved by <%= recipe.lovedBy.length %> people</p>
+                  <% } %>
+                </div>
+
+              </div>
+
+              <div class="row my-2 mx-auto">
+                <% if(recipe.lovedBy.length < 1) {%>
+                  <div class="col-12"></div>
+                  <% } %>
+
+                    <% if(recipe.lovedBy.length > 0 && recipe.lovedBy.length <= 5 ) { %>
+                      <% for(i=0; i < recipe.lovedBy.length ; i++) { %>
+                        <div class="made-icon">
+                          <form action="/users/<%= recipe.lovedBy[i].id %>">
+                            <button class="btn btn-secondary rounded-circle lovedBy_btn" data-toggle="tooltip" data-placement="bottom" title="<%= recipe.lovedBy[i].screenName %>">
+                      <%= recipe.lovedBy[i].avatar%>
+                     </button>
+                          </form>
+                        </div>
+                        <% } %>
+                          <% } %>
+
+                            <% if(recipe.lovedBy.length > 5) { %>
+                              <% for(i=0; i < 5 ; i++) { %>
+                                <div class="made-icon">
+                                  <form action="/users/<%= recipe.lovedBy[i].id %>">
+                                    <button class="btn btn-secondary rounded-circle lovedBy_btn" data-toggle="tooltip" data-placement="bottom"
+                                    title="<%= recipe.lovedBy[i].screenName %>">
+                                    <%= recipe.lovedBy[i].avatar%>
+                                   </button>
+                                  </form>
+                                </div>
+                                <% } %>
+
+                                <div class="made-icon">
+                                  <button class="btn btn-secondary rounded-circle lovedBy_btn">
+                                  <p class="text-muted small vertical-aligns p-0 m-0"> + <%= recipe.lovedBy.length - 5 %></p>
+                                </button>
+
+                                </div>
+                              <% } %>
+              </div>
+            </div>
+            </div>
+          </div>
+  </div>
+
+<!--Row 1 - MIDDLE COLUMN-->
+  <div class="col-lg-7 col-md-7 col-xs-12 maxheightcolumn">
+    <!--RECIPE-->
+    <div class="card mb-0 border-0">
+      <img class="card-img-top recipe-main-image my-0" src="<%= recipe.image %>">
+    </div>
+  </div>
+
+</div>
+
+<!--ROW 2-->
+
+<div class="row mb-3">
+
+<!--DIRECTIONS & INGREDIENTS-->
+  <div class="col-xs-12 col-sm-12 col-md-4 mb-4">
+                <h2>Ingredients</h2>
+                  <ul class="list-group">
+                  <% var ingredientLength =  recipe.ingredients.length; %>
+                  <% var countLimit = 0; %>
+
+                  <% while(countLimit < ingredientLength) { %>
+                    <li class="list-group-item">
+                      <% if(recipe.ingredients[countLimit + 1].indexOf("unit") > -1) { %>
+                        <%= recipe.ingredients[countLimit] + " " + recipe.ingredients[countLimit + 1].replace("unit", "") + " " + recipe.ingredients[countLimit + 2] %>
+                      <% } else { %>
+                        <%= recipe.ingredients[countLimit] + " " + recipe.ingredients[countLimit + 1] + " of " + recipe.ingredients[countLimit + 2] %>
+                    </li>
+                  <% } %>
+                  <% countLimit += 3; %>
+                  <% } %>
+                  </ul>
+              </div>
+
+  <div class="col-xs-12 col-sm-12 col-md-8 mb-4">
+                          <h2>Directions</h2>
+                          <ul class="list-group">
+                            <% for(i=0; i < recipe.directions.length; i++) {%>
+                              <li class="list-group-item">
+                                <%= recipe.directions[i] %>
+                              </li>
+                              <% }; %>
+                          </ul>
+                        </div>
+  </div>
+
+  <div class="row">
+    <div class="col col-xs-12 col-md-3 mb-4">
+      <div class="card">
+        <div class="card-body p-0">
+        <div class="list-group list-group-flush">
+            <div class="list-group-item flex-column align-items-start light-grey-bg text-center">
+              <!--Comment section title-->
+              <h4><strong>Comments <span class="glyphicon glyphicon glyphicon-comment" aria-hidden="true"></span></strong></h4>
+              <% if(!currentUser) { %>
+                <!--If the user is not logged in, direct him to the login page-->
+                <h5><strong><a href="/login">Login </a></strong>to post a comment.</h5>
+                <% } %>
+                  <% if(currentUser) { %>
+                    <!--If the user is logged in, show the new comment form-->
+                    <p>Write your comment <span class="glyphicon glyphicon glyphicon-pencil" aria-hidden="true"></span></p>
+                    <form action="/recipes/<%=recipe._id%>/comments" method="POST">
+                      <div class="form-group">
+                        <input class="form-control" type="text" name="comment[text]" placeholder="text" required>
+                      </div>
+                      <div class="form-group">
+                        <button class="btn btn-lg btn-secondary btn-block">Submit!</button>
+                      </div>
+                    </form>
+                    <% } %>
+            </div>
+            <% if(recipe.comments.length > 0) { %>
+              <% for(i=0; i < recipe.comments.length; i++) { %>
+                <a href="#" class="list-group-item list-group-item-action flex-column align-items-start">
+                  <div class="d-flex w-100 justify-content-between mb-2">
+                    <small class="text-muted">Posted by: <%= recipe.comments[i].author.screenName %></small>
+                    <small class="text-muted"><%= moment(recipe.comments[i].createdAt).fromNow()%></small>
+                  </div>
+                  <p class="mb-1"><%= recipe.comments[i].text %></p>
+                </a>
+                <% } %>
+          <% } %>
+        </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<% include ../partials/footer %>

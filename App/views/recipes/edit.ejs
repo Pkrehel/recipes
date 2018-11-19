@@ -1,0 +1,155 @@
+<% include ../partials/header %>
+
+<div class="container-fluid">
+  <div class="row">
+  <!--LEFT COLUMN-->
+        <div class="col-md-2 col-sm-12 p-2"></div>
+<!--MIDDLE COLUMN-->
+        <div class="col-md-8 col-sm-12 p-2">
+<form action="/recipes" method="POST" enctype="multipart/form-data">
+    <!--RECIPE-->
+    <div class="card mb-3">
+      <img class="card-img-top img-fluid" id="imagePreview">
+      <div class="card-body">
+    <div class="form-group">
+        <div class="custom-file">
+          <input type="file" class="custom-file-input form-control-lg" name="image" id="image" accept="image/*" required>
+          <label class="custom-file-label" for="image">Choose Image</label>
+        </div>
+    </div>
+        <h1 class="card-title text-primary display-3">
+            <input class="form-control form-control-lg" type="text" name="title" placeholder="Title" required>
+        </h1>
+        <div class="row">
+                  <div class="col-md-4">
+                     <div class="input-group mb-3">
+                       <div class="input-group-prepend">
+                         <label class="input-group-text" for="prepTime"><small>Prep Time</small></label>
+                       </div>
+                        <input class="form-control" type="text" name="prepTime" id="prepTime" placeholder="minutes" required>
+                     </div>
+                  </div>
+                  
+                  <div class="col-md-4">
+                     <div class="input-group mb-3">
+                       <div class="input-group-prepend">
+                         <label class="input-group-text font-weight-bold" for="cookTime"><small>Cook Time</small></label>
+                       </div>
+                        <input class="form-control" type="text" name="cookTime" id="cookTime" placeholder="minutes" required>
+                     </div>
+                  </div>
+                  
+                  <div class="col-md-4">
+                     <div class="input-group mb-3">
+                       <div class="input-group-prepend">
+                         <label class="input-group-text font-weight-bold" for="category"><small>Category</small></label>
+                       </div>
+                       <select class="custom-select" name="category" id="category" required>
+                         <option selected>Select...</option>
+                         <option value="Breakfast">Breakfast</option>
+                         <option value="Lunch">Lunch</option>
+                         <option value="Dinner">Dinner</option>
+                         <option value="Snack">Snack</option>
+                         <option value="Desert">Desert</option>
+                         <option value="Beverage">Beverage</option>
+                         <option value="Other">Other</option>
+                       </select>
+                     </div>
+                  </div>
+               </div>
+        <div class="row">
+          <div class="col-md-6">
+             <h1 class="">Directions</h1>
+             <div class="directions_input_fields_wrap">
+                <button class="btn btn-secondary directions_add_field_button btn-block btn-sm my-2">Add Direction</button>
+                <div class="input-group mb-2">
+                    <input class="form-control" type="text" name="directions[]" required>
+                    <!--<div class="input-group-append">-->
+                    <!--    <button class="btn btn-outline-danger btn-sm remove_field" type="button"><i class="fas fa-trash-alt"></i></button>-->
+                    <!--</div>-->
+                </div>
+             </div>
+          </div>
+          <div class="col-md-6">
+             <h1 class="">Ingredients</h1>
+             <div class="ingredients_input_fields_wrap">
+            <button class="btn btn-secondary ingredients_add_field_button btn-block btn-sm my-2">Add Ingredient</button>
+                            <div class="input-group mb-2">
+                        <input class="form-control" type="text" name="ingredients[]" required>
+                        <!--<div class="input-group-append">-->
+                        <!--    <button class="btn btn-outline-danger btn-sm remove_field" type="button"><i class="fas fa-trash-alt"></i></button>-->
+                        <!--</div>-->
+                </div>
+            </div>
+        </div>
+        </div>
+      <div class="form-group">
+          <button type="submit" class="btn btn-primary btn-block btn-lg my-2"><b>Add Recipe</b></button>
+      </div>
+      </div>
+    </div>
+</form>
+  </div>
+        <div class="col-md-2 col-sm-12 p-2"></div>
+    </div>
+</div>
+
+<script>
+   function readURL(input) {
+       if (input.files && input.files[0]) {
+           var reader = new FileReader();
+           
+           reader.onload = function (e) {
+               $('#imagePreview').attr('src', e.target.result);
+           }
+           
+           reader.readAsDataURL(input.files[0]);
+       }
+   }
+   
+   $("#image").change(function(){
+       readURL(this);
+   });
+</script>
+<script>
+   $(document).ready(function() {
+       var max_fields      = 25; //maximum input boxes allowed
+       var wrapper         = $(".ingredients_input_fields_wrap"); //Fields wrapper
+       var add_button      = $(".ingredients_add_field_button"); //Add button ID
+       
+       var x = 1; //initlal text box count
+       $(add_button).click(function(e){ //on add input button click
+           e.preventDefault();
+           if(x < max_fields){ //max input box allowed
+               x++; //text box increment
+               $(wrapper).append('<div class="input-group mb-2"><input class="form-control" type="text" name="ingredients[]"><div class="input-group-append"><button class="btn btn-outline-danger btn-sm remove_field" type="button"><i class="fas fa-trash-alt"></i></button></div></div>'); //add input box
+           }
+       });
+       
+       $(wrapper).on("click",".remove_field", function(e){ //user click on remove text
+           e.preventDefault(); $(this).parents().eq(1).remove(); x--;
+       })
+   });
+</script>
+<script>
+   $(document).ready(function() {
+       var max_fields      = 25; //maximum input boxes allowed
+       var wrapper         = $(".directions_input_fields_wrap"); //Fields wrapper
+       var add_button      = $(".directions_add_field_button"); //Add button ID
+       
+       var x = 1; //initlal text box count
+       $(add_button).click(function(e){ //on add input button click
+           e.preventDefault();
+           if(x < max_fields){ //max input box allowed
+               x++; //text box increment
+               $(wrapper).append('<div class="input-group mb-2"><input class="form-control" type="text" name="directions[]"><div class="input-group-append"><button class="btn btn-outline-danger btn-sm remove_field" type="button"><i class="fas fa-trash-alt"></i></button></div></div>'); //add input box
+           }
+       });
+       
+       $(wrapper).on("click",".remove_field", function(e){ //user click on remove text
+           e.preventDefault(); $(this).parents().eq(1).remove(); x--;
+       })
+   });
+</script>
+
+<% include ../partials/footer %>
