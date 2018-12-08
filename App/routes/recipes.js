@@ -76,10 +76,8 @@ router.post("/", middleware.isLoggedIn, upload.single('image'), function(req, re
         }
         res.redirect('/');
       });
-    }, { categorization: "google_tagging", auto_tagging: 0.70, quality: "auto" });
+    }, { categorization: "google_tagging", auto_tagging: 0.70, quality: "auto", width: 700, height: 525, gravity: "auto", crop: "fill" });
 });
-
-
 
 //NEW - create a new item on form
 router.get("/new", middleware.isLoggedIn, function(req, res) {
