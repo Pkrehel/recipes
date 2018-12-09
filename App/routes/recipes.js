@@ -81,7 +81,7 @@ router.post("/", middleware.isLoggedIn, upload.single('image'), function(req, re
 
 //NEW - create a new item on form
 router.get("/new", middleware.isLoggedIn, function(req, res) {
-  res.render("recipes/new_1");
+  res.render("recipes/new");
 });
 
 

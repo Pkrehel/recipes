@@ -102,19 +102,11 @@
   <div class="col-xs-12 col-sm-12 col-md-4 mb-4">
                 <h2>Ingredients</h2>
                   <ul class="list-group">
-                  <% var ingredientLength =  recipe.ingredients.length; %>
-                  <% var countLimit = 0; %>
-
-                  <% while(countLimit < ingredientLength) { %>
-                    <li class="list-group-item">
-                      <% if(recipe.ingredients[countLimit + 1].indexOf("unit") > -1) { %>
-                        <%= recipe.ingredients[countLimit] + " " + recipe.ingredients[countLimit + 1].replace("unit", "") + " " + recipe.ingredients[countLimit + 2] %>
-                      <% } else { %>
-                        <%= recipe.ingredients[countLimit] + " " + recipe.ingredients[countLimit + 1] + " of " + recipe.ingredients[countLimit + 2] %>
-                    </li>
-                  <% } %>
-                  <% countLimit += 3; %>
-                  <% } %>
+                            <% for(i=0; i < recipe.ingredients.length; i++) {%>
+                              <li class="list-group-item">
+                                <%= recipe.ingredients[i] %>
+                              </li>
+                              <% }; %>
                   </ul>
               </div>
 
