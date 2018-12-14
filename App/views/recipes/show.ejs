@@ -16,6 +16,17 @@
               <p class="card-text mb-0"><small class="text-muted">Cook Time:&nbsp; <%= recipe.cookTime %> &nbsp;minutes</small></p>
               <p class="card-text m-0"><small class="text-muted">Category:&nbsp;<%= recipe.category %></small></p>
 
+            <%if(recipe.allergens.length > 0) { %>
+            <% var allergenLength = recipe.allergens.length %>
+            <p class="card-text m-0">
+              <small class="text-muted">Allergens:&nbsp;
+              <% for(i=0; i < allergenLength -1; i++) { %>
+              <%= recipe.allergens[i] %>,
+              <% } %>
+              <%= recipe.allergens.pop() %>
+              </small>
+              </p>
+            <% } %>
             </div>
             <div class="card-footer">
             <div class="container text-center">
