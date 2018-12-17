@@ -15,22 +15,22 @@ router.get("/", function(req, res) {
     var queryString = req.query.search;
     if (queryString) {
         var regex = new RegExp(escapeRegex(queryString), 'gi');
-        Recipe.find({ $or: [{ "title": regex }, { "tags": regex }, { "category": regex }, { "ingredients": regex }] }).limit(8).exec(function(err, latestRecipes) {
+        Recipe.find({ $or: [{ "title": regex }, { "tags": regex }, { "category": regex }, { "ingredients": regex }] }).limit(12).exec(function(err, foundRecipe) {
             if (err) {
                 console.log(err);
             }
             else {
-                if (latestRecipes.length < 1) {
+                if (foundRecipe.length < 1) {
                     console.log("no results");
                     req.flash("error", "No results for \"" + queryString + "\". Please search again.");
                     res.redirect("/");
                 }
-                res.render("home", { latestRecipes: latestRecipes });
+                res.render("home", { foundRecipe: foundRecipe });
             }
         });
     }
     else {
-        Recipe.find({}).sort({ createdAt: -1 }).limit(9).exec(function(err, latestRecipes) {
+        Recipe.find({}).sort({ createdAt: -1 }).limit(12).exec(function(err, latestRecipes) {
             if (err) {
                 console.log(err);
             }

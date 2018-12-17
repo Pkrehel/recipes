@@ -4,7 +4,8 @@
 }
 
 .recipe-view-button {
-    width: 140px;
+    min-width: 140px;
+    width: auto;
     margin: 0 auto;
 }
 
@@ -170,7 +171,7 @@
 }
 
 .recipe-card h3.card-title {
-    font-size: 2em;
+    font-size: 1.2em;
 }
 
 .recipe-index-image {
@@ -184,7 +185,7 @@
 @media (min-width: 768px) {
     .recipe-card h3.card-title,
     .recipe-show-primary-info {
-        font-size: 1.5em;
+        font-size: 1.2em;
     }
 
 }
@@ -760,16 +761,16 @@ Slide In Panel - by CodyHouse.co
 /*Animated hover on homepage items*/
 
 .recipe-card:hover .recipe-image-overlay {
-    transition: opacity 1s ease-out;
+    transition: opacity .4s ease-out;
     opacity: 1;
 }
 
 .recipe-image-overlay {
-    -webkit-transition: opacity .45s ease-out;
-    -moz-transition: opacity .45s ease;
-    -ms-transition: opacity .45s ease;
-    -o-transition: opacity .45s ease;
-    transition: opacity .45s ease;
+    -webkit-transition: opacity .3s ease-out;
+    -moz-transition: opacity .3s ease;
+    -ms-transition: opacity .3s ease;
+    -o-transition: opacity .3s ease;
+    transition: opacity .3s ease;
     opacity: 0;
     position: absolute;
     top: 0;
@@ -780,5 +781,5 @@ Slide In Panel - by CodyHouse.co
     padding-left: 1.25rem;
     padding-right: 1.25rem;
     padding-bottom: 3px;
-    background-color: rgba(255, 255, 255, 0.96);
+    background-color: rgba(255, 255, 255, 0.9);
 }
