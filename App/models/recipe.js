@@ -31,10 +31,6 @@ var recipeSchema = new mongoose.Schema({
     lovedBy: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: "User",
-    }],
-    toMake: [{
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "User",
     }]
 });
 

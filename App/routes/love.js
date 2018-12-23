@@ -4,11 +4,11 @@ var Recipe = require("../models/recipe");
 var User = require("../models/user");
 
 //Favorite Post
-router.post("/", function(req, res) {
+router.post("/", function (req, res) {
    //lookup recipe using ID
    Recipe.findByIdAndUpdate(req.params.id, {
       $addToSet: { 'lovedBy': req.user.id }
-   }, function(err, recipe) {
+   }, function (err, recipe) {
       if (err) {
          console.log(err);
          res.redirect("back");
@@ -17,7 +17,7 @@ router.post("/", function(req, res) {
          recipe.save();
          User.findByIdAndUpdate(req.user.id, {
             $addToSet: { 'lovedRecipes': recipe._id }
-         }, function(err, foundUser) {
+         }, function (err, foundUser) {
             if (err) {
                console.log(err);
                req.flash('error', 'An error has occurred. ' + recipe.title + ' was not added to your favorites.');

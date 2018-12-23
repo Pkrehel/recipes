@@ -53,7 +53,7 @@
                               <%= foundRecipe[searchResultCount].allergens.pop() %>
                               <% } %>
                               </p>
-                              <p class="m-0">Prep Time:<%= foundRecipe[searchResultCount].prepTime %> min.</p>
+                              <p class="m-0">Prep Time: <%= foundRecipe[searchResultCount].prepTime %> min.</p>
                           </div>
 
                                 <!--To Make Button Block-->
@@ -115,7 +115,7 @@
                                           <%= latestRecipes[latestRecipeCount].allergens.pop() %>
                                           <% } %>
                                           </p>
-                                          <p class="m-0">Prep Time:<%= latestRecipes[latestRecipeCount].prepTime %> min.</p>
+                                          <p class="m-0">Prep Time: <%= latestRecipes[latestRecipeCount].prepTime %> min.</p>
                                       </div>
                                       <!--VIEW RECIPE BUTTON-->
                                       <form action="/recipes/<%= latestRecipes[latestRecipeCount]._id %>" method="GET">

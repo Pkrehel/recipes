@@ -225,7 +225,7 @@
           <header class="cd-panel__header container">
             <!--Top Header-->
               <div class="col-12 text-center">
-                <h1> <%= currentUser.screenName%>'s Recipe Book</h1>
+                <h1> <%= currentUser.screenName%>'s Favorites</h1>
               </div>
               <a href="#0" class="cd-panel__close js-cd-close">Close</a>
           </header>
@@ -262,14 +262,6 @@
               <div class="slider-footer-container">
                 <div class="slider-footer-contents container">
                   <div class="row">
-                    <div class="col-6">
-                      <a href="#" class="btn btn-primary btn-block btn-lg my-2">Made</a>
-                    </div>
-                    <div class="col-6">
-                      <a href="#" class="btn btn-primary btn-block btn-lg my-2">To Make</a>
-                    </div>
-                  </div>
-                  <div class="row">
                     <div class="col-12">
                       <a href="/logout" class="btn btn-outline-danger btn-block btn-lg my-2">Logout</a>
                     </div>
@@ -292,7 +284,7 @@
           <% } %>
           <% if(currentUser) { %>
             <a href="#0" class="js-cd-panel-trigger" data-panel="main">
-              <div class="btn btn-outline-primary ml-auto">View Recipe Book</div>
+              <div class="btn btn-outline-primary ml-auto">Recipe Book</div>
             </a>
           <% } %>
     </div>

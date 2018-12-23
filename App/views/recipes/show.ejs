@@ -4,7 +4,7 @@
 
 <div class="row mb-3">
 <!--Row 1- LEFT COLUMN-->
-  <div class="col-lg-5 col-md-5 col-xs-12 maxheightcolumn">
+  <div class="col-lg-5 col-md-5 col-xs-12 maxheightcolumn mb-2">
     <div class="card mb-2 maxheightcolumn">
             <div class="card-body maxheightcolumn recipe-show-primary-info">
               <h1 class="display-6 text-primary">
@@ -92,7 +92,7 @@
   </div>
 
 <!--Row 1 - MIDDLE COLUMN-->
-  <div class="col-lg-7 col-md-7 col-xs-12 maxheightcolumn">
+  <div class="col-lg-7 col-md-7 col-xs-12 maxheightcolumn mb-2">
     <!--RECIPE-->
     <div class="card mb-0 border-0">
       <img class="card-img-top recipe-main-image my-0" src="<%= recipe.image %>">
@@ -103,10 +103,10 @@
 
 <!--ROW 2-->
 
-<div class="row mb-3">
+<div class="row mb-4">
 
 <!--DIRECTIONS & INGREDIENTS-->
-  <div class="col-xs-12 col-sm-12 col-md-4 mb-4">
+<div class="col-lg-5 col-md-5 col-xs-12 mb-2">
                 <h2>Ingredients</h2>
                   <ul class="list-group">
                             <% for(i=0; i < recipe.ingredients.length; i++) {%>
@@ -117,7 +117,7 @@
                   </ul>
               </div>
 
-  <div class="col-xs-12 col-sm-12 col-md-8 mb-4">
+<div class="col-lg-7 col-md-7 col-xs-12 mb-2">
                           <h2>Directions</h2>
                           <ul class="list-group">
                             <% for(i=0; i < recipe.directions.length; i++) {%>

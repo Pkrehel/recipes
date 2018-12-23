@@ -16,12 +16,7 @@ var UserSchema = new mongoose.Schema({
     lovedRecipes: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: "Recipe"
-    }],
-    toMakeRecipes: ["Recipe"],
-    madeRecipes: [{
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Recipe"
-    }],
+    }]
 });
 
 UserSchema.plugin(passportLocalMongoose);
