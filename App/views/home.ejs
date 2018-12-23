@@ -1,198 +1,177 @@
 <% include ./partials/header %>
-<!--MAIN CONTAINER -->
-<main role="main" class="container">
-  <!--CURRENT RESULTS TEXT CONTAINER-->
-  <div class="container-fluid py-3 px-4">
-    <div class="row">
-      <div class="col-md-12">
+  <!--MAIN CONTAINER -->
+  <main role="main" class="container">
+    <!--CURRENT RESULTS TEXT CONTAINER-->
+    <div class="container-fluid py-3 px-4">
+      <div class="row">
+        <div class="col-md-12">
+          <% if(searchQuery) { %>
+            <h3 class="text-secondary">Showing Results For: <span class="text-muted"><i><%= searchQuery %></i></span></h3>
+            <% } else { %>
+              <h3 class="text-secondary">Recent Recipes</h3>
+              <% } %>
+        </div>
+      </div>
+    </div>
+    <!--End of Current Results Text Container-->
+    <!--Main Container-->
+    <div class="container-fluid">
+      <div class="card-deck">
         <% if(searchQuery) { %>
-          <h3 class="text-secondary">Showing Results For: <span class="text-muted"><i><%= searchQuery %></i></span></h3>
-        <% } else { %>
-          <h3 class="text-secondary">Most Recent Recipes</h3>
-        <% } %>
-      </div>
-    </div>
-  </div>
-  <!--End of Current Results Text Container-->
-  <!--Main Container-->
-<div class="container-fluid">
-  <div class="card-deck">
-<% if(searchQuery) { %>
-  <% var searchResultCount = 0 %>
-  <% var searchResultsLength = foundRecipe.length %>
-  <% while(searchResultCount < searchResultsLength) { %>
-      <div class="col-lg-4 col-md-6 col-sm-6 col-xs-12 mb-3">
-        <div class="card recipe-card">
-          <div class="card-block">
-            <a href="/recipes/<%= foundRecipe[searchResultCount]._id%>">
-              <img class="img-fluid recipe-index-image" src="<%= foundRecipe[searchResultCount].image %>">
-            </a>
-<!--Image Card Overlay-->
-              <div class="recipe-image-overlay pb-0">
+          <% var searchResultCount = 0 %>
+            <% var searchResultsLength = foundRecipe.length %>
+              <% while(searchResultCount < searchResultsLength) { %>
+                <div class="col-lg-4 col-md-6 col-sm-6 col-xs-12 mb-3">
+                  <div class="card recipe-card">
+                    <div class="card-block">
+                      <div class="img-container">
+                        <a href="/recipes/<%= foundRecipe[searchResultCount]._id%>">
+                          <div class="recipeBookButton text-center">
+                            <form action="/recipes/<%=foundRecipe[searchResultCount].id%>/love" method="POST">
+                              <button class="btn rounded-circle like-btn-homepage">
+                                  <i class="fas fa-heart"></i>
+                                </button>
+                            </form>
+                          </div>
+                          <img class="img-fluid recipe-index-image" src="<%= foundRecipe[searchResultCount].image %>">
+                          <!--To Make Button Block-->
+                        </a>
+                      </div>
 
-                <!--Allergens Block -->
+                      <a href="/recipes/<%= foundRecipe[searchResultCount]._id%>">
+                        <div class="card-body text-center visibile-recipe-info p-1 mt-1">
+                          <h4 class="card-title mb-1">
+                            <%= foundRecipe[searchResultCount].title %>
+                          </h4>
+                          <div class="container small card-text text-muted p-2">
+                              <%if(foundRecipe[searchResultCount].allergens.length > 0) { %>
+                              <p class="mb-1">
+                              <% var allergenLength = foundRecipe[searchResultCount].allergens.length %>
+                              <% for(i=0; i < allergenLength -1; i++) { %>
+                              <%= foundRecipe[searchResultCount].allergens[i] %> |
+                              <% } %>
+                              <%= foundRecipe[searchResultCount].allergens.pop() %>
+                              <% } %>
+                              </p>
+                              <p class="m-0">Prep Time:<%= foundRecipe[searchResultCount].prepTime %> min.</p>
+                          </div>
 
-                <div class="recipe-info-block">
+                                <!--To Make Button Block-->
+                                <form action="/recipes/<%= foundRecipe[searchResultCount]._id %>" method="GET">
+                                  <button class="btn btn-outline-primary text-center btn-block recipe-view-button my-1">View</button>
+                                </form>
 
-                  <ul class="list-inline mb-2 text-center">
-                      <% foundRecipe[searchResultCount].allergens.forEach(function(allergenItem){ %>
-                        <li class="list-inline-item">
-                          <%= allergenItem %>
-                        </li>
-                        <% }); %>
-                    </ul>
-                  <!--To Make Buttosn Block-->
-                  <form action="/recipes/<%= foundRecipe[searchResultCount]._id %>/make" method="POST">
-                    <button class="btn btn-outline-primary text-center btn-block recipe-view-button my-1">+ Recipe Book</button>
-                  </form>
+                                <div class="row mt-2">
+                                  <div class="col pull-left text-left">
+                                    <a href="/users/<%=foundRecipe[searchResultCount].chef.id %>" class="card-text text-left text-muted small m-0">Chef: <%= foundRecipe[searchResultCount].chef.screenName%></a>
+                                  </div>
+                                  <div class="col pull-right">
+                                    <p class="card-text text-right"><small class="text-muted">Posted: <%= moment(foundRecipe[searchResultCount].createdAt).format("M/D/YYYY") %></small></p>
+                                  </div>
+                                </div>
 
-                  <!--Chef & Date Info. -->
-                  <div class="row">
-                  <div class="col-5 m-0 p-0">
-                  <a href="/users/<%=foundRecipe[searchResultCount].chef.id %>" class="card-text text-left text-muted small m-0">Chef: <%= foundRecipe[searchResultCount].chef.screenName%></a>
-                  </div>
-                  <div class="col-2"></div>
-                  <div class="col-5 pull-right m-0 p-0">
-                  <p class="card-text text-right"><small class="text-muted">Posted: <%= moment(foundRecipe[searchResultCount].createdAt).format("M/D/YYYY") %></small></p>
-                  </div>
+                        </div>
+                      </a>
+                      <!--END OF CARD BODY-->
+                    </div>
                   </div>
                 </div>
+                <% searchResultCount ++ %>
+                  <% } %>
+                    <% } %>
 
-              </div>
-              <a href="/recipes/<%= foundRecipe[searchResultCount]._id%>">
-              <div class="card-body visibile-recipe-info p-1 mt-1">
-                <h4 class="card-title text-center mb-0">
-                  <%= foundRecipe[searchResultCount].title %>
-                </h4>
-                <br>
-                <!--Prep. Time Block-->
-                <div class="recipe-info-block">
-                      <ul class="list-inline mb-2">
-                        <li class="list-inline-item">
-                          Prep Time: <%= foundRecipe[searchResultCount].prepTime %> min.
-                        </li>
-                      </ul>
-                    </div>
+                      <%if(!searchQuery) { %>
+                        <% var latestRecipeCount = 0; %>
+                          <% while(latestRecipeCount < 5) { %>
+                            <div class="col-lg-4 col-md-6 col-sm-6 col-xs-12 mb-3">
+                              <div class="card recipe-card">
+                                <div class="card-block">
+                                  <div class="img-container">
+                                    <a href="/recipes/<%= latestRecipes[latestRecipeCount]._id%>">
+                                      <div class="recipeBookButton text-center">
+                                        <form action="/recipes/<%=latestRecipes[latestRecipeCount].id%>/love" method="POST">
+                                          <button class="btn rounded-circle like-btn-homepage">
+                                              <i class="fas fa-heart"></i>
+                                            </button>
+                                        </form>
+                                      </div>
+                                      <img class="img-fluid recipe-index-image" src="<%= latestRecipes[latestRecipeCount].image %>">
+                                      <!--To Make Button Block-->
+                                    </a>
+                                  </div>
 
-                  <!--To Make Button Block-->
-                  <form action="/recipes/<%= foundRecipe[searchResultCount]._id %>" method="GET">
-                    <button class="btn btn-outline-primary text-center btn-block recipe-view-button my-1">View</button>
-                  </form>
+                                  <a href="/recipes/<%= latestRecipes[latestRecipeCount]._id%>">
+                                    <div class="card-body text-center visibile-recipe-info p-1 mt-1">
+                                      <h3 class="card-title mb-1">
+                                        <%= latestRecipes[latestRecipeCount].title %>
+                                      </h3>
+                                      <div class="container small card-text text-muted p-2">
+                                          <%if(latestRecipes[latestRecipeCount].allergens.length > 0) { %>
+                                          <p class="mb-1">
+                                          <% var allergenLength = latestRecipes[latestRecipeCount].allergens.length %>
+                                          <% for(i=0; i < allergenLength -1; i++) { %>
+                                          <%= latestRecipes[latestRecipeCount].allergens[i] %> |
+                                          <% } %>
+                                          <%= latestRecipes[latestRecipeCount].allergens.pop() %>
+                                          <% } %>
+                                          </p>
+                                          <p class="m-0">Prep Time:<%= latestRecipes[latestRecipeCount].prepTime %> min.</p>
+                                      </div>
+                                      <!--VIEW RECIPE BUTTON-->
+                                      <form action="/recipes/<%= latestRecipes[latestRecipeCount]._id %>" method="GET">
+                                        <button class="btn btn-outline-primary text-center btn-block recipe-view-button my-1">View</button>
+                                      </form>
+                                      <div class="row mt-2">
+                                        <div class="col pull-left text-left">
+                                          <a href="/users/<%=latestRecipes[latestRecipeCount].chef.id %>" class="card-text text-left text-muted small m-0">Chef: <%= latestRecipes[latestRecipeCount].chef.screenName%></a>
+                                        </div>
+                                        <div class="col pull-right">
+                                          <p class="card-text text-right"><small class="text-muted">Posted: <%= moment(latestRecipes[latestRecipeCount].createdAt).format("M/D/YYYY") %></small></p>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </a>
+                                  <!--END OF CARD BODY-->
+                                </div>
+                              </div>
+                            </div>
+                            <%  latestRecipeCount ++ %>
+                              <% } %>
 
+                                <div class="col-lg-4 col-md-6 col-sm-6 col-xs-12 mb-3">
+                                  <div class="card border-0 recipe-card">
+                                    <div class="card-block">
+                                      <div class="card-body visibile-recipe-info p-1 mt-1">
+                                        <h3 class="card-title text-center text-secondary">
+                                          View More Recent Recipes
+                                        </h3>
+                                        <br>
+                                        <% var remainingRecentRecipes = latestRecipes.length - latestRecipeCount %>
+                                          <% var remainingRecipeCount = 0 %>
+                                            <ul class="list-group list-group-flush">
+                                              <% while( (remainingRecipeCount < remainingRecentRecipes) && (remainingRecipeCount < 6) ) { %>
+                                                <a href="/recipes/<%= latestRecipes[5+remainingRecipeCount]._id%>">
+                                                  <li class="list-group-item">
+                                                    <%= latestRecipes[5+remainingRecipeCount].title %>
+                                                  </li>
+                                                </a>
+                                                <% remainingRecipeCount ++ %>
+                                                  <% } %>
 
-              </div>
-              </a>
-              <!--END OF CARD BODY-->
-            </div>
-        </div>
+                                                    <li class="list-group-item list-group-flush">
+                                                      <form action="/recipes/<%= latestRecipes[latestRecipeCount]._id %>" method="GET">
+                                                        <button class="btn btn-outline-primary text-center btn-block recipe-view-button my-1">More Recently Posted...</button>
+                                                      </form>
+                                                    </li>
+                                            </ul>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                                <% } %>
       </div>
-      <% searchResultCount ++ %>
-  <% } %>
-<% } %>
-
-
-<%if(!searchQuery) { %>
-    <% var latestRecipeCount = 0; %>
-    <% while(latestRecipeCount < 5) { %>
-      <div class="col-lg-4 col-md-6 col-sm-6 col-xs-12 mb-3">
-        <div class="card recipe-card">
-          <div class="card-block">
-            <a href="/recipes/<%= latestRecipes[latestRecipeCount]._id%>">
-              <img class="img-fluid recipe-index-image" src="<%= latestRecipes[latestRecipeCount].image %>">
-            </a>
-<!--Image Card Overlay-->
-              <div class="recipe-image-overlay pb-0">
-
-                <!--Allergens Block -->
-
-                <div class="recipe-info-block">
-
-                  <ul class="list-inline mb-2 text-center">
-                      <% latestRecipes[latestRecipeCount].allergens.forEach(function(allergenItem){ %>
-                        <li class="list-inline-item">
-                          <%= allergenItem %>
-                        </li>
-                        <% }); %>
-                    </ul>
-                  <!--To Make Buttosn Block-->
-                  <form action="/recipes/<%= latestRecipes[latestRecipeCount]._id %>/make" method="POST">
-                    <button class="btn btn-outline-primary text-center btn-block recipe-view-button my-1">+ Recipe Book</button>
-                  </form>
-
-                  <!--Chef & Date Info. -->
-                  <div class="row">
-                  <div class="col-5 m-0 p-0">
-                  <a href="/users/<%=latestRecipes[latestRecipeCount].chef.id %>" class="card-text text-left text-muted small m-0">Chef: <%= latestRecipes[latestRecipeCount].chef.screenName%></a>
-                  </div>
-                  <div class="col-2"></div>
-                  <div class="col-5 pull-right m-0 p-0">
-                  <p class="card-text text-right"><small class="text-muted">Posted: <%= moment(latestRecipes[latestRecipeCount].createdAt).format("M/D/YYYY") %></small></p>
-                  </div>
-                  </div>
-                </div>
-
-              </div>
-              <a href="/recipes/<%= latestRecipes[latestRecipeCount]._id%>">
-              <div class="card-body visibile-recipe-info p-1 mt-1">
-                <h3 class="card-title text-center mb-0">
-                  <%= latestRecipes[latestRecipeCount].title %>
-                </h3>
-                <br>
-                <!--Prep. Time Block-->
-                <div class="recipe-info-block">
-                      <ul class="list-inline mb-2">
-                        <li class="list-inline-item">
-                          Prep Time: <%= latestRecipes[latestRecipeCount].prepTime %> min.
-                        </li>
-                      </ul>
-                    </div>
-
-                  <!--To Make Button Block-->
-                  <form action="/recipes/<%= latestRecipes[latestRecipeCount]._id %>" method="GET">
-                    <button class="btn btn-outline-primary text-center btn-block recipe-view-button my-1">View</button>
-                  </form>
-
-
-              </div>
-              </a>
-              <!--END OF CARD BODY-->
-            </div>
-        </div>
-      </div>
-      <%  latestRecipeCount ++ %>
-    <% } %>
-
-    <div class="col-lg-4 col-md-6 col-sm-6 col-xs-12 mb-3">
-      <div class="card border-0 recipe-card">
-        <div class="card-block">
-          <div class="card-body visibile-recipe-info p-1 mt-1">
-            <h3 class="card-title text-center text-secondary">
-              View More Recent Recipes
-            </h3>
-            <br>
-          <% var remainingRecentRecipes = latestRecipes.length - latestRecipeCount %>
-          <% var remainingRecipeCount = 0 %>
-          <ul class="list-group list-group-flush">
-          <% while( (remainingRecipeCount < remainingRecentRecipes) && (remainingRecipeCount < 6) ) { %>
-            <a href="/recipes/<%= latestRecipes[5+remainingRecipeCount]._id%>">
-              <li class="list-group-item"><%= latestRecipes[5+remainingRecipeCount].title %></li>
-            </a>
-             <% remainingRecipeCount ++ %>
-          <% } %>
-
-          <li class="list-group-item list-group-flush">
-            <form action="/recipes/<%= latestRecipes[latestRecipeCount]._id %>" method="GET">
-              <button class="btn btn-outline-primary text-center btn-block recipe-view-button my-1">More Recently Posted...</button>
-            </form>
-          </li>
-          </ul>
-          </div>
-        </div>
-      </div>
+      <!--End of Card Deck-->
     </div>
-        <% } %>
-  </div><!--End of Card Deck-->
-</div>
-</main><!--End of Page Container-->
-
-<% include ./partials/footer %>
+  </main>
+  <!--End of Page Container-->
+  <% include ./partials/footer %>

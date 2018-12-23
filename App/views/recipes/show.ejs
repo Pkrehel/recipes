@@ -15,7 +15,6 @@
               <p class="card-text mb-0"><small class="text-muted">Prep Time:&nbsp;<%= recipe.prepTime %>&nbsp;minutes</small></p>
               <p class="card-text mb-0"><small class="text-muted">Cook Time:&nbsp; <%= recipe.cookTime %> &nbsp;minutes</small></p>
               <p class="card-text m-0"><small class="text-muted">Category:&nbsp;<%= recipe.category %></small></p>
-
             <%if(recipe.allergens.length > 0) { %>
             <% var allergenLength = recipe.allergens.length %>
             <p class="card-text m-0">
@@ -30,24 +29,21 @@
             </div>
             <div class="card-footer">
             <div class="container text-center">
-<!--Love button & count-->
+<!--Favorite button & count-->
             <div class="row mx-auto">
-
               <div class="col-12 mb-2">
                 <form action="/recipes/<%=recipe._id%>/love" method="POST">
-
                   <button class="btn btn-secondary rounded-circle like-btn">
                       <i class="fas fa-heart"></i>
                     </button>
-
                 </form>
               </div>
 
                 <div class="col-12 font-weight-bold text-secondary">
                   <%if(recipe.lovedBy.length === 1) { %>
-                    <p class="card-text">Loved by 1 person</p>
+                    <p class="card-text">Favorited by 1 person</p>
                   <% } else { %>
-                    <p class="card-text">Loved by <%= recipe.lovedBy.length %> people</p>
+                    <p class="card-text">Favorited by <%= recipe.lovedBy.length %> people</p>
                   <% } %>
                 </div>
 

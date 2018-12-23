@@ -9,6 +9,11 @@
     margin: 0 auto;
 }
 
+.recipeBookButton {
+    font-size: 12px;
+}
+
+
 .light-grey-bg {
     background: #efe186;
     /* Old browsers */
@@ -31,12 +36,21 @@
     font-size: 25px;
 }
 
-.like-btn-homepage i {
+.like-btn-homepage {
+    position: absolute;
+    right: 5px;
+    bottom: 5px;
     height: 45px;
-    width: 45px;
-    line-height: 45px;
+    line-height: 35px;
     color: #c85a5a;
     font-size: 20px;
+    border: 2px solid #eeb320;
+    transition: background-color 1s ease;
+    background-color: #f1bf44;
+}
+
+.like-btn-homepage:hover {
+    background-color: #eeb320;
 }
 
 .tooltip-inner {
@@ -246,11 +260,9 @@
 }
 
 
-
 /* SLIDING MENU   > */
 
 .cd-panel {
-    /*...*/
     visibility: hidden;
     transition: visibility 0s 0.6s;
 }
@@ -757,7 +769,6 @@ Slide In Panel - by CodyHouse.co
 }
 
 
-
 /*Animated hover on homepage items*/
 
 .recipe-card:hover .recipe-image-overlay {
@@ -782,4 +793,8 @@ Slide In Panel - by CodyHouse.co
     padding-right: 1.25rem;
     padding-bottom: 3px;
     background-color: rgba(255, 255, 255, 0.9);
+}
+
+.img-container {
+    position: relative;
 }
