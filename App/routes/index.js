@@ -9,13 +9,13 @@ var express = require("express"),
     nodemailer = require('nodemailer');
 
 //Show the home page
-router.get("/", function(req, res) {
+router.get("/", function (req, res) {
 
     //ON-SITE SEARCH BOX:
     var queryString = req.query.search;
     if (queryString) {
         var regex = new RegExp(escapeRegex(queryString), 'gi');
-        Recipe.find({ $or: [{ "title": regex }, { "tags": regex }, { "category": regex }, { "ingredients": regex }] }).limit(12).exec(function(err, foundRecipe) {
+        Recipe.find({ $or: [{ "title": regex }, { "tags": regex }, { "category": regex }, { "ingredients": regex }] }).limit(12).exec(function (err, foundRecipe) {
             if (err) {
                 console.log(err);
             }
@@ -30,9 +30,10 @@ router.get("/", function(req, res) {
         });
     }
     else {
-        Recipe.find({}).sort({ createdAt: -1 }).limit(12).exec(function(err, latestRecipes) {
+        Recipe.find({}).sort({ createdAt: -1 }).limit(12).exec(function (err, latestRecipes) {
             if (err) {
-                console.log(err);
+                res.send(latestRecipes);
+                // console.log(err);
             }
             else {
                 res.render("home", { latestRecipes: latestRecipes });
@@ -46,12 +47,12 @@ router.get("/", function(req, res) {
 //===================
 
 //Show the signup page
-router.get("/register", function(req, res) {
+router.get("/register", function (req, res) {
     res.render("register", { message: req.flash("signupMessage") });
 });
 
 //REGISTER LOGIC:
-router.post("/register", function(req, res) {
+router.post("/register", function (req, res) {
     var newUser = new User({
         username: req.body.username,
         screenName: req.body.screenName,
@@ -63,23 +64,22 @@ router.post("/register", function(req, res) {
         // Flag account as inactive
         active: false
     });
-    User.register(newUser, req.body.password, function(err, user) {
+    User.register(newUser, req.body.password, function (err, user) {
         if (err) {
             req.flash("error", err.message);
             return res.redirect("register");
         }
-        passport.authenticate("local")(req, res, function() {
+        passport.authenticate("local")(req, res, function () {
             req.flash("success", "Your account is almost finsihed! Please check " + user.username + " to complete your account.");
             res.redirect("/verification-email");
         });
     });
 });
 
-
 // Send Verification Email After Account SignUp:
 var mailOptions, host, link;
 
-router.get("/verification-email", function(req, res) {
+router.get("/verification-email", function (req, res) {
     host = req.get("host");
     // link = "http://" + req.get("host") + "/verify?id=" + req.user.secretToken;
     link = "https://palmer-krehel-palmerkrehel.c9users.io" + "/verify?id=" + req.user.secretToken;
@@ -105,7 +105,7 @@ router.get("/verification-email", function(req, res) {
         html: "Hello, <br> Please confirm your email by clicking the link below: <br><a href=" + link + ">Click here to verify your account.</a>",
     };
     console.log(mailOptions);
-    smtpTransporter.sendMail(mailOptions, function(err, response) {
+    smtpTransporter.sendMail(mailOptions, function (err, response) {
         if (err) {
             console.log("error with email transport");
             console.log(err);
@@ -120,12 +120,12 @@ router.get("/verification-email", function(req, res) {
     });
 });
 
-router.get("/verify", function(req, res) {
+router.get("/verify", function (req, res) {
     console.log(req.protocol + ":/" + req.get("host"));
     if ((req.protocol + "://" + req.get("host")) == ("http://" + host)) {
         console.log("Domain is matched. Information is from authentic email address");
 
-        User.findOneAndUpdate(req.query.id, { $set: { active: true, secretToken: "" } }, function(err, user) {
+        User.findOneAndUpdate(req.query.id, { $set: { active: true, secretToken: "" } }, function (err, user) {
             if (err) {
                 req.flash("error", "An Error Has Occurred. Please Try Again.");
                 res.redirect("/register");
@@ -142,7 +142,7 @@ router.get("/verify", function(req, res) {
 
 
 //handle login logic:
-router.get("/login", function(req, res) {
+router.get("/login", function (req, res) {
     res.render("login");
 });
 
@@ -155,15 +155,16 @@ router.post('/login',
 );
 
 
-router.get("/logout", function(req, res) {
+// LOGOUT LOGIC
+router.get("/logout", function (req, res) {
     req.logout();
     req.flash("success", "You have been successfully logged out.");
     res.redirect("/");
 });
 
 //USER PUBLIC PROFILE ROUTES:
-router.get("/users/:id", function(req, res) {
-    User.findById(req.params.id, function(err, foundUser) {
+router.get("/users/:id", function (req, res) {
+    User.findById(req.params.id, function (err, foundUser) {
         if (err) {
             req.flash("error", "Cannot Find User's Profile");
             res.redirect("/");

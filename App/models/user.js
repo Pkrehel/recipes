@@ -14,9 +14,16 @@ var UserSchema = new mongoose.Schema({
         type: String
     },
     lovedRecipes: [{
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Recipe"
+        id: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "Recipe"
+        },
+        title: String,
+        image: String,
+        createdAt: Date
     }]
+
+
 });
 
 UserSchema.plugin(passportLocalMongoose);

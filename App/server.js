@@ -14,9 +14,7 @@ var express = require("express"),
 var commentRoutes = require("./routes/comments"),
     recipeRoutes = require("./routes/recipes"),
     indexRoutes = require("./routes/index"),
-    loveRecipeRoutes = require("./routes/love"),
-    toMakeRoutes = require("./routes/make"),
-    madeRoutes = require("./routes/made");
+    loveRecipeRoutes = require("./routes/love");
 
 mongoose.connect("mongodb://localhost/db_1");
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -40,7 +38,7 @@ passport.use(new LocalStrategy(User.authenticate()));
 passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
 
-app.use(function(req, res, next) {
+app.use(function (req, res, next) {
     res.locals.currentUser = req.user;
     res.locals.error = req.flash("error");
     res.locals.success = req.flash("success");
@@ -52,9 +50,7 @@ app.use("/", indexRoutes);
 app.use("/recipes", recipeRoutes);
 app.use("/recipes/:id/comments", commentRoutes);
 app.use("/recipes/:id/love", loveRecipeRoutes);
-app.use("/recipes/:id/make", toMakeRoutes);
-app.use("/recipes/:id/made", madeRoutes);
 
-app.listen(process.env.PORT, process.env.IP, function() {
+app.listen(process.env.PORT, process.env.IP, function () {
     console.log("The Server Has Started!");
 });

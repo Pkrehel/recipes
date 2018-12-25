@@ -1,6 +1,4 @@
 <% include ./partials/header %>
-  <!--MAIN CONTAINER -->
-  <main role="main" class="container">
     <!--CURRENT RESULTS TEXT CONTAINER-->
     <div class="container-fluid py-3 px-4">
       <div class="row">
@@ -20,7 +18,7 @@
         <% if(searchQuery) { %>
           <% var searchResultCount = 0 %>
             <% var searchResultsLength = foundRecipe.length %>
-              <% while(searchResultCount < searchResultsLength) { %>
+              <% while((searchResultCount < searchResultsLength) && (searchResultCount < 30)) { %>
                 <div class="col-lg-4 col-md-6 col-sm-6 col-xs-12 mb-3">
                   <div class="card recipe-card">
                     <div class="card-block">
@@ -81,8 +79,13 @@
                     <% } %>
 
                       <%if(!searchQuery) { %>
-                        <% var latestRecipeCount = 0; %>
-                          <% while(latestRecipeCount < 5) { %>
+                      <% var latestRecipeCount = 0; %>
+                      <% if(latestRecipes.length < 5) { %>
+                         <% var latestRecipesLength = latestRecipes.length  %>
+                      <% } else { %>
+                      <% var latestRecipesLength = 5 %>
+                      <% } %>
+                          <% while((latestRecipeCount < latestRecipesLength)) { %>
                             <div class="col-lg-4 col-md-6 col-sm-6 col-xs-12 mb-3">
                               <div class="card recipe-card">
                                 <div class="card-block">
@@ -159,7 +162,7 @@
                                                   <% } %>
 
                                                     <li class="list-group-item list-group-flush">
-                                                      <form action="/recipes/<%= latestRecipes[latestRecipeCount]._id %>" method="GET">
+                                                      <form action="/recipes/<%= latestRecipes[remainingRecipeCount]._id %>" method="GET">
                                                         <button class="btn btn-outline-primary text-center btn-block recipe-view-button my-1">More Recently Posted...</button>
                                                       </form>
                                                     </li>
@@ -172,6 +175,4 @@
       </div>
       <!--End of Card Deck-->
     </div>
-  </main>
-  <!--End of Page Container-->
   <% include ./partials/footer %>

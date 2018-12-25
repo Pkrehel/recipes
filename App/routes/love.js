@@ -16,7 +16,9 @@ router.post("/", function (req, res) {
       else {
          recipe.save();
          User.findByIdAndUpdate(req.user.id, {
-            $addToSet: { 'lovedRecipes': recipe._id }
+            $addToSet: {
+               'lovedRecipes': { "id": recipe._id, "title": recipe.title, "image": recipe.image, "createdAt": recipe.createdAt }
+            }
          }, function (err, foundUser) {
             if (err) {
                console.log(err);

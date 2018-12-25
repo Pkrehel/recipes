@@ -49,26 +49,31 @@
   </div>
   <!--END OF (MAIN NAVIGATION)-->
 
+
   <!--(SECONDARY NAV)-->
-  <div class="container">
-
-    <!--SEARCH BAR:-->
-    <div class="row mx-auto my-1 searchBar">
-
-      <form action="/" class="form-inline my-2 mx-auto" method="GET">
-        <div class="col-xs-12 col-sm-12 col-md-8">
-          <div id="input_container">
-            <input class="form-control mr-sm-2" id="searchbar" name="search" type="search" placeholder="Search" aria-label="Search">
-            <i class="fa fa-search search-icon"></i>
-          </div>
-        </div>
-        <div class="col-xs-12 col-sm-12 col-md-4">
-          <button class="btn btn-outline-secondary my-2 w-100" value="Search" type="submit">Search</button>
-        </div>
-      </form>
+<div class="container">
+<!--SEARCH BAR-->
+<div class="row">
+<div class="col-md-6 col-sm-12 col-xs-12">
+  <div class="searchBar px-4">
+  <form action="/" class="form-inline" method="GET">
+  <div class="input-group">
+  <div id="input_container">
+    <input class="form-control" id="searchbar" name="search" type="search" placeholder="Search Recipes " aria-label="Search">
+    <i class="fa fa-search search-icon"></i>
+  </div>
+    <div class="input-group-append">
+      <button class="btn btn-outline-secondary" value="Search" type="submit">Search</button>
     </div>
+  </div>
+  </form>
+  </div>
+</div>
+</div>
+</div>
+<!--END SEARCH BAR-->
 
-    <!--END SEARCH BAR-->
+  <div class="container">
     <div class="col-md-12 alert-container">
       <% if(error && error.length > 0) { %>
         <div class="alert alert-danger m-0 p-1 w-100" role="alert">
@@ -237,15 +242,15 @@
                     <div class="col-12">
                         <div class="container">
                                   <div class="row">
-                                  <% if(currentUser.toMakeRecipes.length > 0) { %>
-                                  <% for(var i = 0; i < currentUser.toMakeRecipes.length; i++) { %>
+                                  <% if(currentUser.lovedRecipes.length > 0) { %>
+                                  <% for(var i = 0; i < currentUser.lovedRecipes.length; i++) { %>
                                       <div class="col-xs-12 col-sm-6 mb-3">
                                           <div class="card card-light w-100">
-                                              <img class="card-img-top smallImageSlideout" src="<%= currentUser.toMakeRecipes[i].image %>">
+                                              <img class="card-img-top smallImageSlideout" src="<%= currentUser.lovedRecipes[i].image %>">
                                               <div class="card-body smallImageSlideoutBody px-1 py-2 text-center">
-                                                  <h5 class="card-title"><%= currentUser.toMakeRecipes[i].title %></h5>
-                                                  <h6 class="card-subtitle mb-2 text-muted">Prep Time: <%= currentUser.toMakeRecipes[i].prepTime %> min.</h6>
-                                                    <form action="/recipes/<%= currentUser.toMakeRecipes[i]._id %>/made" method="POST">
+                                                  <h5 class="card-title"><%= currentUser.lovedRecipes[i].title %></h5>
+                                                  <h6 class="card-subtitle mb-2 text-muted">Prep Time: <%= currentUser.lovedRecipes[i].prepTime %> min.</h6>
+                                                    <form action="/recipes/<%= currentUser.lovedRecipes[i]._id %>" method="GET">
                                                       <button class="btn btn-outline-primary text-center btn-block recipe-view-button my-1">Make Recipe</button>
                                                     </form>
                                               </div>
@@ -274,8 +279,6 @@
       </div>
     <% } %>
 
-
-
     <div class="container w-100 py-2 d-block d-sm-none text-center fixedBottomMobile bg-light">
           <% if(!currentUser) { %>
             <a href="#0" class="js-cd-panel-trigger" data-panel="main">
@@ -288,3 +291,4 @@
             </a>
           <% } %>
     </div>
+    <main role="main" class="container">
