@@ -7,11 +7,11 @@ var recipeSchema = new mongoose.Schema({
     image: String,
     chef: {
         id: {
-                type: mongoose.Schema.Types.ObjectId,
-                ref: "User"
-            },
-            screenName: String,
-            avatar: String
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "User"
+        },
+        screenName: String,
+        avatar: String
     },
     avatar: String,
     prepTime: String,
@@ -30,7 +30,7 @@ var recipeSchema = new mongoose.Schema({
     }],
     lovedBy: [{
         type: mongoose.Schema.Types.ObjectId,
-        ref: "User",
+        ref: "User"
     }]
 });
 

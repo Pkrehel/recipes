@@ -6,7 +6,7 @@ var User = require("../models/user");
 //Favorite Post
 router.post("/", function (req, res) {
    //lookup recipe using ID
-   Recipe.findById(req.params.id, function (err, recipe) {
+   Recipe.findByIdAndUpdate(req.params.id, { $addToSet: { 'lovedBy': { '_id': req.user.id } } }, function (err, recipe) {
       if (err) {
          req.flash('error', 'An error has occurred. ' + recipe.title + ' was not added to your favorites.');
          res.redirect("back");
