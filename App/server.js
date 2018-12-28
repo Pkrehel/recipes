@@ -25,7 +25,7 @@ app.use(flash());
 
 //passport configuration
 app.use(require("express-session")({
-    secret: "HooCh is an ugly PuG dog!!!",
+    secret: process.env.PASSPORT_SECRET,
     resave: false,
     saveUninitialized: false
 }));

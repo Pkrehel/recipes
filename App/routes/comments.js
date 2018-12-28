@@ -2,17 +2,18 @@ var express = require("express");
 var router = express.Router({ mergeParams: true });
 var Recipe = require("../models/recipe");
 var Comment = require("../models/comment");
+var middleware = require("../middleware");
 
 //Comments Create
-router.post("/", function(req, res) {
+router.post("/", middleware.isLoggedIn, function (req, res) {
     //lookup recipe using ID
-    Recipe.findById(req.params.id, function(err, recipe) {
+    Recipe.findById(req.params.id, function (err, recipe) {
         if (err) {
             console.log(err);
             res.redirect("/recipes");
         }
         else {
-            Comment.create(req.body.comment, function(err, comment) {
+            Comment.create(req.body.comment, function (err, comment) {
                 if (err) {
                     console.log(err);
                 }

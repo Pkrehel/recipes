@@ -2,9 +2,10 @@ var express = require("express");
 var router = express.Router({ mergeParams: true });
 var Recipe = require("../models/recipe");
 var User = require("../models/user");
+var middleware = require("../middleware");
 
 //Favorite Post
-router.post("/", function (req, res) {
+router.post("/", middleware.isLoggedIn, function (req, res) {
    //lookup recipe using ID
    Recipe.findByIdAndUpdate(req.params.id, { $addToSet: { 'lovedBy': { '_id': req.user.id } } }, function (err, recipe) {
       if (err) {

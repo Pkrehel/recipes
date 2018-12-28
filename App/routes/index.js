@@ -1,5 +1,3 @@
-require('dotenv').config();
-
 var express = require("express"),
     router = express.Router(),
     passport = require("passport"),
@@ -93,7 +91,6 @@ var mailOptions, host, link;
 
 router.get("/verification-email", function (req, res) {
     host = req.get("host");
-    // link = "http://" + req.get("host") + "/verify?id=" + req.user.secretToken;
     link = "https://palmer-krehel-palmerkrehel.c9users.io" + "/verify?id=" + req.user.secretToken;
     var smtpTransporter = nodemailer.createTransport({
         host: 'smtp.gmail.com',
@@ -101,17 +98,17 @@ router.get("/verification-email", function (req, res) {
         secure: true,
         auth: {
             type: 'OAuth2',
-            clientId: '167699687567-5gtna23v1gv14hhb1239cceqkvdhfhm0.apps.googleusercontent.com',
-            clientSecret: 'KwK-OfgN_4_MEzzesp2FqJVr',
-            user: 'recipewebsitetest@gmail.com',
-            refreshToken: '1/Z13y7DE8QRed5PLav1V6qEKZoxDIUxgx-mSyAPLkRlY',
-            accessToken: 'ya29.Glv_BRD1R46qZFZBqcLzwLi-sfZGvSfY_5LUfD92PI9u0hWbdn3aegjasYbW-tkWdrdTUPI0t8FOqvDr_BwSBFNGc8BnuipwapSGJGiol8kNpgo2c3eyQVnSFgTW',
-            expires: 1484314697598
+            clientId: process.env.NODEMAILER_CLIENTID,
+            clientSecret: process.env.NODEMAILER_CLIENTSECRET,
+            user: process.env.NODEMAILER_USER,
+            refreshToken: process.env.NODEMAILER_REFRESHTOKEN,
+            accessToken: process.env.NODEMAILER_ACCESSTOKEN,
+            expires: process.env.NODEMAILER_EXPIRES
         }
     });
 
     mailOptions = {
-        from: "recipewebsitetest@gmail.com",
+        from: process.env.TESTEMAILADDRESS,
         to: req.user.username,
         subject: "Please Confirm Your Email Account",
         html: "Hello, <br> Please confirm your email by clicking the link below: <br><a href=" + link + ">Click here to verify your account.</a>",
@@ -153,11 +150,12 @@ router.get("/verify", function (req, res) {
 // End of email send / verification process
 
 
-//handle login logic:
 router.get("/login", function (req, res) {
     res.render("login");
 });
 
+
+//handle login logic:
 router.post('/login',
     passport.authenticate('local', {
         successRedirect: '/',
