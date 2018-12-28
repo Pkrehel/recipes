@@ -21,9 +21,8 @@ var UserSchema = new mongoose.Schema({
         title: String,
         image: String,
         createdAt: Date
-    }]
-
-
+    }],
+    searches: Array
 });
 
 UserSchema.plugin(passportLocalMongoose);

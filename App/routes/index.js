@@ -10,8 +10,7 @@ var express = require("express"),
 
 //Show the home page
 router.get("/", function (req, res) {
-
-    //ON-SITE SEARCH BOX:
+    //SEARCH BOX:
     var queryString = req.query.search;
     if (queryString) {
         var regex = new RegExp(escapeRegex(queryString), 'gi');
@@ -26,6 +25,19 @@ router.get("/", function (req, res) {
                     res.redirect("/");
                 }
                 res.render("home", { foundRecipe: foundRecipe });
+                // checks if a user is logged in. If so, Update current user's search array
+                if (req.user) {
+                    User.findByIdAndUpdate(req.user.id, { $push: { 'searches': queryString } }, function (err, foundUser) {
+                        if (err) {
+                            req.flash("error", "An Error Occurred. Please search again.");
+                            res.redirect("back");
+                        }
+                        else {
+                            foundUser.save();
+                            console.log("### --> added " + queryString + " to search history for " + foundUser);
+                        }
+                    });
+                }
             }
         });
     }

@@ -1,10 +1,10 @@
 var mongoose = require("mongoose");
 
 var recipeSchema = new mongoose.Schema({
-    title: String,
+    title: { type: String, required: true },
     createdAt: { type: Date, default: Date.now },
-    description: String,
-    image: String,
+    description: { type: String, required: true },
+    image: { type: String, required: true },
     chef: {
         id: {
             type: mongoose.Schema.Types.ObjectId,
@@ -13,16 +13,26 @@ var recipeSchema = new mongoose.Schema({
         screenName: String,
         avatar: String
     },
-    avatar: String,
-    prepTime: String,
-    cookTime: String,
-    directions: Array,
+    prepTime: Number,
+    cookTime: Number,
+    totalTime: {
+        type: Number,
+        required: true
+    },
+    directions: {
+        type: Array,
+        required: true
+    },
     tags: Array,
     allergens: Array,
-    ingredients: Array,
+    ingredients: {
+        type: Array,
+        required: true
+    },
     category: {
         type: String,
-        enum: ['Breakfast', 'Lunch', 'Dinner', 'Snack', 'Dessert', 'Beverage', 'Other']
+        enum: ['Breakfast', 'Lunch', 'Dinner', 'Snack', 'Dessert', 'Beverage', 'Other'],
+        required: true
     },
     comments: [{
         type: mongoose.Schema.Types.ObjectId,
