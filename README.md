@@ -1,13 +1,13 @@
-#Recipe Website
-######Create, Share, Search & Save Your Favorite Recipes!
+# Recipe Website
+###### Create, Share, Search & Save Your Favorite Recipes!
 
-##### Created By: [Palmer Krehel](http://https://www.linkedin.com/in/palmer-krehel/ "Palmer Krehel")
+##### Created By: [PalmerKrehel](http://https://www.linkedin.com/in/palmer-krehel/ "Palmer Krehel")
 
 ##### Created With: [Node.js](http://https://nodejs.org/en/ "Node.js"), [Mongodb](http://https://www.mongodb.com/ "Mongodb"), [Express](http://https://expressjs.com/ "Express"), [Bootstrap 4](http://https://getbootstrap.com/ "Bootstrap 4")
 
 ------------
 
-####Get Started:
+#### Get Started:
 
 **1. Setup Cloudinary Account:**
 Used for image processing, storage, recognition & auto-tagging
