@@ -10,10 +10,10 @@
             <div class="card-body maxheightcolumn recipe-show-primary-info border-0">
 
               <h1 class="card-title text-primary display-3">
-                <input class="form-control form-control-lg" type="text" name="title" placeholder="Recipe Title" required>
+                <input class="form-control form-control-lg" type="text" name="title" placeholder="Recipe Title" minlength="5" maxlength="200" required>
               </h1>
               <h4 class="card-title text-primary display-3">
-                <textarea class="form-control form-control-lg" id="description-text" type="text" name="description" placeholder="Description" required></textarea>
+                <textarea class="form-control form-control-lg" id="description-text" type="text" name="description" minlength="50" maxlength="400" placeholder="Description" required></textarea>
               </h4>
               <!--Prep Time & Cook Time: -->
 
@@ -21,14 +21,21 @@
                 <div class="input-group-prepend">
                   <label class="input-group-text" for="prepTime"><small>Prep Time</small></label>
                 </div>
-                <input class="form-control" type="text" name="prepTime" id="prepTime" placeholder="minutes" required>
+                <input class="form-control" type="number" name="prepTime" id="prepTime" placeholder="minutes" maxlength="4" required>
               </div>
 
               <div class="input-group mb-3">
                 <div class="input-group-prepend">
                   <label class="input-group-text font-weight-bold" for="cookTime"><small>Cook Time</small></label>
                 </div>
-                <input class="form-control" type="text" name="cookTime" id="cookTime" placeholder="minutes" required>
+                <input class="form-control" type="number" name="cookTime" id="cookTime" placeholder="minutes" maxlength="4" required>
+              </div>
+
+              <div class="input-group mb-3">
+                <div class="input-group-prepend">
+                  <label class="input-group-text font-weight-bold" for="totalTime"><small>Ready In:</small></label>
+                </div>
+                <input class="form-control" type="number" name="totalTime" id="totalTime" placeholder="minutes" maxlength="4" required>
               </div>
 
               <div class="input-group mb-3">
@@ -36,7 +43,6 @@
                   <label class="input-group-text font-weight-bold" for="category"><small>Category</small></label>
                 </div>
                 <select class="custom-select form-control" name="category" id="category" required>
-                  <option selected>Select...</option>
                   <option value="Breakfast">Breakfast</option>
                   <option value="Lunch">Lunch</option>
                   <option value="Dinner">Dinner</option>
@@ -78,10 +84,15 @@
                   </div>
                 </div>
               </div>
+              <div class="row">
+                <div class="col-12">
+                  <label for="difficultyInput">Difficulty: <span class="text-muted" id="rangeText">Easy</span></label>
+                  <input type="range" class="custom-range" id="difficultySlider" name="difficulty" value=0 min="0" max="2" step="1" required>
+                </div>
+              </div>
             </div>
           </div>
         </div>
-
         <div class="col-lg-7 col-md-7 col-xs-12 dashed-border border-1">
           <div class="mb-2 maxheightcolumn">
             <div class="row justify-content-center align-items-center">
@@ -106,7 +117,7 @@
           <h3 class="">Ingredients</h3>
           <div class="ingredients_input_fields_wrap">
             <button class="btn btn-secondary ingredients_add_field_button btn-block btn-sm my-2">Add Ingredient</button>
-            <div class="input-group mb-2"><input class="form-control" type="text" name="ingredients[]">
+            <div class="input-group mb-2"><input class="form-control" type="text" name="ingredients[]" required>
               <div class="input-group-append"><button class="btn btn-outline-danger btn-sm remove_field" type="button"><i class="fas fa-trash-alt"></i></button></div>
             </div>
           </div>
@@ -117,7 +128,7 @@
           <div class="directions_input_fields_wrap">
             <button class="btn btn-secondary directions_add_field_button btn-block btn-sm my-2">Add Step</button>
 
-            <div class="input-group mb-2"><input class="form-control" type="text" name="directions[]">
+            <div class="input-group mb-2"><input class="form-control" type="text" name="directions[]" required>
               <div class="input-group-append"><button class="btn btn-outline-danger btn-sm remove_field" type="button">
           <i class="fas fa-trash-alt"></i></button>
               </div>
@@ -130,7 +141,26 @@
       </div>
     </div>
   </form>
+<script type="text/javascript">
+var rangeValues =
+{
+    "0": "Easy",
+    "1": "Medium",
+    "2": "Challenging"
+};
 
+$(function () {
+
+    // on page load, set the text of the label based the value of the range
+    $('#rangeText').text(rangeValues[$('#difficultySlider').val()]);
+
+    // setup an event handler to set the text when the range value is dragged (see event for input) or changed (see event for change)
+    $('#difficultySlider').on('input change', function () {
+        $('#rangeText').text(rangeValues[$(this).val()]);
+    });
+
+});
+</script>
   <script>
     function readURL(input) {
       if (input.files && input.files[0]) {

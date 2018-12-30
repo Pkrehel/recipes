@@ -55,6 +55,7 @@ router.post("/", middleware.isLoggedIn, upload.single('image'), function (req, r
 
       var prepTime = req.body.prepTime;
       var cookTime = req.body.cookTime;
+      var totalTime = req.body.totalTime;
       var allergens = req.body.allergens;
       var directions = req.body.directions.filter(function (ingredient) { return ingredient.trim() != ''; });
       var chef = req.body.chef = {
@@ -63,7 +64,8 @@ router.post("/", middleware.isLoggedIn, upload.single('image'), function (req, r
         avatar: req.user.avatar
       };
       var category = req.body.category;
-      var newRecipe = { chef: chef, image: image, title: title, description: description, ingredients: ingredients, prepTime: prepTime, cookTime: cookTime, directions: directions, category: category, tags: tags, allergens: allergens };
+      var difficulty = req.body.difficulty;
+      var newRecipe = { chef: chef, image: image, title: title, description: description, ingredients: ingredients, prepTime: prepTime, cookTime: cookTime, totalTime: totalTime, directions: directions, category: category, tags: tags, allergens: allergens, difficulty: difficulty };
       Recipe.create(newRecipe, function (err, recipe) {
         if (err) {
           req.flash('error', err.message);

@@ -15,6 +15,20 @@
               <p class="card-text mb-0"><small class="text-muted">Prep Time:&nbsp;<%= recipe.prepTime %>&nbsp;minutes</small></p>
               <p class="card-text mb-0"><small class="text-muted">Cook Time:&nbsp; <%= recipe.cookTime %> &nbsp;minutes</small></p>
               <p class="card-text m-0"><small class="text-muted">Category:&nbsp;<%= recipe.category %></small></p>
+
+<!--Difficulty Logic-->
+              <p class="card-text m-0">
+              <small class="text-muted">Difficulty:&nbsp;
+              <% if(recipe.difficulty == 0) { %>
+              Easy
+              <% } else if(recipe.difficulty == 1) { %>
+              Medium
+              <% } else { %>
+              Challenging
+              <% } %>
+              </small>
+              </p>
+<!--Recipe Allergen Info-->
             <%if(recipe.allergens.length > 0) { %>
             <% var allergenLength = recipe.allergens.length %>
             <p class="card-text m-0">
