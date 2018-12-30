@@ -20,7 +20,8 @@ var UserSchema = new mongoose.Schema({
         },
         title: String,
         image: String,
-        createdAt: Date
+        createdAt: Date,
+        totalTime: Number
     }],
     searches: Array
 });

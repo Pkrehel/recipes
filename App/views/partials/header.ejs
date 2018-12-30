@@ -249,9 +249,9 @@
                                               <img class="card-img-top smallImageSlideout" src="<%= currentUser.lovedRecipes[i].image %>">
                                               <div class="card-body smallImageSlideoutBody px-1 py-2 text-center">
                                                   <h5 class="card-title"><%= currentUser.lovedRecipes[i].title %></h5>
-                                                  <h6 class="card-subtitle mb-2 text-muted">Prep Time: <%= currentUser.lovedRecipes[i].prepTime %> min.</h6>
+                                                  <h6 class="card-subtitle mb-2 text-muted"><i class="far fa-clock"></i>&nbsp;<%= currentUser.lovedRecipes[i].totalTime %> minutes</h6>
                                                     <form action="/recipes/<%= currentUser.lovedRecipes[i]._id %>" method="GET">
-                                                      <button class="btn btn-outline-primary text-center btn-block recipe-view-button my-1">Make Recipe</button>
+                                                      <button class="btn btn-outline-primary text-center btn-block recipe-view-button my-1">View</button>
                                                     </form>
                                               </div>
                                           </div>
