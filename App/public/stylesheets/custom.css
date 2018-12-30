@@ -787,3 +787,7 @@ Slide In Panel - by CodyHouse.co
 .img-container {
     position: relative;
 }
+
+.alert-container {
+    height: 38px;
+}

@@ -36,10 +36,10 @@
                     <form class="form-inline">
 
                 <a href="#0" class="js-cd-panel-trigger" data-panel="main">
-                  <div class="btn btn-outline-primary ml-auto d-none d-sm-block">View Recipe Book</div>
+                  <div class="btn btn-outline-primary ml-auto d-none d-sm-block">Favorites</div>
                 </a>
                 <a href="/recipes/new">
-                   <div class="btn btn-outline-primary ml-4 d-none d-sm-block">Post Your Recipe</div>
+                   <div class="btn btn-outline-primary ml-4 d-none d-sm-block">Post A Recipe</div>
                   </a>
             </form>
             </div>
@@ -74,10 +74,10 @@
 <!--END SEARCH BAR-->
 
   <div class="container">
-    <div class="col-md-12 alert-container">
+    <div class="col-md-12 alert-container m-2">
       <% if(error && error.length > 0) { %>
         <div class="alert alert-danger m-0 p-1 w-100" role="alert">
-          <button type="button" class="close" data-dismiss="alert" aria-label="Close">×</button>
+          <button type="button" class="close" data-dismiss="alert" aria-label="Close">x</button>
           <p class="mb-0 text-center">
             <%= error %>
           </p>
@@ -85,7 +85,7 @@
         <% } %>
           <% if(error && success.length > 0) { %>
             <div class="alert alert-success m-0 p-1 w-100" role="alert">
-              <button type="button" class="close" data-dismiss="alert" aria-label="Close">×</button>
+              <button type="button" class="close" data-dismiss="alert" aria-label="Close">x</button>
               <p class="mb-0 text-center">
                 <%= success %>
               </p>
@@ -220,8 +220,6 @@
   <% } %>
   <!-- cd-panel -->
 
-
-
     <!--CURRENT USER - Recipe Book-->
     <%if(currentUser) { %>
       <div class="cd-panel cd-panel--from-right js-cd-panel-main container">
@@ -230,7 +228,7 @@
           <header class="cd-panel__header container">
             <!--Top Header-->
               <div class="col-12 text-center">
-                <h1> <%= currentUser.screenName%>'s Favorites</h1>
+                <h1>Favorite Recipes</h1>
               </div>
               <a href="#0" class="cd-panel__close js-cd-close">Close</a>
           </header>
@@ -287,7 +285,7 @@
           <% } %>
           <% if(currentUser) { %>
             <a href="#0" class="js-cd-panel-trigger" data-panel="main">
-              <div class="btn btn-outline-primary ml-auto">Recipe Book</div>
+              <div class="btn btn-outline-primary ml-auto">Favorites</div>
             </a>
           <% } %>
     </div>
