@@ -42,7 +42,11 @@ var recipeSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: "User"
     }],
-    difficulty: { type: Number, enum: [0, 1, 2] }
+    difficulty: { type: Number, enum: [0, 1, 2] },
+    views: {
+        type: Number,
+        default: 0
+    }
 });
 
 module.exports = mongoose.model("Recipe", recipeSchema);

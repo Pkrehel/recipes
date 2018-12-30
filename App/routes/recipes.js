@@ -41,7 +41,6 @@ router.get("/", function (req, res) {
 
 //CREATE ROUTE - Create a new item in the database
 router.post("/", middleware.isLoggedIn, upload.single('image'), function (req, res) {
-
   cloudinary.uploader.upload(req.file.path,
     function (result) {
       // add cloudinary url for the image to the campground object under image property
@@ -82,18 +81,24 @@ router.get("/new", middleware.isLoggedIn, function (req, res) {
 });
 
 
-//RECIPE SHOW ROUTE:
+//UNIQUE RECIPE SHOW ROUTE:
 router.get("/:id", function (req, res) {
-  Recipe.findById(req.params.id).populate('comments lovedBy user avatar toMake').exec(function (err, foundRecipe) {
+  Recipe.findByIdAndUpdate(req.params.id).populate('comments lovedBy user avatar toMake').exec(function (err, foundRecipe) {
     if (err) {
       res.send(err);
     }
     else {
-      res.render("recipes/show", { recipe: foundRecipe });
+      if ((req.user && (req.user.id != foundRecipe.chef.id)) || !req.user) {
+        foundRecipe.views = foundRecipe.views + 1;
+        foundRecipe.save();
+        res.render("recipes/show", { recipe: foundRecipe });
+      }
+      else {
+        res.render("recipes/show", { recipe: foundRecipe });
+      }
     }
   });
 });
-
 
 //RECIPE EDIT SHOW ROUTE:
 router.get("/edit/:id", function (req, res) {
