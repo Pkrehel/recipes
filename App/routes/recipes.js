@@ -54,7 +54,9 @@ router.post("/", middleware.isLoggedIn, upload.single('image'), function (req, r
 
       var prepTime = req.body.prepTime;
       var cookTime = req.body.cookTime;
-      var totalTime = req.body.totalTime;
+      var totalTime = Number(req.body.prepTime) + Number(req.body.cookTime);
+      console.log("************-->" + totalTime);
+      console.log("************-->" + typeof cookTime);
       var allergens = req.body.allergens;
       var directions = req.body.directions.filter(function (ingredient) { return ingredient.trim() != ''; });
       var chef = req.body.chef = {

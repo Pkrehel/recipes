@@ -4,7 +4,7 @@ var Recipe = require("../models/recipe.js"),
 
 var middlewareObj = {};
 
-middlewareObj.isLoggedIn = function(req, res, next) {
+middlewareObj.isLoggedIn = function (req, res, next) {
     if (req.isAuthenticated()) {
         return next();
     }
@@ -14,10 +14,10 @@ middlewareObj.isLoggedIn = function(req, res, next) {
 
 
 
-middlewareObj.checkRecipeOwnership = function(req, res, next) {
+middlewareObj.checkRecipeOwnership = function (req, res, next) {
     // is the user logged in?
     if (req.isAuthenticated()) {
-        Recipe.findById(req.params.id, function(err, foundRecipe) {
+        Recipe.findById(req.params.id, function (err, foundRecipe) {
             if (err || !foundRecipe) {
                 req.flash("error", "Recipe Not Found. This may have been deleted from the original chef.");
                 res.redirect("back");
@@ -41,10 +41,10 @@ middlewareObj.checkRecipeOwnership = function(req, res, next) {
 };
 
 
-middlewareObj.checkCommentOwnership = function(req, res, next) {
+middlewareObj.checkCommentOwnership = function (req, res, next) {
     // is the user logged in?
     if (req.isAuthenticated()) {
-        Comment.findById(req.params.comment_id, function(err, foundComment) {
+        Comment.findById(req.params.comment_id, function (err, foundComment) {
             if (err || !foundComment) {
                 req.flash("error", "Comment not found!");
                 res.redirect("back");
