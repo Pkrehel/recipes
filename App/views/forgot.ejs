@@ -1,0 +1,26 @@
+<% include ./partials/header %>
+ <div class="py-2">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-2"></div>
+        <div class="col-md-8 col-xs-12">
+          <div class="card text-white p-3 borderborder-secondary thick-border register-login-form">
+            <div class="card-body">
+              <h1 class="mb-4 text-center text-primary">Recover Your Password</h1>
+              <form action="/forgot" method="POST">
+                <div class="form-group text-dark"> <label>Email</label>
+                  <input type="text text-dark" name="email" class="form-control" minlength="4", required>
+                </div>
+                <button type="submit" class="btn btn-secondary btn-block btn-lg my-2"><b>Reset</b></button>
+              </form>
+              <p class="lead text-center text-dark">Know Your Password? <b><a href="/login">Login</a></b></p>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-2"></div>
+      </div>
+    </div>
+  </div>
+
+
+<% include ./partials/footer %>

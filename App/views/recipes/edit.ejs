@@ -29,7 +29,7 @@
                         <input class="form-control" type="text" name="prepTime" id="prepTime" placeholder="minutes" required>
                      </div>
                   </div>
-                  
+
                   <div class="col-md-4">
                      <div class="input-group mb-3">
                        <div class="input-group-prepend">
@@ -38,7 +38,7 @@
                         <input class="form-control" type="text" name="cookTime" id="cookTime" placeholder="minutes" required>
                      </div>
                   </div>
-                  
+
                   <div class="col-md-4">
                      <div class="input-group mb-3">
                        <div class="input-group-prepend">
@@ -98,15 +98,15 @@
    function readURL(input) {
        if (input.files && input.files[0]) {
            var reader = new FileReader();
-           
+
            reader.onload = function (e) {
                $('#imagePreview').attr('src', e.target.result);
            }
-           
+
            reader.readAsDataURL(input.files[0]);
        }
    }
-   
+
    $("#image").change(function(){
        readURL(this);
    });
@@ -116,7 +116,7 @@
        var max_fields      = 25; //maximum input boxes allowed
        var wrapper         = $(".ingredients_input_fields_wrap"); //Fields wrapper
        var add_button      = $(".ingredients_add_field_button"); //Add button ID
-       
+
        var x = 1; //initlal text box count
        $(add_button).click(function(e){ //on add input button click
            e.preventDefault();
@@ -125,7 +125,7 @@
                $(wrapper).append('<div class="input-group mb-2"><input class="form-control" type="text" name="ingredients[]"><div class="input-group-append"><button class="btn btn-outline-danger btn-sm remove_field" type="button"><i class="fas fa-trash-alt"></i></button></div></div>'); //add input box
            }
        });
-       
+
        $(wrapper).on("click",".remove_field", function(e){ //user click on remove text
            e.preventDefault(); $(this).parents().eq(1).remove(); x--;
        })
@@ -136,7 +136,7 @@
        var max_fields      = 25; //maximum input boxes allowed
        var wrapper         = $(".directions_input_fields_wrap"); //Fields wrapper
        var add_button      = $(".directions_add_field_button"); //Add button ID
-       
+
        var x = 1; //initlal text box count
        $(add_button).click(function(e){ //on add input button click
            e.preventDefault();
@@ -145,7 +145,7 @@
                $(wrapper).append('<div class="input-group mb-2"><input class="form-control" type="text" name="directions[]"><div class="input-group-append"><button class="btn btn-outline-danger btn-sm remove_field" type="button"><i class="fas fa-trash-alt"></i></button></div></div>'); //add input box
            }
        });
-       
+
        $(wrapper).on("click",".remove_field", function(e){ //user click on remove text
            e.preventDefault(); $(this).parents().eq(1).remove(); x--;
        })

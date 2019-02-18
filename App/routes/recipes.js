@@ -55,8 +55,6 @@ router.post("/", middleware.isLoggedIn, upload.single('image'), function (req, r
       var prepTime = req.body.prepTime;
       var cookTime = req.body.cookTime;
       var totalTime = Number(req.body.prepTime) + Number(req.body.cookTime);
-      console.log("************-->" + totalTime);
-      console.log("************-->" + typeof cookTime);
       var allergens = req.body.allergens;
       var directions = req.body.directions.filter(function (ingredient) { return ingredient.trim() != ''; });
       var chef = req.body.chef = {
@@ -85,7 +83,7 @@ router.get("/new", middleware.isLoggedIn, function (req, res) {
 
 //UNIQUE RECIPE SHOW ROUTE:
 router.get("/:id", function (req, res) {
-  Recipe.findByIdAndUpdate(req.params.id).populate('comments lovedBy user avatar toMake').exec(function (err, foundRecipe) {
+  Recipe.findByIdAndUpdate(req.params.id).populate('comments lovedBy user avatar toMake reviews').exec(function (err, foundRecipe) {
     if (err) {
       res.send(err);
     }

@@ -14,6 +14,7 @@ var express = require("express"),
 var commentRoutes = require("./routes/comments"),
     recipeRoutes = require("./routes/recipes"),
     indexRoutes = require("./routes/index"),
+    reviewRoutes = require("./routes/reviews"),
     loveRecipeRoutes = require("./routes/love");
 
 mongoose.connect("mongodb://localhost/db_1");
@@ -50,6 +51,7 @@ app.use("/", indexRoutes);
 app.use("/recipes", recipeRoutes);
 app.use("/recipes/:id/comments", commentRoutes);
 app.use("/recipes/:id/love", loveRecipeRoutes);
+app.use("/recipes/:id/reviews", reviewRoutes);
 
 app.listen(process.env.PORT, process.env.IP, function () {
     console.log("The Server Has Started!");

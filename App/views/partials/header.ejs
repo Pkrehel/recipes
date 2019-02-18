@@ -11,7 +11,7 @@
   <link rel="stylesheet" type="text/css" href="../stylesheets/main.css">
   <link rel="stylesheet" type="text/css" href="../stylesheets/custom.css">
   <link rel="stylesheet" type="text/css" href="../stylesheets/jquery.tag-editor.css">
-  <link href="https://use.fontawesome.com/releases/v5.0.6/css/all.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
   <link href="https://fonts.googleapis.com/css?family=Nunito:300,400,600,700|Roboto:300,400,500" rel="stylesheet">
 </head>
 
@@ -19,13 +19,11 @@
 <!--MAIN NAVIGATION-->
   <div class="container">
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
-
       <!--LOGO-->
       <div class="navbar-brand">
         <a href="/"><span>LOGO</span></a>
       </div>
       <!--SIGN UP / LOGIN BUTTON-->
-
         <% if(!currentUser) { %>
         <div class="btn btn-outline-primary ml-auto d-none d-sm-block">
           <a href="#0" class="js-cd-panel-trigger" data-panel="main">Sign Up / Login</a>
@@ -55,7 +53,7 @@
 <!--SEARCH BAR-->
 <div class="row">
 <div class="col-md-7 col-sm-12 col-xs-12">
-  <div class="searchBar px-4">
+  <div class="searchBar px-1">
   <form action="/" class="form-inline" method="GET">
   <div class="input-group">
   <div id="input_container">
@@ -74,23 +72,27 @@
 <!--END SEARCH BAR-->
 
   <div class="container">
-    <div class="col-md-12 alert-container m-2">
-      <% if(error && error.length > 0) { %>
-        <div class="alert alert-danger m-0 p-1 w-100" role="alert">
-          <button type="button" class="close" data-dismiss="alert" aria-label="Close">x</button>
-          <p class="mb-0 text-center">
-            <%= error %>
-          </p>
-        </div>
-        <% } %>
-          <% if(error && success.length > 0) { %>
-            <div class="alert alert-success m-0 p-1 w-100" role="alert">
-              <button type="button" class="close" data-dismiss="alert" aria-label="Close">x</button>
-              <p class="mb-0 text-center">
-                <%= success %>
-              </p>
-            </div>
+    <div class="row">
+      <div class="col-md-12 m-2">
+        <div class="alert-container">
+        <% if(error && error.length > 0) { %>
+          <div class="alert alert-danger m-0 p-1 w-100" role="alert">
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">x</button>
+            <p class="mb-0 text-center">
+              <%= error %>
+            </p>
+          </div>
           <% } %>
+            <% if(error && success.length > 0) { %>
+              <div class="alert alert-success m-0 p-1 w-100" role="alert">
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">x</button>
+                <p class="mb-0 text-center">
+                  <%= success %>
+                </p>
+              </div>
+            <% } %>
+        </div>
+      </div>
     </div>
   </div>
   <!--END OF (SECONDARY NAV)-->
@@ -212,6 +214,10 @@
                 <button type="submit" class="btn btn-secondary btn-block btn-lg my-2"><b>Sign In</b></button>
               </div>
             </form>
+            <div class="small">
+              <p class="text-center">Don't have an account? <b><a href="/register">Create Profile</a></b></p>
+              <p class="text-center">Forgot your password? <b><a href="/forgot">Reset Password</a></b></p>
+            </div>
             <div class="dropdown-divider"></div>
           </div>
         </div>
@@ -244,7 +250,16 @@
                                   <% for(var i = 0; i < currentUser.lovedRecipes.length; i++) { %>
                                       <div class="col-xs-12 col-sm-6 mb-3">
                                           <div class="card card-light w-100">
+                                            <div class="img-container">
                                               <img class="card-img-top smallImageSlideout" src="<%= currentUser.lovedRecipes[i].image %>">
+                                              <div class="recipeBookButton text-center">
+                                                <form action="/recipes/<%=currentUser.lovedRecipes[i]._id %>/love?_method=DELETE" method="POST">
+                                                  <button type="submit" class="btn rounded-circle like-btn-homepage">
+                                                  <i class="fas fa-heart-broken"></i>
+                                                  </button>
+                                                </form>
+                                            </div>
+                                              </div>
                                               <div class="card-body smallImageSlideoutBody px-1 py-2 text-center">
                                                   <h5 class="card-title"><%= currentUser.lovedRecipes[i].title %></h5>
                                                   <h6 class="card-subtitle mb-2 text-muted"><i class="far fa-clock"></i>&nbsp;<%= currentUser.lovedRecipes[i].totalTime %> minutes</h6>

@@ -1,189 +1,195 @@
 <% include ../partials/header %>
 
-<div class="container-fluid p-4">
-
-<div class="row mb-3">
-<!--Row 1- LEFT COLUMN-->
-  <div class="col-lg-5 col-md-5 col-xs-12 maxheightcolumn mb-2">
-    <div class="card mb-2 maxheightcolumn">
-            <div class="card-body maxheightcolumn recipe-show-primary-info">
-              <h1 class="display-6 text-primary">
-                <%= recipe.title %>
-              </h1>
-
-<!--Prep Time & Cook Time: -->
-              <p class="card-text mb-0"><small class="text-muted">Prep Time:&nbsp;<%= recipe.prepTime %>&nbsp;minutes</small></p>
-              <p class="card-text mb-0"><small class="text-muted">Cook Time:&nbsp;<%= recipe.cookTime %>&nbsp;minutes</small></p>
-              <p class="card-text m-0"><small class="text-muted">Category:&nbsp;<%= recipe.category %></small></p>
-
-<!--Difficulty Logic-->
-              <p class="card-text m-0">
-              <small class="text-muted">Difficulty:&nbsp;
-              <% if(recipe.difficulty == 0) { %>
-              Easy
-              <% } else if(recipe.difficulty == 1) { %>
-              Medium
-              <% } else { %>
-              Challenging
-              <% } %>
-              </small>
-              </p>
-<!--Recipe Allergen Info-->
-            <%if(recipe.allergens.length > 0) { %>
-            <% var allergenLength = recipe.allergens.length %>
-            <p class="card-text m-0">
-              <small class="text-muted">Allergens:&nbsp;
-              <% for(i=0; i < allergenLength -1; i++) { %>
-              <%= recipe.allergens[i] %>,
-              <% } %>
-              <%= recipe.allergens.pop() %>
-              </small>
-              </p>
-            <% } %>
-            </div>
-            <div class="card-footer">
-            <div class="container text-center">
-<!--Favorite button & count-->
-            <div class="row mx-auto">
-              <div class="col-12 mb-2">
-                <form action="/recipes/<%=recipe._id%>/love" method="POST">
-                  <button class="btn btn-secondary rounded-circle like-btn">
-                      <i class="fas fa-heart"></i>
-                    </button>
-                </form>
-              </div>
-
-                <div class="col-12 font-weight-bold text-secondary">
-                  <%if(recipe.lovedBy.length === 1) { %>
-                    <p class="card-text">Favorited by 1 person</p>
-                  <% } else { %>
-                    <p class="card-text">Favorited by <%= recipe.lovedBy.length %> people</p>
-                  <% } %>
+<div class="container-fluid">
+  <!--Recipe Info.-->
+  <div class="row mb-3">
+    <div class="col-md-6 col-xs-12 p-2">
+      <div class="card mb-0 border-0">
+        <img class="card-img-top recipe-main-image my-0" src="<%= recipe.image %>">
+      </div>
+    </div>
+    <!--Image-->
+    <div class="col-md-6 col-xs-12 p-2">
+      <div class="card mb-2 maxheightcolumn">
+        <div class="card-body maxheightcolumn recipe-show-primary-info">
+          <h1 class="h2 text-primary">
+            <%= recipe.title %>
+          </h1>
+  <!--Prep Time & Cook Time: -->
+          <p class="card-text mb-0"><small class="text-muted">Prep Time:&nbsp;<%= recipe.prepTime %>&nbsp;minutes</small></p>
+          <p class="card-text mb-0"><small class="text-muted">Cook Time:&nbsp;<%= recipe.cookTime %>&nbsp;minutes</small></p>
+          <p class="card-text m-0"><small class="text-muted">Category:&nbsp;<%= recipe.category %></small></p>
+  <!--Difficulty Logic-->
+          <p class="card-text m-0">
+          <small class="text-muted">Difficulty:&nbsp;
+          <% if(recipe.difficulty == 0) { %>
+          Easy
+          <% } else if(recipe.difficulty == 1) { %>
+          Medium
+          <% } else { %>
+          Challenging
+          <% } %>
+          </small>
+          </p>
+  <!--Recipe Allergen Info-->
+          <%if(recipe.allergens.length > 0) { %>
+          <% var allergenLength = recipe.allergens.length %>
+          <p class="card-text m-0">
+          <small class="text-muted">Allergens:&nbsp;
+          <% for(i=0; i < allergenLength -1; i++) { %>
+          <%= recipe.allergens[i] %>,
+          <% } %>
+          <%= recipe.allergens.pop() %>
+          </small>
+          </p>
+          <% } %>
+      <% if (recipe.rating > 0) { %>
+      <p class="card-text text-muted">
+        <small>
+          <span class="fa fa-star checked"></span>
+          <span class="fa fa-star <% if (recipe.rating > 1.5) { %> checked <% } %>"></span>
+          <span class="fa fa-star <% if (recipe.rating > 2.5) { %> checked <% } %>"></span>
+          <span class="fa fa-star <% if (recipe.rating > 3.5) { %> checked <% } %>"></span>
+          <span class="fa fa-star <% if (recipe.rating > 4.5) { %> checked <% } %>"></span>
+          <em><%= recipe.reviews.length %>  Reviews</em>
+          </small>
+      </p>
+      <% } %>
+          </div>
+          <div class="card-footer">
+          <div class="container text-center p-0">
+  <!--Favorite button & count-->
+              <div class="row mx-auto">
+                <div class="col-12 mb-2">
+                  <form action="/recipes/<%=recipe._id%>/love" method="POST">
+                    <button class="btn btn-secondary rounded-circle like-btn">
+                        <i class="fas fa-heart"></i>
+                      </button>
+                  </form>
+                </div>
+                  <div class="col-12 font-weight-bold text-secondary">
+                    <%if(recipe.lovedBy.length === 1) { %>
+                      <p class="card-text">Favorited by 1 person</p>
+                    <% } else { %>
+                      <p class="card-text">Favorited by <%= recipe.lovedBy.length %> people</p>
+                    <% } %>
+                  </div>
                 </div>
 
               </div>
-
-              <div class="row my-2 mx-auto">
-                <% if(recipe.lovedBy.length < 1) {%>
-                  <div class="col-12"></div>
-                  <% } %>
-
-                    <% if(recipe.lovedBy.length > 0 && recipe.lovedBy.length <= 5 ) { %>
-                      <% for(i=0; i < recipe.lovedBy.length ; i++) { %>
-                        <div class="made-icon">
-                          <form action="/users/<%= recipe.lovedBy[i].id %>">
-                            <button class="btn btn-secondary rounded-circle lovedBy_btn" data-toggle="tooltip" data-placement="bottom" title="<%= recipe.lovedBy[i].screenName %>">
-                      <%= recipe.lovedBy[i].avatar%>
-                     </button>
-                          </form>
-                        </div>
-                        <% } %>
-                          <% } %>
-
-                            <% if(recipe.lovedBy.length > 5) { %>
-                              <% for(i=0; i < 5 ; i++) { %>
-                                <div class="made-icon">
-                                  <form action="/users/<%= recipe.lovedBy[i].id %>">
-                                    <button class="btn btn-secondary rounded-circle lovedBy_btn" data-toggle="tooltip" data-placement="bottom"
-                                    title="<%= recipe.lovedBy[i].screenName %>">
-                                    <%= recipe.lovedBy[i].avatar%>
-                                   </button>
-                                  </form>
-                                </div>
-                                <% } %>
-
-                                <div class="made-icon">
-                                  <button class="btn btn-secondary rounded-circle lovedBy_btn">
-                                  <p class="text-muted small vertical-aligns p-0 m-0"> + <%= recipe.lovedBy.length - 5 %></p>
-                                </button>
-
-                                </div>
-                              <% } %>
               </div>
             </div>
-            </div>
-          </div>
-  </div>
-
-<!--Row 1 - MIDDLE COLUMN-->
-  <div class="col-lg-7 col-md-7 col-xs-12 maxheightcolumn mb-2">
-    <!--RECIPE-->
-    <div class="card mb-0 border-0">
-      <img class="card-img-top recipe-main-image my-0" src="<%= recipe.image %>">
     </div>
   </div>
-
-</div>
-
-<!--ROW 2-->
-
-<div class="row mb-4">
-
-<!--DIRECTIONS & INGREDIENTS-->
-<div class="col-lg-5 col-md-5 col-xs-12 mb-2">
-                <h2>Ingredients</h2>
-                  <ul class="list-group">
-                            <% for(i=0; i < recipe.ingredients.length; i++) {%>
-                              <li class="list-group-item">
-                                <%= recipe.ingredients[i] %>
-                              </li>
-                              <% }; %>
-                  </ul>
-              </div>
-
-<div class="col-lg-7 col-md-7 col-xs-12 mb-2">
-                          <h2>Directions</h2>
-                          <ul class="list-group">
-                            <% for(i=0; i < recipe.directions.length; i++) {%>
-                              <li class="list-group-item">
-                                <%= recipe.directions[i] %>
-                              </li>
-                              <% }; %>
-                          </ul>
-                        </div>
+  <div class="row mb-2">
+  <!--DIRECTIONS & INGREDIENTS-->
+    <div class="col-lg-6 col-md-6 col-xs-12 mb-2 p-2">
+      <h2>Ingredients</h2>
+      <ul class="list-group">
+        <% for(i=0; i < recipe.ingredients.length; i++) {%>
+          <li class="list-group-item">
+            <%= recipe.ingredients[i] %>
+          </li>
+        <% }; %>
+      </ul>
+    </div>
+    <div class="col-lg-6 col-md-6 col-xs-12 mb-2 p-2">
+      <h2>Directions</h2>
+      <ul class="list-group">
+        <% for(i=0; i < recipe.directions.length; i++) {%>
+          <li class="list-group-item">
+            <%= recipe.directions[i] %>
+          </li>
+          <% }; %>
+      </ul>
+    </div>
   </div>
-
+  <hr>
   <div class="row">
-    <div class="col col-xs-12 col-md-3 mb-4">
-      <div class="card">
-        <div class="card-body p-0">
-        <div class="list-group list-group-flush">
-            <div class="list-group-item flex-column align-items-start light-grey-bg text-center">
-              <!--Comment section title-->
-              <h4><strong>Comments <span class="glyphicon glyphicon glyphicon-comment" aria-hidden="true"></span></strong></h4>
-              <% if(!currentUser) { %>
-                <!--If the user is not logged in, direct him to the login page-->
-                <h5><strong><a href="/login">Login </a></strong>to post a comment.</h5>
-                <% } %>
-                  <% if(currentUser) { %>
-                    <!--If the user is logged in, show the new comment form-->
-                    <p>Write your comment <span class="glyphicon glyphicon glyphicon-pencil" aria-hidden="true"></span></p>
-                    <form action="/recipes/<%=recipe._id%>/comments" method="POST">
-                      <div class="form-group">
-                        <input class="form-control" type="text" name="comment[text]" placeholder="text" required>
-                      </div>
-                      <div class="form-group">
-                        <button class="btn btn-lg btn-secondary btn-block">Submit!</button>
-                      </div>
-                    </form>
-                    <% } %>
-            </div>
-            <% if(recipe.comments.length > 0) { %>
-              <% for(i=0; i < recipe.comments.length; i++) { %>
-                <a href="#" class="list-group-item list-group-item-action flex-column align-items-start">
-                  <div class="d-flex w-100 justify-content-between mb-2">
-                    <small class="text-muted">Posted by: <%= recipe.comments[i].author.screenName %></small>
-                    <small class="text-muted"><%= moment(recipe.comments[i].createdAt).fromNow()%></small>
-                  </div>
-                  <p class="mb-1"><%= recipe.comments[i].text %></p>
-                </a>
-                <% } %>
+    <div class="col-12">
+      <h2>Comments & Reviews</h2>
+    </div>
+  </div>
+  <div class="row mb-3">
+    <div class="col-lg-6 col-md-6 col-xs-12 mb-2 p-2">
+      <div class="list-group-item">
+        <!--Comment section title-->
+        <% if(!currentUser) { %>
+          <!--If the user is not logged in, direct him to the login page-->
+          <h5><strong><a href="/login">Login </a></strong>to post a comment.</h5>
           <% } %>
-        </div>
-        </div>
+            <% if(currentUser) { %>
+              <!--If the user is logged in, show the new comment form-->
+              <p>Submit Comment & Rating<span class="glyphicon glyphicon glyphicon-pencil" aria-hidden="true"></span></p>
+            <form action="/recipes/<%= recipe._id %>/reviews" method="POST">
+              <div class="form-group">
+                      <fieldset class="starability-basic form-group" id="rating">
+                      <div>
+                      <input type="radio" id="first-rate5" name="review[rating]" value="5" checked />
+                      <label for="first-rate5" title="5 stars - Amazing">
+                          <%- '<span class="fa fa-star checked"></span>'.repeat(5) %>
+                      </label>
+                      </div>
+                      <div>
+                      <input type="radio" id="first-rate4" name="review[rating]" value="4" />
+                      <label for="first-rate4" title="4 stars - Very good">
+                          <%- '<span class="fa fa-star checked"></span>'.repeat(4) %>
+                      </label>
+                      </div>
+                      <div>
+                      <input type="radio" id="first-rate3" name="review[rating]" value="3" />
+                      <label for="first-rate3" title="3 stars - Average">
+                          <%- '<span class="fa fa-star checked"></span>'.repeat(3) %>
+                      </label>
+                      </div>
+                      <div>
+                      <input type="radio" id="first-rate2" name="review[rating]" value="2" />
+                      <label for="first-rate2" title="2 stars - Not good">
+                          <%- '<span class="fa fa-star checked"></span>'.repeat(2) %>
+                      </label>
+                      </div>
+                      <div>
+                      <input type="radio" id="first-rate1" name="review[rating]" value="1" />
+                      <label for="first-rate1" title="1 star - Terrible">
+                          <%- '<span class="fa fa-star checked"></span>'.repeat(1) %>
+                      </label>
+                      </div>
+                      </fieldset>
+                  </div>
+              <div class="form-group">
+                      <textarea class="form-control" type="text" name="review[text]" placeholder="Write a review for this recipe..." rows="5"></textarea>
+                  </div>
+              <div class="form-group">
+                      <button class="btn btn-primary btn-block">Submit Review</button>
+                  </div>
+            </form>
+          <% } %>
       </div>
     </div>
+    <div class="col-lg-6 col-md-6 col-xs-12 mb-2 p-2">
+  <% if (recipe.rating > 0) { %>
+  <% recipe.reviews.forEach(function(review){ %>
+  <div class="row">
+      <div class="col-md-12 text-muted">
+          <%- '<span class="fa fa-star checked"></span>'.repeat(review.rating) %><%- '<span class="fa fa-star"></span>'.repeat(5 - review.rating) %>
+          <div>Review by: <strong><%= review.author.screenName %></strong></div>
+          <span><em><%= review.updatedAt.toDateString() %></em></span>
+      </div>
+        <div class="col-md-12">
+          <p style="text-align: justify; word-wrap: break-word;">
+              <%= review.text %>
+          </p>
+          <% if(currentUser && review.author.id.equals(currentUser._id)){ %>
+          <form id="delete-form" action="/recipes/<%=recipe._id %>/reviews/<%= review._id %>?_method=DELETE" method="POST">
+              <input type="submit" class="btn btn-xs btn-outline-danger" value="Delete">
+          </form>
+          <% } %>
+      </div>
+  </div>
+  <hr>
+  <% }); %>
+  <% } %>
+</div>
   </div>
 </div>
-
 <% include ../partials/footer %>

@@ -17,7 +17,7 @@ router.post("/", middleware.isLoggedIn, function (req, res) {
             function (err, user) {
                if (err) {
                   console.log(err);
-                  req.flash("error", "An Error Has Occurred :( Please Try Again.");
+                  req.flash("error", "An Error Has Occurred. Please Try Again.");
                   res.redirect("back");
                }
                else {
@@ -27,6 +27,23 @@ router.post("/", middleware.isLoggedIn, function (req, res) {
                }
             });
       }
+   });
+});
+
+router.delete("/", function (req, res) {
+   Recipe.findByIdAndUpdate(req.params.id, { $pull: { 'lovedBy': req.user.id } }, function (err, foundRecipe) {
+      if (err) {
+         req.flash("error", err.message);
+         return res.redirect("back");
+      }
+      User.findOneAndUpdate(req.user.id, { $pull: { 'lovedRecipes': { '_id': foundRecipe.id } } }).exec(function (err, foundUser) {
+         if (err) {
+            req.flash("error", err.message);
+            return res.redirect("back");
+         }
+         req.flash("success", foundRecipe.title + " was removed from your favorites.");
+         res.redirect("back");
+      });
    });
 });
 

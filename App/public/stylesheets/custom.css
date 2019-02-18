@@ -1,6 +1,7 @@
 #imagePreview {
-    max-width: 340px;
-    margin: 15px auto;
+    max-width: 100%;
+    height: auto;
+    border-radius: 0.1rem;
 }
 
 .recipe-view-button {
@@ -11,21 +12,6 @@
 
 .recipeBookButton {
     font-size: 12px;
-}
-
-
-.light-grey-bg {
-    background: #efe186;
-    /* Old browsers */
-    background: -moz-linear-gradient(top, #efe186 0%, #fcf6bd 75%, #fefcea 100%, #fefcea 100%);
-    /* FF3.6-15 */
-    background: -webkit-linear-gradient(top, #efe186 0%, #fcf6bd 75%, #fefcea 100%, #fefcea 100%);
-    /* Chrome10-25,Safari5.1-6 */
-    background: linear-gradient(to bottom, #efe186 0%, #fcf6bd 75%, #fefcea 100%, #fefcea 100%);
-    /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
-    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#efe186', endColorstr='#fefcea', GradientType=0);
-    /* IE6-9 */
-    /*background-color: #f2f2f2;*/
 }
 
 .like-btn i {
@@ -64,10 +50,8 @@
 }
 
 .recipe-main-image {
-    max-width: 100%;
-    min-width: 320px;
-    margin: 10px auto;
-    border-radius: 0.25rem;
+    width: 100%;
+    border-radius: 0.1rem;
 }
 
 .ingredient-left {
@@ -204,13 +188,6 @@
 
 }
 
-.recipe-main-image {
-    width: 100%;
-    max-width: 700px;
-    height: auto;
-    max-height: 525px;
-    object-fit: cover;
-}
 
 /*CENTER LOGO:*/
 
@@ -247,7 +224,6 @@
 .rounded-circle {
     border-radius: 50% !important;
 }
-
 
 /* SLIDING MENU   > */
 
@@ -650,7 +626,6 @@ Slide In Panel - by CodyHouse.co
 }
 
 .cd-panel__content p {
-    font-size: 1.4rem;
     color: #424f5c;
     line-height: 1.4;
     margin: 2em 0;
@@ -662,7 +637,6 @@ Slide In Panel - by CodyHouse.co
 
 @media only screen and (min-width: 768px) {
     .cd-panel__content p {
-        font-size: 1.6rem;
         line-height: 1.6;
     }
 }
@@ -719,28 +693,12 @@ Slide In Panel - by CodyHouse.co
 }
 
 #imagePreviewContainer {
-    max-height: 600px;
-    width: 600px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden
 }
 
-#imagePreview {
-    max-width: 250px;
-    height: auto;
-    text-align: center;
-}
-
-@media (min-width: 768px) {
-    #imagePreview {
-        max-height: 600px;
-        width: auto;
-        text-align: center;
-    }
-}
-
-.dashed-border {
-    border-style: dashed;
-    border-color: #d3d3d3;
-}
 
 .photo-upload-label {
     font-size: 32px;
@@ -790,4 +748,28 @@ Slide In Panel - by CodyHouse.co
 
 .alert-container {
     height: 38px;
+}
+
+.thumbnail img {
+    width: 100%;
+}
+
+.thumbnail {
+    padding: 0;
+}
+
+.thumbnail .caption-full {
+    padding: 9px;
+}
+
+#delete-form {
+    display: inline;
+}
+
+.checked {
+    color: orange;
+}
+
+.fa-star {
+    font-size: 14px !important;
 }

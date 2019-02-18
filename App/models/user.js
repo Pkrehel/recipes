@@ -23,7 +23,9 @@ var UserSchema = new mongoose.Schema({
         createdAt: Date,
         totalTime: Number
     }],
-    searches: Array
+    searches: Array,
+    resetPasswordToken: String,
+    resetPasswordExpires: Date,
 });
 
 UserSchema.plugin(passportLocalMongoose);

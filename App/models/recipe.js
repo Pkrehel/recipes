@@ -46,6 +46,14 @@ var recipeSchema = new mongoose.Schema({
     views: {
         type: Number,
         default: 0
+    },
+    reviews: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Review"
+    }],
+    rating: {
+        type: Number,
+        default: 0
     }
 });
 
