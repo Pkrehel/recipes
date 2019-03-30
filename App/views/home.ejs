@@ -67,7 +67,6 @@
                                     <p class="card-text text-right"><small class="text-muted">Posted: <%= moment(foundRecipe[searchResultCount].createdAt).format("M/D/YYYY") %></small></p>
                                   </div>
                                 </div>
-
                         </div>
                       </a>
                       <!--END OF CARD BODY-->
@@ -89,7 +88,7 @@
                               <div class="card recipe-card">
                                 <div class="card-block">
                                   <div class="img-container">
-                                    <a href="/recipes/<%= latestRecipes[latestRecipeCount]._id%>">
+                                    <a href="/recipes/<%= latestRecipes[latestRecipeCount].id%>">
                                       <div class="recipeBookButton text-center">
                                         <form action="/recipes/<%=latestRecipes[latestRecipeCount].id%>/love" method="POST">
                                           <button class="btn rounded-circle like-btn-homepage">

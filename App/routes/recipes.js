@@ -85,7 +85,8 @@ router.get("/new", middleware.isLoggedIn, function (req, res) {
 router.get("/:id", function (req, res) {
   Recipe.findByIdAndUpdate(req.params.id).populate('comments lovedBy user avatar toMake reviews').exec(function (err, foundRecipe) {
     if (err) {
-      res.send(err);
+      req.flash("error", "Whoops, we cannot find that recipe. It may have been removed.");
+      res.redirect("back");
     }
     else {
       if ((req.user && (req.user.id != foundRecipe.chef.id)) || !req.user) {

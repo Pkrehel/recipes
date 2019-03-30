@@ -1,0 +1,79 @@
+<% include ./partials/header %>
+    <!--CURRENT RESULTS TEXT CONTAINER-->
+    <div class="container-fluid py-3 px-0">
+      <div class="row">
+        <div class="col-md-12">
+          <h3 class="text-primary text-capitalize"><%= category %> Recipes</h3>
+        </div>
+      </div>
+    </div>
+    <!--End of Current Results Text Container-->
+    <!--Main Container-->
+    <div class="container-fluid p-0">
+      <div class="card-deck">
+
+    <% foundRecipe.forEach(function(recipe){ %>
+
+                <div class="col-lg-4 col-md-6 col-sm-6 col-xs-12 mb-3 p-0">
+                  <div class="card recipe-card">
+                    <div class="card-block">
+                      <div class="img-container">
+                        <a href="/recipes/<%= recipe._id%>">
+                          <div class="recipeBookButton text-center">
+                            <form action="/recipes/<%=recipe.id%>/love" method="POST">
+                              <button class="btn rounded-circle like-btn-homepage">
+                                  <i class="fas fa-heart"></i>
+                                </button>
+                            </form>
+                          </div>
+                          <img class="img-fluid recipe-index-image" src="<%= recipe.image %>">
+                          <!--To Make Button Block-->
+                        </a>
+                      </div>
+
+                      <a href="/recipes/<%= recipe._id%>">
+                        <div class="card-body text-center visibile-recipe-info p-1 mt-1">
+                          <h4 class="card-title mb-1">
+                            <%= recipe.title %>
+                          </h4>
+                          <div class="container small card-text text-muted p-2">
+                              <%if(recipe.allergens.length > 0) { %>
+                              <p class="mb-1">
+                              <% var allergenLength = recipe.allergens.length %>
+                              <% for(i=0; i < allergenLength -1; i++) { %>
+                              <%= recipe.allergens[i] %> |
+                              <% } %>
+                              <%= recipe.allergens.pop() %>
+                              <% } %>
+                              </p>
+                              <p class="m-0"><i class="far fa-clock"></i>&nbsp;<%= recipe.totalTime %> minutes</p>
+                          </div>
+
+                                <!--To Make Button Block-->
+                                <form action="/recipes/<%= recipe._id %>" method="GET">
+                                  <button class="btn btn-outline-primary text-center btn-block recipe-view-button my-1">View</button>
+                                </form>
+
+                                <div class="row mt-2">
+                                  <div class="col pull-left text-left">
+                                    <a href="/users/<%=recipe.chef.id %>" class="card-text text-left text-muted small m-0">Chef: <%= recipe.chef.screenName%></a>
+                                  </div>
+                                  <div class="col pull-right">
+                                    <p class="card-text text-right"><small class="text-muted">Posted: <%= moment(recipe.createdAt).format("M/D/YYYY") %></small></p>
+                                  </div>
+                                </div>
+                        </div>
+                      </a>
+                      <!--END OF CARD BODY-->
+                    </div>
+                  </div>
+                </div>
+
+    <% })%>
+
+
+
+      </div>
+      <!--End of Card Deck-->
+    </div>
+  <% include ./partials/footer %>

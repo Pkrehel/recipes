@@ -14,13 +14,13 @@ router.get("/", function (req, res) {
     var queryString = req.query.search;
     if (queryString) {
         var regex = new RegExp(escapeRegex(queryString), 'gi');
-        Recipe.find({ $or: [{ "title": regex }, { "tags": regex }, { "category": regex }, { "ingredients": regex }] }).limit(12).exec(function (err, foundRecipe) {
+        Recipe.find({ $or: [{ "title": regex }, { "tags": regex }, { "category": regex }, { "ingredients": regex }, { "directions": regex }, { "description": regex }] }).limit(12).exec(function (err, foundRecipe) {
             if (err) {
-                console.log(err);
+                req.flash("error", "An Error Occurred. Please try again.");
+                res.redirect("back");
             }
             else {
                 if (foundRecipe.length < 1) {
-                    console.log("no results");
                     req.flash("error", "No results for \"" + queryString + "\". Please search again.");
                     res.redirect("/");
                 }
@@ -34,7 +34,6 @@ router.get("/", function (req, res) {
                         }
                         else {
                             foundUser.save();
-                            console.log("### --> added " + queryString + " to search history for " + foundUser);
                         }
                     });
                 }
@@ -44,8 +43,8 @@ router.get("/", function (req, res) {
     else {
         Recipe.find({}).sort({ createdAt: -1 }).limit(12).exec(function (err, latestRecipes) {
             if (err) {
-                res.send(latestRecipes);
-                // console.log(err);
+                req.flash("error", "Sorry, an error has occurred.");
+                res.redirect("back");
             }
             else {
                 res.render("home", { latestRecipes: latestRecipes });
@@ -69,7 +68,7 @@ router.post("/register", function (req, res) {
         username: req.body.username,
         screenName: req.body.screenName,
         avatar: req.body.avatar,
-
+        favoriteCategories: req.body.favoriteCategories,
         // Randomstring Generation
         secretToken: randomstring.generate(),
 
@@ -240,7 +239,6 @@ router.post('/forgot', function (req, res, next) {
     });
 });
 
-
 router.get('/reset/:token', function (req, res) {
     console.log(req.params.token);
     User.findOne({ resetPasswordToken: req.params.token, resetPasswordExpires: { $gt: Date.now() } }, function (err, user) {
@@ -305,8 +303,6 @@ router.post('/reset/:token', function (req, res) {
         res.redirect('/forgot');
     });
 });
-
-
 
 //USER PUBLIC PROFILE ROUTES:
 router.get("/users/:id", function (req, res) {

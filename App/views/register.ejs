@@ -11,82 +11,109 @@
                 <div class="form-group text-dark"> <label>Username</label>
                   <input type="text text-dark" name="screenName" class="form-control" placeholder="different from email" minlength="4" maxlength="20", required>
                 </div>
-
-                <div class="form-group avatars text-dark"> <label>Choose an Avatar</label>
-    <div class="btn-group btn-group-toggle row" data-toggle="buttons">
-
-      <div class="col-sm-1">
-        <label class="btn avatar">
-          <input type="radio" name="avatar" value="😛" autocomplete="off">😛
-        </label>
-      </div>
-
-      <div class="col-sm-1">
-        <label class="btn avatar">
-          <input type="radio" name="avatar" value="😎" autocomplete="off">😎
-        </label>
-      </div>
-
-      <div class="col-sm-1">
-        <label class="btn avatar">
-          <input type="radio" name="avatar" value="🍉" autocomplete="off">🍉
-        </label>
-      </div>
-
-      <div class="col-sm-1">
-        <label class="btn avatar">
-          <input type="radio" name="avatar" value="🌶" autocomplete="off">🌶
-        </label>
-      </div>
-
-      <div class="col-sm-1">
-        <label class="btn avatar">
-          <input type="radio" name="avatar" value="🍅" autocomplete="off">🍅
-        </label>
-      </div>
-
-      <div class="col-sm-1">
-        <label class="btn avatar">
-          <input type="radio" name="avatar" value="🍍" autocomplete="off">🍍
-        </label>
-      </div>
-
-      <div class="col-sm-1">
-        <label class="btn avatar">
-          <input type="radio" name="avatar" value="🍄" autocomplete="off">🍄
-        </label>
-      </div>
-
-      <div class="col-sm-1">
-        <label class="btn avatar">
-          <input type="radio" name="avatar" value="🍲" autocomplete="off">🍲
-        </label>
-      </div>
-
-      <div class="col-sm-1">
-        <label class="btn avatar">
-          <input type="radio" name="avatar" value="☕" autocomplete="off">☕
-        </label>
-      </div>
-
-      <div class="col-sm-1">
-        <label class="btn avatar">
-          <input type="radio" name="avatar" value="🍜" autocomplete="off">🍜
-        </label>
-      </div>
-
-      <div class="col-sm-1">
-        <label class="btn avatar">
-          <input type="radio" name="avatar" value="🍷" autocomplete="off">🍷
-        </label>
-      </div>
-    </div>
-  </div>
+                <div class="form-group avatars text-dark"><label>Choose an Avatar</label>
+                  <div class="btn-group btn-group-toggle row" data-toggle="buttons">
+                    <div class="col-sm-1">
+                      <label class="btn avatar">
+                        <input type="radio" name="avatar" value="😛" autocomplete="off">😛
+                      </label>
+                    </div>
+                    <div class="col-sm-1">
+                      <label class="btn avatar">
+                        <input type="radio" name="avatar" value="😎" autocomplete="off">😎
+                      </label>
+                    </div>
+                    <div class="col-sm-1">
+                      <label class="btn avatar">
+                        <input type="radio" name="avatar" value="🍉" autocomplete="off">🍉
+                      </label>
+                    </div>
+                    <div class="col-sm-1">
+                      <label class="btn avatar">
+                        <input type="radio" name="avatar" value="🌶" autocomplete="off">🌶
+                      </label>
+                    </div>
+                    <div class="col-sm-1">
+                      <label class="btn avatar">
+                        <input type="radio" name="avatar" value="🍅" autocomplete="off">🍅
+                      </label>
+                    </div>
+                    <div class="col-sm-1">
+                      <label class="btn avatar">
+                        <input type="radio" name="avatar" value="🍍" autocomplete="off">🍍
+                      </label>
+                    </div>
+                    <div class="col-sm-1">
+                      <label class="btn avatar">
+                        <input type="radio" name="avatar" value="🍄" autocomplete="off">🍄
+                      </label>
+                    </div>
+                    <div class="col-sm-1">
+                      <label class="btn avatar">
+                        <input type="radio" name="avatar" value="🍲" autocomplete="off">🍲
+                      </label>
+                    </div>
+                    <div class="col-sm-1">
+                      <label class="btn avatar">
+                        <input type="radio" name="avatar" value="☕" autocomplete="off">☕
+                      </label>
+                    </div>
+                    <div class="col-sm-1">
+                      <label class="btn avatar">
+                        <input type="radio" name="avatar" value="🍜" autocomplete="off">🍜
+                      </label>
+                    </div>
+                    <div class="col-sm-1">
+                      <label class="btn avatar">
+                        <input type="radio" name="avatar" value="🍷" autocomplete="off">🍷
+                      </label>
+                    </div>
+                  </div>
+                </div>
 
                 <div class="form-group text-dark" required> <label>Email address</label>
                   <input type="email" name="username" class="form-control text-dark" placeholder="your.email@abc123.com" required> </div>
                 <div class="form-group text-dark"> <label>Password</label>
                   <input type="password" name="password" class="form-control" placeholder="Password" autocomplete=off> </div>
+
+
+
+              <div class="row">
+                <div class="col-md-12">
+                  <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                      <label class="input-group-text" for="favoriteCategories"><small>Customize Your Interests</small></label>
+                    </div>
+                    <div class="form-control" id="favoriteCategories">
+                      <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="checkbox" name="favoriteCategories[]" id="glutenFree" value="Gluten-Free">
+                        <label class="form-check-label" for="glutenFree"><small>Gluten-Free</small></label>
+                      </div>
+                      <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="checkbox" name="favoriteCategories[]" id="vegetarian" value="Vegetarian">
+                        <label class="form-check-label" for="vegetarian"><small>Vegetarian</small></label>
+                      </div>
+                      <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="checkbox" name="favoriteCategories[]" id="vegan" value="Vegan">
+                        <label class="form-check-label" for="vegan"><small>Vegan</small></label>
+                      </div>
+                      <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="checkbox" name="favoriteCategories[]" id="dairyFree" value="Dairy-Free">
+                        <label class="form-check-label" for="dairyFree"><small>Dairy-Free</small></label>
+                      </div>
+                      <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="checkbox" name="favoriteCategories[]" id="nutFree" value="Nut-Free">
+                        <label class="form-check-label" for="nutFree"><small>Nut-Free</small></label>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+
+
+
+
                 <button type="submit" class="btn btn-secondary btn-block btn-lg my-2"><b>Create Account</b></button>
               </form>
               <p class="lead text-center text-dark small">Already have an account? <b><a href="/login">Login</a></b></p>
@@ -97,6 +124,4 @@
       </div>
     </div>
   </div>
-
-
 <% include ./partials/footer %>
