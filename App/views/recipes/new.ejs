@@ -5,8 +5,12 @@
       <div class="row mb-3">
         <!--Row 1- LEFT COLUMN-->
         <div class="col-lg-6 col-md-12 col-xs-12 mb-2 p-0">
-          <h3 class="">Recipe Info.</h3>
+          <h3 class="">Share Your Recipe!</h3>
             <div class="card-body recipe-show-primary-info border-0 p-0">
+              <div class="custom-file mb-3">
+                <input type="file" class="custom-file-input form-control-lg w-100" name="image" id="image" accept="image/*" required>
+                <label class="btn btn-primary btn-lg w-100 mb-5" for="image">Upload Image</label>
+              </div>
               <h1 class="card-title text-primary display-3">
                 <input class="form-control form-control-lg" type="text" name="title" placeholder="Recipe Title" minlength="5" maxlength="200" required>
               </h1>
@@ -77,14 +81,10 @@
                   <input type="range" class="custom-range" id="difficultySlider" name="difficulty" value=0 min="0" max="2" step="1" required>
                 </div>
               </div>
-              <div class="custom-file mb-3">
-                <input type="file" class="custom-file-input form-control-lg w-100" name="image" id="image" accept="image/*" required>
-                <label class="btn btn-primary btn-lg w-100 mb-5" for="image">Upload Image</label>
-              </div>
             </div>
         </div>
         <div class="col-lg-6 col-md-12 col-xs-12 mb-2 p-0">
-          <div class="centered-div">
+          <div class="centered-div pt-4">
             <img id="imagePreview">
           </div>
         </div>

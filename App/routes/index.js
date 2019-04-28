@@ -14,17 +14,16 @@ router.get("/", function (req, res) {
     var queryString = req.query.search;
     if (queryString) {
         var regex = new RegExp(escapeRegex(queryString), 'gi');
-        Recipe.find({ $or: [{ "title": regex }, { "tags": regex }, { "category": regex }, { "ingredients": regex }, { "directions": regex }, { "description": regex }] }).limit(12).exec(function (err, foundRecipe) {
+        Recipe.find({ $or: [{ "title": regex }, { "tags": regex }, { "category": regex }, { "ingredients": regex }, { "directions": regex }, { "description": regex }, { "allergens": regex }] }).limit(12).exec(function (err, foundRecipe) {
             if (err) {
                 req.flash("error", "An Error Occurred. Please try again.");
                 res.redirect("back");
             }
             else {
                 if (foundRecipe.length < 1) {
-                    req.flash("error", "No results for \"" + queryString + "\". Please search again.");
-                    res.redirect("/");
+                     req.flash("error", "No results for \"" + queryString + "\". Please search again.");
+                     res.redirect("back");
                 }
-                res.render("home", { foundRecipe: foundRecipe });
                 // checks if a user is logged in. If so, Update current user's search array
                 if (req.user) {
                     User.findByIdAndUpdate(req.user.id, { $push: { 'searches': queryString } }, function (err, foundUser) {
@@ -36,12 +35,15 @@ router.get("/", function (req, res) {
                             foundUser.save();
                         }
                     });
+                } 
+                else {
+                    res.render("home", { foundRecipe: foundRecipe });
                 }
             }
         });
     }
     else {
-        Recipe.find({}).sort({ createdAt: -1 }).limit(12).exec(function (err, latestRecipes) {
+        Recipe.find({}).sort({ createdAt: -1 }).limit(5).exec(function (err, latestRecipes) {
             if (err) {
                 req.flash("error", "Sorry, an error has occurred.");
                 res.redirect("back");
@@ -92,7 +94,7 @@ var mailOptions, host, link;
 
 router.get("/verification-email", function (req, res) {
     host = req.get("host");
-    link = "https://palmer-krehel-palmerkrehel.c9users.io" + "/verify?id=" + req.user.secretToken;
+    link = "localhost:3000" + "/verify?id=" + req.user.secretToken;
     var smtpTransporter = nodemailer.createTransport({
         host: 'smtp.gmail.com',
         port: 465,
@@ -149,7 +151,6 @@ router.get("/verify", function (req, res) {
     }
 });
 // End of email send / verification process
-
 
 router.get("/login", function (req, res) {
     res.render("login");

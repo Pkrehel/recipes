@@ -14,7 +14,7 @@
     <!--End of Current Results Text Container-->
     <!--Main Container-->
     <div class="container-fluid p-0">
-      <div class="card-deck">
+      <div class="card-deck" id="recentRecipesSection">
         <% if(searchQuery) { %>
           <% var searchResultCount = 0 %>
             <% var searchResultsLength = foundRecipe.length %>
@@ -176,9 +176,7 @@
                                                   <% } %>
 
                                                     <li class="list-group-item list-group-flush">
-                                                      <form action="/recipes/<%= latestRecipes[remainingRecipeCount]._id %>" method="GET">
-                                                        <button class="btn btn-outline-primary text-center btn-block recipe-view-button my-1">More Recently Posted...</button>
-                                                      </form>
+                                                      <button id="more-recent" class="btn btn-outline-primary text-center btn-block recipe-view-button my-1">More Recently Posted...</button>
                                                     </li>
                                             </ul>
                                       </div>
@@ -189,4 +187,6 @@
       </div>
       <!--End of Card Deck-->
     </div>
+
+
   <% include ./partials/footer %>
