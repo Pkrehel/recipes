@@ -2,13 +2,12 @@ var express = require("express"),
     router = express.Router(),
     Recipe = require("../models/recipe");
 
-
-
-router.get("/v1/Recipes", function (req, res) {
+router.get("/v1/recipes", function (req, res) {
     var sortBy = req.query.sortBy
     var orderBy = req.query.orderBy
+    var offset = req.query.offset
     var sort
-    var limit = req.query.limit
+    var limit = 6;
     if(sortBy === '1'){
         sort = "" + orderBy
     } else {
@@ -19,10 +18,8 @@ router.get("/v1/Recipes", function (req, res) {
     } else{
         limit = 500
     }
-    console.log(limit)
-    console.log(sort)
     Recipe.find()
-    .sort(sort.toString()).limit(limit).exec(function (err, recipes) {
+    .sort(sort.toString()).skip(offset).limit(limit).exec(function (err, recipes) {
         if (err) {
             res.send(err);
         }
