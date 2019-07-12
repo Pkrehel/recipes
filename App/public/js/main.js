@@ -1,28 +1,25 @@
-    var sortBy = '-1';
-    var orderBy = 'createdAt';
-    var limit = '3';
-    var offset = '0'
-$('#more-recent').on('click', function() {
+
+// DATA.GOV API CONNECTION:
+// $(function() {
+//     $.ajax({
+//       url: "https://55SYabUUoORJCAUl4xxIXqazV6lVs2g79Evqkncf@api.nal.usda.gov/fdc/v1/search",
+//       contentType: 'application/json',
+//       api_key: "55SYabUUoORJCAUl4xxIXqazV6lVs2g79Evqkncf",
+//       generalSearchInput: "banana",
+//       success: function(results){
+//         console.log(results)
+//       }
+//   });
+// });
+
+$(".like-btn-homepage").click(function() {
     $.ajax({
-      data: {
-        sortBy: sortBy,
-        orderBy: orderBy,
-        limit: limit,
-        offset: offset
-      },
-      url: "api/v1/recipes",
+      url: "/recipes/5d1c450b36077a09011b7215/love",
+      method: "POST",
       contentType: 'application/json',
-      success: changeDataParams,
+      success: function(response){
+        console.log(response)
+        console.log("LOVE BUTTON CLICKED")
+      }
   });
 });
-
-function changeDataParams(response){
-  console.log(response);
-  $("#recentRecipesSection").children(".recipe-card").fadeOut('slow', function(){
-  $("#recentRecipesSection").children(".recipe-card").remove()
-    
-  });
-  offset = parseInt(offset) + 1;
-  offset = offset.toString();
-  
-}

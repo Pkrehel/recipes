@@ -1,3 +1,23 @@
+<nav class="navbar fixed-bottom text-center navbar-light bg-light border border-secondary d-block d-md-none">
+  <% if(!currentUser) { %>
+  <a href="#0" class="js-cd-panel-trigger" data-panel="main">
+    <div class="btn btn-outline-primary ml-auto">Sign Up / Login</div>
+  </a>
+  <% } %>
+  <% if(currentUser) { %>
+  <form class="form-inline d-lg-none ml-auto">
+      <a href="#0" class="js-cd-panel-trigger" data-panel="main">
+        <button class="btn btn-outline-primary ml-auto">Favorites &nbsp;
+          <span class="badge badge-secondary"><%= currentUser.lovedRecipes.length %></span>
+        </button>
+      </a>
+      <a href="/recipes/new">
+         <div class="btn btn-outline-primary ml-4">Post A Recipe</div>
+        </a>
+  </form>
+  <% } %>
+</nav>
+
 </main>
 <footer>
 <div class="bg-dark text-white mt-5 py-3">

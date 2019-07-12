@@ -10,49 +10,80 @@ var express = require("express"),
 
 //Show the home page
 router.get("/", function (req, res) {
-    Recipe.find({}).sort({ createdAt: -1 }).limit(3).exec(function (err, latestRecipes) {
-        if (err) {
-            req.flash("error", "Sorry, an error has occurred.");
-            res.redirect("back");
-        }
-        else {
-            res.render("home", { latestRecipes: latestRecipes });
-        }
+        var perPage = 6;
+        var pageQuery = parseInt(req.query.page);
+        var pageNumber = pageQuery ? pageQuery : 1;
+        var noMatch = null;
+        Recipe.find({}).skip((perPage * pageNumber) - perPage).limit(perPage).sort({ createdAt: -1 }).exec(function (err, latestRecipes) {
+            Recipe.count().exec(function (err, count) {
+                if (err) {
+                    req.flash("error", "Sorry, an error has occurred.");
+                    res.redirect("back");
+                } else {
+                    res.render("home", {
+                        latestRecipes: latestRecipes,
+                        current: pageNumber,
+                        pages: Math.ceil(count / perPage),
+                        noMatch: noMatch,
+                        search: false,
+                        perPage: perPage
+                    });
+                }
+            });
     });
 });
 
 router.get("/s", function(req, res){
+    var perPage = 6;
+    var pageQuery = parseInt(req.query.page);
+    var pageNumber = pageQuery ? pageQuery : 1;
+    var noMatch = null;
     var queryString = req.query.search;
     var regex = new RegExp(escapeRegex(queryString), 'gi');
-    Recipe.find({ $or: [{ "title": regex }, { "tags": regex }, { "category": regex }, { "ingredients": regex }, { "directions": regex }, { "description": regex }, { "allergens": regex }] }).limit(12).exec(function (err, foundRecipe) {
-        if (err) {
-            req.flash("error", "An Error Occurred. Please try again.");
-            res.redirect("back");
-        }
-        else {
-            if (foundRecipe.length == 0 || queryString.length == 0) {
-                req.flash("error", "No results for \"" + queryString + "\". Please search again.");
+    Recipe.find({ $or: [{ "title": regex }, { "tags": regex }, { "category": regex }, { "ingredients": regex }, { "directions": regex }, { "description": regex }, { "allergens": regex }] }).skip((perPage * pageNumber) - perPage).limit(perPage).sort({ createdAt: -1 }).exec(function (err, foundRecipe) {
+        Recipe.count({ $or: [{ "title": regex }, { "tags": regex }, { "category": regex }, { "ingredients": regex }, { "directions": regex }, { "description": regex }, { "allergens": regex }] }).exec(function (err, count) {
+            if (err) {
+                req.flash("error", "Sorry, an error has occurred.");
                 res.redirect("back");
-            }
+            } 
             else {
-                // checks if a user is logged in. If so, Update current user's search array
-                if (req.user) {
-                    User.findByIdAndUpdate(req.user.id, { $push: { 'searches': queryString } }, function (err, foundUser) {
-                        if (err) {
-                            req.flash("error", "An Error Occurred. Please search again.");
-                            res.redirect("back");
-                        }
-                        else {
-                            foundUser.save();
-                            res.render("search", { foundRecipe: foundRecipe });
-                        }
-                    });
-                } 
+                if (foundRecipe.length == 0 || queryString.length == 0) {
+                    req.flash("error", "No results for \"" + queryString + "\". Please update your search and try again.");
+                    res.redirect("back");
+                }
                 else {
-                    res.render("search", { foundRecipe: foundRecipe });
+                    if (req.user) {
+                        User.findByIdAndUpdate(req.user.id, { $push: { 'searches': queryString } }, function (err, foundUser) {
+                            if (err) {
+                                req.flash("error", "An Error Occurred. Please search again.");
+                                res.redirect("back");
+                            }
+                            else {
+                                foundUser.save();
+                                res.render("search", {
+                                    foundRecipe: foundRecipe,
+                                    current: pageNumber,
+                                    pages: Math.ceil(count / perPage),
+                                    noMatch: noMatch,
+                                    search: queryString,
+                                    perPage: perPage
+                                });
+                            }
+                        });
+                    } 
+                    else {
+                        res.render("search", {
+                            foundRecipe: foundRecipe,
+                            current: pageNumber,
+                            pages: Math.ceil(count / perPage),
+                            noMatch: noMatch,
+                            search: queryString,
+                            perPage: perPage,
+                        });                       
+                    }
                 }
             }
-        }
+        });
     });
 });
 

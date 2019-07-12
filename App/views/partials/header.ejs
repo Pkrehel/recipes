@@ -5,7 +5,7 @@
   <title>Homepage</title>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css" integrity="sha384-9gVQ4dYFwwWSjIDZnLEWnxCjeSWFphJiwGPXr1jddIhOegiu1FwO5qRGvFXOdJZ4" crossorigin="anonymous">
+  <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
   <link rel="stylesheet" type="text/css" href="../stylesheets/main.css">
   <link rel="stylesheet" type="text/css" href="../stylesheets/custom.css">
 <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
@@ -14,76 +14,92 @@
 </head>
 
 <body>
-<!--MAIN NAVIGATION-->
-  <div class="container">
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
-      <!--LOGO-->
-      <div class="navbar-brand">
-        <a href="/"><span>LOGO</span></a>
-      </div>
-      <!--SIGN UP / LOGIN BUTTON-->
-        <% if(!currentUser) { %>
-        <div class="btn btn-outline-primary ml-auto d-none d-sm-block">
-          <a href="#0" class="js-cd-panel-trigger" data-panel="main">Sign Up / Login</a>
-          </div>
-          <% } %>
-            <% if(currentUser) { %>
-            <div class="ml-auto">
-                    <form class="form-inline">
-
-                <a href="#0" class="js-cd-panel-trigger" data-panel="main">
-                  <div class="btn btn-outline-primary ml-auto d-none d-sm-block">Favorites</div>
-                </a>
-                <a href="/recipes/new">
-                   <div class="btn btn-outline-primary ml-4 d-none d-sm-block">Post A Recipe</div>
-                  </a>
-            </form>
-            </div>
-        <% } %>
-      </div>
-    </nav>
-  </div>
-  <!--END OF (MAIN NAVIGATION)-->
-
-
-  <!--(SECONDARY NAV)-->
-<div class="container">
-<!--SEARCH BAR-->
-<div class="row">
-<div class="col-md-7 col-sm-12 col-xs-12">
-  <div class="searchBar px-1">
-  <form action="/s" class="form-inline" method="GET">
-  <div class="input-group">
-  <div id="input_container">
-    <input class="form-control" id="searchbar" name="search" type="search" placeholder="Search Recipes " aria-label="Search">
-    <i class="fa fa-search search-icon"></i>
-  </div>
-    <div class="input-group-append">
-      <button class="btn btn-outline-secondary" value="Search" type="submit">Search</button>
+<nav class="navbar navbar-expand-md fixed-top-sm justify-content-start flex-nowrap bg-light navbar-light">
+  <a href="/" class="navbar-brand">Logo</a>
+  
+  <!--SIGN UP / LOGIN BUTTON-->
+  <% if(!currentUser) { %>
+  <div class="btn btn-outline-primary ml-auto d-none d-sm-block">
+    <a href="#0" class="js-cd-panel-trigger" data-panel="main"><i class="far fa-user-circle"></i> Sign Up / Login</a>
     </div>
-  </div>
-  </form>
-  </div>
+    <% } %>
+      <% if(currentUser) { %>
+      <div class="ml-auto">
+      <form class="form-inline d-none d-md-block">
+          <a href="#0" class="js-cd-panel-trigger" data-panel="main">
+            <button class="btn btn-outline-primary ml-auto">Favorites &nbsp;
+              <span class="badge badge-secondary"><%= currentUser.lovedRecipes.length %></span>
+            </button>
+          </a>
+          <a href="/recipes/new">
+             <div class="btn btn-outline-primary ml-4">Post A Recipe</div>
+            </a>
+      </form>
+      </div>
+  <% } %>  
+    <button class="navbar-toggler ml-auto" type="button" data-toggle="collapse" data-target="#navbar2">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+</nav>
+<nav class="navbar navbar-expand-md bg-light navbar-light">
+    <div class="navbar-collapse collapse pt-2 pt-md-0" id="navbar2"> 
+      <ul class="navbar-nav">
+        <li class="nav-item">
+          <form action="/s" class="form-inline" method="GET">
+            <div class="input-group">
+            <div id="input_container">
+              <input class="form-control" id="searchbar" name="search" type="search" placeholder="Search Recipes " aria-label="Search">
+              <i class="fa fa-search search-icon"></i>
+            </div>
+
+              <div class="input-group-append">
+                <button class="btn btn-outline-secondary" value="Search" type="submit">Search</button>
+              </div>
+            </div>
+          </form>
+        </li>
+        <li class="nav-item dropdown megamenu-li">
+         <a class="nav-link btn btn-outline-primary dropdown-toggle" href="" id="dropdown01" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Categories</a>
+         <div class="dropdown-menu megamenu bg-light border border-secondary" aria-labelledby="dropdown01">
+          <div class="row">
+           <div class="col-sm-6 col-lg-3 mb-2">
+            <h5>Diet Type</h5>
+            <a class="dropdown-item" href="/categories/vegetarian">Vegetarian</a>
+            <a class="dropdown-item" href="/categories/vegan">Vegan</a>
+            <a class="dropdown-item" href="/categories/gluten-free">Gluten-Free</a>
+           </div>
+           <div class="col-sm-6 col-lg-3 mb-2">
+            <h5>Time of Day</h5>
+            <a class="dropdown-item" href="/categories/breakfast">Breakfast</a>
+            <a class="dropdown-item" href="/categories/lunch">Lunch</a>
+            <a class="dropdown-item" href="/categories/dinner">Dinner</a>
+           </div>
+           <div class="col-sm-6 col-lg-3 mb-2">
+            <h5>Difficulty</h5>
+            <a class="dropdown-item" href="/categories/breakfast">Beginner</a>
+            <a class="dropdown-item" href="/categories/lunch">Medium</a>
+            <a class="dropdown-item" href="/categories/dinner">Challenging</a>
+           </div>
+           <div class="col-sm-6 col-lg-3 mb-2">
+            <h5>Kitchen Time</h5>
+            <a class="dropdown-item" href="/categories/breakfast">Quick <span class="small">(10 minutes or less)</span></a>
+             <a class="dropdown-item" href="/categories/lunch">Medium <span class="small">(11-44 minutes)</span></a>
+             <a class="dropdown-item" href="/categories/dinner">Long <span class="small">(> 45 minutes)</span></a>
+           </div>
+          </div>
+           <hr>
+           <div class="row">
+             <div class="col-sm-6 col-lg-3 mb-2">Column 1</div>
+             <div class="col-sm-6 col-lg-3 mb-2">Column 2</div>
+             <div class="col-sm-6 col-lg-3 mb-2">Column 3</div>
+             <div class="col-sm-6 col-lg-3 mb-2">Column 4</div>
+           </div>
+         </div>
+        </li>
+      </ul>
 </div>
-<div class="col-md-4 col-sm-12 col-xs-12">
-<div class="btn-group">
-  <button type="button" class="btn btn-outline-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-    Categories
-  </button>
-  <div class="dropdown-menu">
-    <a class="dropdown-item" href="/categories/vegetarian">Vegetarian</a>
-    <a class="dropdown-item" href="/categories/vegan">Vegan</a>
-    <a class="dropdown-item" href="/categories/gluten-free">Gluten-Free</a>
-    <div class="dropdown-divider"></div>
-    <a class="dropdown-item" href="/categories/breakfast">Breakfast</a>
-    <a class="dropdown-item" href="/categories/lunch">Lunch</a>
-    <a class="dropdown-item" href="/categories/dinner">Dinner</a>
-  </div>
-</div>
-</div>
-</div>
-</div>
-<!--END SEARCH BAR-->
+</nav>
+
 
   <div class="container">
     <div class="row">
@@ -260,6 +276,9 @@
                     <div class="col-12">
                         <div class="container">
                                   <div class="row">
+                                  <% if(currentUser.lovedRecipes.length === 0) { %>
+                                  <p>You have not favorited any recipes yet! Click the <span><i class="fas fa-heart"></i></span> icon to favorite a recipe.</p>
+                                    <% } %>
                                   <% if(currentUser.lovedRecipes.length > 0) { %>
                                   <% for(var i = 0; i < currentUser.lovedRecipes.length; i++) { %>
                                       <div class="col-xs-12 col-sm-6 mb-3">
@@ -305,17 +324,4 @@
           </div>
       </div>
     <% } %>
-
-    <div class="container w-100 py-2 d-block d-sm-none text-center fixedBottomMobile bg-light">
-          <% if(!currentUser) { %>
-            <a href="#0" class="js-cd-panel-trigger" data-panel="main">
-              <div class="btn btn-outline-primary ml-auto">Sign Up / Login</div>
-            </a>
-          <% } %>
-          <% if(currentUser) { %>
-            <a href="#0" class="js-cd-panel-trigger" data-panel="main">
-              <div class="btn btn-outline-primary ml-auto">Favorites</div>
-            </a>
-          <% } %>
-    </div>
-    <main role="main" class="container">
+    <main role="main" class="container mt-3">
