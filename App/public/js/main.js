@@ -12,14 +12,16 @@
 //   });
 // });
 
-$(".like-btn-homepage").click(function() {
-    $.ajax({
-      url: "/recipes/5d1c450b36077a09011b7215/love",
-      method: "POST",
-      contentType: 'application/json',
-      success: function(response){
-        console.log(response)
-        console.log("LOVE BUTTON CLICKED")
-      }
-  });
-});
+// $(".ajax-trigger-love").click(function() {
+// 	var $this = $(this);
+//     var recipeId = $this.data('recipe-id');
+//     console.log("this is the recipe id" + recipeId)
+//     $.ajax({
+//       url: "/recipes/"+ recipeId + "/love",
+//       method: "POST",
+//       contentType: 'application/json',
+//       success: function(response){
+//       	console.log("done")
+//       }
+//   });
+// });

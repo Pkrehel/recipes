@@ -10,37 +10,131 @@ var express = require("express"),
 
 //Show the home page
 router.get("/", function (req, res) {
-        var perPage = 6;
-        var pageQuery = parseInt(req.query.page);
-        var pageNumber = pageQuery ? pageQuery : 1;
-        var noMatch = null;
-        Recipe.find({}).skip((perPage * pageNumber) - perPage).limit(perPage).sort({ createdAt: -1 }).exec(function (err, latestRecipes) {
-            Recipe.count().exec(function (err, count) {
-                if (err) {
-                    req.flash("error", "Sorry, an error has occurred.");
-                    res.redirect("back");
-                } else {
-                    res.render("home", {
-                        latestRecipes: latestRecipes,
-                        current: pageNumber,
-                        pages: Math.ceil(count / perPage),
-                        noMatch: noMatch,
-                        search: false,
-                        perPage: perPage
-                    });
-                }
-            });
+    var query = {}
+    var pageTitle = req.query.pageTitle
+    var difficulty = req.query.difficulty
+    var perPage
+    var pageLimit = parseInt(req.query.pageLimit);
+    var sort
+    var sortBy = req.query.sortBy
+    var orderBy = req.query.orderBy
+    var lessThan = parseInt(req.query.lt)
+    var greaterThan = parseInt(req.query.gt)
+    var category = req.query.category
+    var allergens = req.query.allergens
+    var queryString = '?'
+
+    if(pageLimit){
+        if(pageLimit <= 12){
+            perPage = pageLimit
+        } else{
+            perPage = 6
+        }
+    } else {
+        perPage = 6
+    }
+    
+    if(!orderBy){
+        orderBy = "createdAt"
+    }
+
+    if(sortBy === '1'){
+        sort = "" + orderBy
+    } else {
+        sort = '-' + orderBy
+    }
+    
+    if(difficulty){
+        query['difficulty'] = difficulty
+        queryString = queryString.concat('&difficulty='+difficulty)
+    }
+
+    if(lessThan && greaterThan){
+        query['totalTime'] = 
+        {
+        $gt: greaterThan,
+        $lt: lessThan
+        }
+        queryString = queryString.concat('&gt='+greaterThan+'&lt='+lessThan)
+    }
+
+    if(lessThan && !greaterThan){
+        query['totalTime'] = 
+        {
+        $lt: lessThan
+        }
+        queryString = queryString.concat('&lt='+lessThan)
+    }  
+
+    if(!lessThan && greaterThan){
+        query['totalTime'] = 
+        {
+        $gt: greaterThan
+        }
+        queryString = queryString.concat('&gt='+greaterThan)
+    }
+
+    if(category){
+        query['category'] = category
+        queryString = queryString.concat('&category='+category)
+    }
+
+    if(allergens){
+        query['allergens'] = allergens 
+        queryString = queryString.concat('&allergens='+allergens)
+    }
+
+    var pageQuery = parseInt(req.query.page);
+    var pageNumber = pageQuery ? pageQuery : 1;
+    var noMatch = null;
+    Recipe.find(query).skip((perPage * pageNumber) - perPage).limit(perPage).sort(sort.toString()).exec(function (err, latestRecipes) {
+        Recipe.count(query).exec(function (err, count) {
+            if (err) {
+                req.flash("error", "Sorry, an error has occurred.");
+                res.redirect("back");
+            } else {
+                console.log("QUERY PARAMS: " + queryString)
+                res.render("home", {
+                    latestRecipes: latestRecipes,
+                    current: pageNumber,
+                    pages: Math.ceil(count / perPage),
+                    noMatch: noMatch,
+                    search: false,
+                    perPage: perPage,
+                    pageTitle: pageTitle
+                });
+            }
+        });
     });
 });
 
 router.get("/s", function(req, res){
-    var perPage = 6;
+    var perPage
+    var pageLimit = parseInt(req.query.pageLimit);
+    if(pageLimit){
+        if(pageLimit <= 12){
+            perPage = pageLimit
+        } else{
+            perPage = 6
+        }
+    } else {
+        perPage = 6
+    }
+
+    var orderBy = req.query.orderBy
+    var sort
+    var sortBy = req.query.sortBy
+    if(sortBy === '1'){
+        sort = "" + orderBy
+    } else {
+        sort = '-' + orderBy
+    }
     var pageQuery = parseInt(req.query.page);
     var pageNumber = pageQuery ? pageQuery : 1;
     var noMatch = null;
     var queryString = req.query.search;
     var regex = new RegExp(escapeRegex(queryString), 'gi');
-    Recipe.find({ $or: [{ "title": regex }, { "tags": regex }, { "category": regex }, { "ingredients": regex }, { "directions": regex }, { "description": regex }, { "allergens": regex }] }).skip((perPage * pageNumber) - perPage).limit(perPage).sort({ createdAt: -1 }).exec(function (err, foundRecipe) {
+    Recipe.find({ $or: [{ "title": regex }, { "tags": regex }, { "category": regex }, { "ingredients": regex }, { "directions": regex }, { "description": regex }, { "allergens": regex }] }).skip((perPage * pageNumber) - perPage).limit(perPage).sort(sort.toString()).exec(function (err, foundRecipe) {
         Recipe.count({ $or: [{ "title": regex }, { "tags": regex }, { "category": regex }, { "ingredients": regex }, { "directions": regex }, { "description": regex }, { "allergens": regex }] }).exec(function (err, count) {
             if (err) {
                 req.flash("error", "Sorry, an error has occurred.");
@@ -92,7 +186,7 @@ router.get("/s", function(req, res){
 //===================
 
 //Show the signup page
-router.get("/register", function (req, res) {
+router.get("/register", function (req, res) { 
     res.render("register", { message: req.flash("signupMessage") });
 });
 
@@ -146,7 +240,8 @@ router.get("/verification-email", function (req, res) {
         from: process.env.TESTEMAILADDRESS,
         to: req.user.username,
         subject: "Please Confirm Your Email Account",
-        html: "Hello, <br> Please confirm your email by clicking the link below: <br><a href=" + link + ">Click here to verify your account.</a>",
+        html: "Hello, <br> Please confirm your email by clicking the link below: <br>" + link
+
     };
     console.log(mailOptions);
     smtpTransporter.sendMail(mailOptions, function (err, response) {
@@ -254,7 +349,7 @@ router.post('/forgot', function (req, res, next) {
                 to: user.username,
                 from: process.env.TESTEMAILADDRESS,
                 subject: 'Please Reset Your Password',
-                text: 'You are receiving this because you (or someone else) have requested the reset of the password for your account.\n\n' +
+                text: 'You are receiving this because you have requested the reset of the password for your account.\n\n' +
                     'Please click on the following link, or paste this into your browser to complete the process:\n\n' +
                     'http://' + req.headers.host + '/reset/' + token + '\n\n' +
                     'If you did not request this, please ignore this email and your password will remain unchanged.\n'

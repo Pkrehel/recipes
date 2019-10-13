@@ -16,7 +16,6 @@ var commentRoutes = require("./routes/comments"),
     indexRoutes = require("./routes/index"),
     reviewRoutes = require("./routes/reviews"),
     loveRecipeRoutes = require("./routes/love"),
-    categoryRoutes = require("./routes/categories"),
     apiRoutes = require("./routes/api");
 
 mongoose.connect("mongodb://localhost/db_1");
@@ -54,7 +53,6 @@ app.use("/recipes", recipeRoutes);
 app.use("/recipes/:id/comments", commentRoutes);
 app.use("/recipes/:id/love", loveRecipeRoutes);
 app.use("/recipes/:id/reviews", reviewRoutes);
-app.use("/categories", categoryRoutes);
 app.use("/api", apiRoutes);
 
 app.listen(process.env.PORT || 3000, process.env.IP, function () {

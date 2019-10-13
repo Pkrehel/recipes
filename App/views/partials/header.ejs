@@ -59,40 +59,40 @@
           </form>
         </li>
         <li class="nav-item dropdown megamenu-li">
-         <a class="nav-link btn btn-outline-primary dropdown-toggle" href="" id="dropdown01" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Categories</a>
+         <a class="nav-link btn btn-outline-primary dropdown-toggle ml-4" href="" id="dropdown01" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Categories</a>
          <div class="dropdown-menu megamenu bg-light border border-secondary" aria-labelledby="dropdown01">
           <div class="row">
            <div class="col-sm-6 col-lg-3 mb-2">
             <h5>Diet Type</h5>
-            <a class="dropdown-item" href="/categories/vegetarian">Vegetarian</a>
-            <a class="dropdown-item" href="/categories/vegan">Vegan</a>
-            <a class="dropdown-item" href="/categories/gluten-free">Gluten-Free</a>
+            <a class="dropdown-item" href="/?allergens=Vegetarian&pageTitle=Vegetarian Recipes">Vegetarian</a>
+            <a class="dropdown-item" href="/?allergens=Vegan&pageTitle=Vegan Recipes">Vegan</a>
+            <a class="dropdown-item" href="/?allergens=Gluten-Free&pageTitle=Gluten-Free Recipes">Gluten-Free</a>
            </div>
            <div class="col-sm-6 col-lg-3 mb-2">
             <h5>Time of Day</h5>
-            <a class="dropdown-item" href="/categories/breakfast">Breakfast</a>
-            <a class="dropdown-item" href="/categories/lunch">Lunch</a>
-            <a class="dropdown-item" href="/categories/dinner">Dinner</a>
+            <a class="dropdown-item" href="/?category=Breakfast&pageTitle=Breakfast Recipes">Breakfast</a>
+            <a class="dropdown-item" href="/?category=Lunch&pageTitle=Lunch Recipes">Lunch</a>
+            <a class="dropdown-item" href="/?category=Dinner&pageTitle=Dinner Recipes">Dinner</a>
            </div>
            <div class="col-sm-6 col-lg-3 mb-2">
             <h5>Difficulty</h5>
-            <a class="dropdown-item" href="/categories/breakfast">Beginner</a>
-            <a class="dropdown-item" href="/categories/lunch">Medium</a>
-            <a class="dropdown-item" href="/categories/dinner">Challenging</a>
+            <a class="dropdown-item" href="/?difficulty=0&pageTitle=Beginner Recipes">Beginner</a>
+            <a class="dropdown-item" href="/?difficulty=1&pageTitle=Intermediate Recipes">Intermediate</a>
+            <a class="dropdown-item" href="/?difficulty=2&pageTitle=Challenging Recipes">Challenging</a>
            </div>
            <div class="col-sm-6 col-lg-3 mb-2">
             <h5>Kitchen Time</h5>
-            <a class="dropdown-item" href="/categories/breakfast">Quick <span class="small">(10 minutes or less)</span></a>
-             <a class="dropdown-item" href="/categories/lunch">Medium <span class="small">(11-44 minutes)</span></a>
-             <a class="dropdown-item" href="/categories/dinner">Long <span class="small">(> 45 minutes)</span></a>
+            <a class="dropdown-item" href="/?lt=11&pageTitle=Quick Recipes">Quick <span class="small">(10 minutes or less)</span></a>
+             <a class="dropdown-item" href="/?lt=46&gt=11&pageTitle=Medium Recipes">Medium <span class="small">(11-45 minutes)</span></a>
+             <a class="dropdown-item" href="/?gt=46&pageTitle=Long Recipes">Long <span class="small">(> 45 minutes)</span></a>
            </div>
           </div>
            <hr>
            <div class="row">
-             <div class="col-sm-6 col-lg-3 mb-2">Column 1</div>
-             <div class="col-sm-6 col-lg-3 mb-2">Column 2</div>
-             <div class="col-sm-6 col-lg-3 mb-2">Column 3</div>
-             <div class="col-sm-6 col-lg-3 mb-2">Column 4</div>
+             <div class="col-sm-6 col-lg-3 mb-2"><a href="/?sortBy=-1&orderBy=createdAt&pageTitle=Recent Recipes">Recent</a></div>
+             <div class="col-sm-6 col-lg-3 mb-2"><a href="/?sortBy=-1&orderBy=views&pageTitle=Most Viewed Recipes">Most Viewed</a></div>
+             <div class="col-sm-6 col-lg-3 mb-2"><a href="/?sortBy=-1&orderBy=rating">Highest Rating</a></div>
+             <div class="col-sm-6 col-lg-3 mb-2"><a href="/recipes/5d193da5e0f43004695ac867">Recipe of The Day</a></div>
            </div>
          </div>
         </li>

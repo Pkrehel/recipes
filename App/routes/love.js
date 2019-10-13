@@ -23,7 +23,7 @@ router.post("/", middleware.isLoggedIn, function (req, res) {
                else {
                   user.save();
                   req.flash("success", recipe.title + " was added to your favorites!");
-                  res.locals.success = req.flash();
+                  res.redirect("back");
                }
             });
       }

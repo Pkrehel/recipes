@@ -72,7 +72,7 @@ router.post("/", middleware.isLoggedIn, upload.single('image'), function (req, r
         }
         res.redirect('/');
       });
-    }, { categorization: "google_tagging", auto_tagging: 0.60, quality: "auto", width: 700, height: 525, gravity: "auto", crop: "fill" });
+    }, { categorization: "google_tagging", auto_tagging: 0.85, quality: "auto", width: 700, height: 525, gravity: "auto", crop: "fill" });
 });
 
 //NEW - create a new item on form
