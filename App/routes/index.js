@@ -22,7 +22,16 @@ router.get("/", function (req, res) {
     var greaterThan = parseInt(req.query.gt)
     var category = req.query.category
     var allergens = req.query.allergens
+   
+   //PARSING QUERY STRING VALUES:
     var queryString = '?'
+    var urlParamObj = Object.entries(req.query)
+    for (let key in urlParamObj) {
+      var value = urlParamObj[key].toString();
+      value = value.replace(',','=')
+      queryString = queryString.concat('&'+value)
+    }
+    queryString = queryString.replace('?&','?')
 
     if(pageLimit){
         if(pageLimit <= 12){
@@ -46,7 +55,6 @@ router.get("/", function (req, res) {
     
     if(difficulty){
         query['difficulty'] = difficulty
-        queryString = queryString.concat('&difficulty='+difficulty)
     }
 
     if(lessThan && greaterThan){
@@ -55,15 +63,10 @@ router.get("/", function (req, res) {
         $gt: greaterThan,
         $lt: lessThan
         }
-        queryString = queryString.concat('&gt='+greaterThan+'&lt='+lessThan)
     }
 
     if(lessThan && !greaterThan){
-        query['totalTime'] = 
-        {
-        $lt: lessThan
-        }
-        queryString = queryString.concat('&lt='+lessThan)
+        query['totalTime'] = { $lt: lessThan }
     }  
 
     if(!lessThan && greaterThan){
@@ -71,17 +74,14 @@ router.get("/", function (req, res) {
         {
         $gt: greaterThan
         }
-        queryString = queryString.concat('&gt='+greaterThan)
     }
 
     if(category){
         query['category'] = category
-        queryString = queryString.concat('&category='+category)
     }
 
     if(allergens){
-        query['allergens'] = allergens 
-        queryString = queryString.concat('&allergens='+allergens)
+        query['allergens'] = allergens
     }
 
     var pageQuery = parseInt(req.query.page);
@@ -93,7 +93,6 @@ router.get("/", function (req, res) {
                 req.flash("error", "Sorry, an error has occurred.");
                 res.redirect("back");
             } else {
-                console.log("QUERY PARAMS: " + queryString)
                 res.render("home", {
                     latestRecipes: latestRecipes,
                     current: pageNumber,
@@ -101,7 +100,8 @@ router.get("/", function (req, res) {
                     noMatch: noMatch,
                     search: false,
                     perPage: perPage,
-                    pageTitle: pageTitle
+                    pageTitle: pageTitle,
+                    queryString: queryString
                 });
             }
         });
