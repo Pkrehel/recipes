@@ -84,6 +84,7 @@ router.get("/", function (req, res) {
         query['allergens'] = allergens
     }
 
+
     var pageQuery = parseInt(req.query.page);
     var pageNumber = pageQuery ? pageQuery : 1;
     var noMatch = null;
@@ -196,6 +197,7 @@ router.post("/register", function (req, res) {
         username: req.body.username,
         screenName: req.body.screenName,
         avatar: req.body.avatar,
+        firstName: req.body.firstName,
         favoriteCategories: req.body.favoriteCategories,
         // Randomstring Generation
         secretToken: randomstring.generate(),

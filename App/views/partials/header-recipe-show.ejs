@@ -2,7 +2,7 @@
 <html>
 
 <head>
-  <title>Homepage</title>
+  <title><%= recipe.title %> - Healthy Recipes</title>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
@@ -11,6 +11,45 @@
 <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
   <link href="https://fonts.googleapis.com/css?family=Nunito:300,400,600,700|Roboto:300,400,500" rel="stylesheet">
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org/",
+  "@type": "Recipe",
+  "name": "<%=recipe.title%>",
+  "image": [
+  "<%=recipe.image%>"
+  ],
+  "author": {
+  	"@type": "Person",
+    "name": "<%=recipe.chef.screenName%>"
+  },
+  "datePublished": "<%= recipe.createdAt %>",
+  "description": "<%= recipe.description %>",
+  "prepTime": "PT<%= recipe.prepTime %>M",
+  "cookTime": "PT<%= recipe.cookTime %>M",
+  "totalTime": "PT<%= recipe.totalTime %>M",
+  "recipeCategory": "<%= recipe.category %>",
+  "recipeIngredient": [
+    "<%=recipe.ingredients.join(", ") %>"
+    ],
+  "recipeInstructions": [
+  <% for(var i=0; i< recipe.directions.length; i++) { %>
+    {
+      "@type": "HowToStep",
+      "text": "<%=recipe.directions[i]%>"
+      },
+  <% } %>
+  ]<% if(recipe.reviews.length > 0) {%>,
+  
+  "aggregateRating": {
+    "@type": "AggregateRating",
+    "ratingValue": "<%=recipe.rating%>",
+    "ratingCount": "<%=recipe.reviews.length%>"
+  }
+  <% } %>
+}
+</script>  
   
 </head>
 

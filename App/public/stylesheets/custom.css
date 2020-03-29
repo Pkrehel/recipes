@@ -4,10 +4,11 @@
 
 .megamenu {
 	position: absolute;
-	width: 100%;
+	width: 95%;
 	left: 0;
 	right: 0;
 	padding: 15px;
+	margin: auto;
 }
 
 

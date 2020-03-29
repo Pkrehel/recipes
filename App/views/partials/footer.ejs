@@ -1,22 +1,28 @@
-<nav class="navbar fixed-bottom text-center navbar-light bg-light border border-secondary d-block d-md-none">
+<div class="container">
+<nav class="navbar fixed-bottom navbar-light bg-light border border-secondary d-block d-md-none">
   <% if(!currentUser) { %>
   <a href="#0" class="js-cd-panel-trigger" data-panel="main">
     <div class="btn btn-outline-primary ml-auto">Sign Up / Login</div>
   </a>
   <% } %>
   <% if(currentUser) { %>
-  <form class="form-inline d-lg-none ml-auto">
+  <form class="form-inline d-lg-none">
+    <div class="col-6 text-center">
       <a href="#0" class="js-cd-panel-trigger" data-panel="main">
-        <button class="btn btn-outline-primary ml-auto">Favorites &nbsp;
+        <button class="btn btn-outline-primary">Favorites &nbsp;
           <span class="badge badge-secondary"><%= currentUser.lovedRecipes.length %></span>
         </button>
       </a>
+    </div>
+    <div class="col-6 text-center">
       <a href="/recipes/new">
-         <div class="btn btn-outline-primary ml-4">Post A Recipe</div>
+         <div class="btn btn-outline-primary">Post A Recipe</div>
         </a>
+    </div>
   </form>
   <% } %>
 </nav>
+</div>
 
 </main>
 <footer>

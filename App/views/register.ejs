@@ -8,83 +8,73 @@
             <div class="card-body">
               <h1 class="mb-4 text-center text-primary">Sign Up</h1>
               <form action="/register" method="POST">
+                <div class="form-group text-dark"> <label>First Name</label>
+                  <input type="text text-dark" name="firstName" class="form-control" minlength="1" maxlength="50", required>
+                </div>
                 <div class="form-group text-dark"> <label>Username</label>
-                  <input type="text text-dark" name="screenName" class="form-control" placeholder="different from email" minlength="4" maxlength="20", required>
+                  <input type="text text-dark" name="screenName" class="form-control" minlength="4" maxlength="20", required>
                 </div>
                 <div class="form-group avatars text-dark"><label>Choose an Avatar</label>
                   <div class="btn-group btn-group-toggle row" data-toggle="buttons">
-                    <div class="col-sm-1">
+                    <div class="ml-auto">
                       <label class="btn avatar">
                         <input type="radio" name="avatar" value="😛" autocomplete="off">😛
                       </label>
-                    </div>
-                    <div class="col-sm-1">
+                    
                       <label class="btn avatar">
                         <input type="radio" name="avatar" value="😎" autocomplete="off">😎
                       </label>
-                    </div>
-                    <div class="col-sm-1">
+                
                       <label class="btn avatar">
                         <input type="radio" name="avatar" value="🍉" autocomplete="off">🍉
                       </label>
-                    </div>
-                    <div class="col-sm-1">
+                
                       <label class="btn avatar">
                         <input type="radio" name="avatar" value="🌶" autocomplete="off">🌶
                       </label>
-                    </div>
-                    <div class="col-sm-1">
+                
                       <label class="btn avatar">
                         <input type="radio" name="avatar" value="🍅" autocomplete="off">🍅
                       </label>
-                    </div>
-                    <div class="col-sm-1">
+                  
                       <label class="btn avatar">
                         <input type="radio" name="avatar" value="🍍" autocomplete="off">🍍
                       </label>
-                    </div>
-                    <div class="col-sm-1">
+                    
                       <label class="btn avatar">
                         <input type="radio" name="avatar" value="🍄" autocomplete="off">🍄
                       </label>
-                    </div>
-                    <div class="col-sm-1">
+                    
                       <label class="btn avatar">
                         <input type="radio" name="avatar" value="🍲" autocomplete="off">🍲
                       </label>
-                    </div>
-                    <div class="col-sm-1">
+                      
                       <label class="btn avatar">
                         <input type="radio" name="avatar" value="☕" autocomplete="off">☕
                       </label>
-                    </div>
-                    <div class="col-sm-1">
+                    
                       <label class="btn avatar">
                         <input type="radio" name="avatar" value="🍜" autocomplete="off">🍜
                       </label>
-                    </div>
-                    <div class="col-sm-1">
                       <label class="btn avatar">
                         <input type="radio" name="avatar" value="🍷" autocomplete="off">🍷
                       </label>
-                    </div>
+                  </div>
                   </div>
                 </div>
 
-                <div class="form-group text-dark" required> <label>Email address</label>
-                  <input type="email" name="username" class="form-control text-dark" placeholder="your.email@abc123.com" required> </div>
-                <div class="form-group text-dark"> <label>Password</label>
-                  <input type="password" name="password" class="form-control" placeholder="Password" autocomplete=off> </div>
+                <div class="form-group text-dark" required> 
+                  <label>Email address</label>
+                  <input type="email" name="username" class="form-control text-dark" placeholder="your.email@abc123.com" required>
+                </div>
+                
+                <div class="form-group text-dark"> 
+                  <label>Password</label>
+                  <input type="password" name="password" class="form-control" placeholder="Password" autocomplete=off>
+                </div>
 
-
-
-              <div class="row">
-                <div class="col-md-12">
-                  <div class="input-group mb-3">
-                    <div class="input-group-prepend">
-                      <label class="input-group-text" for="favoriteCategories"><small>Customize Your Interests</small></label>
-                    </div>
-                    <div class="form-control" id="favoriteCategories">
+                <div class="form-group avatars text-dark"><label>Customize Your Interests</label>
+                    <div id="favoriteCategories">
                       <div class="form-check form-check-inline">
                         <input class="form-check-input" type="checkbox" name="favoriteCategories[]" id="glutenFree" value="Gluten-Free">
                         <label class="form-check-label" for="glutenFree"><small>Gluten-Free</small></label>
@@ -106,13 +96,7 @@
                         <label class="form-check-label" for="nutFree"><small>Nut-Free</small></label>
                       </div>
                     </div>
-                  </div>
-                </div>
-              </div>
-
-
-
-
+                </div>              
 
                 <button type="submit" class="btn btn-secondary btn-block btn-lg my-2"><b>Create Account</b></button>
               </form>
