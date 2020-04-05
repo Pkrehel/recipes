@@ -8,14 +8,14 @@
           <h3 class="">Edit Recipe</h3>
             <div class="card-body recipe-show-primary-info border-0 p-0">
               <div class="custom-file mb-3">
-                <input type="file" class="custom-file-input form-control-lg w-100" name="image" value="<%= recipe.image %>" id="image" accept="image/*" required>
+                <input type="file" class="custom-file-input form-control-lg w-100" name="image" value="<%= recipe.image %>" id="image" accept="image/*">
                 <label class="btn btn-primary btn-lg w-100 mb-5" for="image">Choose New Image</label>
               </div>
               <h1 class="card-title text-primary display-3">
                 <input class="form-control form-control-lg" type="text" name="title" value="<%= recipe.title %>" placeholder="Recipe Title" minlength="5" maxlength="200" required>
               </h1>
               <h4 class="card-title text-primary display-3">
-                <textarea class="form-control form-control-lg" id="description-text" type="text" name="description" <%= recipe.description %> minlength="50" maxlength="400" placeholder="Description" required></textarea>
+                <textarea class="form-control form-control-lg" id="description-text" type="text" name="description" minlength="50" maxlength="400" placeholder="Description" required><%=recipe.description %></textarea>
               </h4>
               <!--Prep Time & Cook Time: -->
               <div class="input-group mb-3">
@@ -50,23 +50,23 @@
                     </div>
                     <div class="form-control h-auto" id="allergens">
                       <div class="form-check form-check-inline">
-                        <input class="form-check-input" type="checkbox" name="allergens[]" id="glutenFree" value="Gluten-Free">
+                        <input class="form-check-input" type="checkbox" name="allergens[]" id="glutenFree" value="Gluten-Free" <%= recipe.allergens.includes("Gluten-Free") ? "checked": "" %>>
                         <label class="form-check-label" for="glutenFree"><small>Gluten-Free</small></label>
                       </div>
                       <div class="form-check form-check-inline">
-                        <input class="form-check-input" type="checkbox" name="allergens[]" id="vegetarian" value="Vegetarian">
+                        <input class="form-check-input" type="checkbox" name="allergens[]" id="vegetarian" value="Vegetarian" <%= recipe.allergens.includes("Vegetarian") ? "checked": "" %>>
                         <label class="form-check-label" for="vegetarian"><small>Vegetarian</small></label>
                       </div>
                       <div class="form-check form-check-inline">
-                        <input class="form-check-input" type="checkbox" name="allergens[]" id="vegan" value="Vegan">
+                        <input class="form-check-input" type="checkbox" name="allergens[]" id="vegan" value="Vegan" <%= recipe.allergens.includes("Vegan") ? "checked": "" %>>
                         <label class="form-check-label" for="vegan"><small>Vegan</small></label>
                       </div>
                       <div class="form-check form-check-inline">
-                        <input class="form-check-input" type="checkbox" name="allergens[]" id="dairyFree" value="Dairy-Free">
+                        <input class="form-check-input" type="checkbox" name="allergens[]" id="dairyFree" value="Dairy-Free" <%= recipe.allergens.includes("Dairy-Free") ? "checked": "" %>>
                         <label class="form-check-label" for="dairyFree"><small>Dairy-Free</small></label>
                       </div>
                       <div class="form-check form-check-inline">
-                        <input class="form-check-input" type="checkbox" name="allergens[]" id="nutFree" value="Nut-Free">
+                        <input class="form-check-input" type="checkbox" name="allergens[]" id="nutFree" value="Nut-Free" <%= recipe.allergens.includes("Nut-Free") ? "checked": "" %>>
                         <label class="form-check-label" for="nutFree"><small>Nut Free</small></label>
                       </div>
                     </div>
@@ -93,9 +93,14 @@
           <h3 class="">Ingredients</h3>
           <div class="ingredients_input_fields_wrap">
             <button class="btn btn-secondary ingredients_add_field_button btn-block btn-sm my-2">Add Ingredient</button>
-            <div class="input-group mb-2"><input class="form-control" type="text" name="ingredients[]" required>
-              <div class="input-group-append"><button class="btn btn-outline-danger btn-sm remove_field" type="button"><i class="fas fa-trash-alt"></i></button></div>
-            </div>
+            
+            <% for(var i = 0; i < recipe.ingredients.length; i++) { %>
+              <div class="input-group mb-2"><input class="form-control" type="text" name="ingredients[]" value="<%= recipe.ingredients[i]%>">
+                <div class="input-group-append"><button class="btn btn-outline-danger btn-sm remove_field" type="button"><i class="fas fa-trash-alt"></i></button></div>
+              </div>  
+            <% } %>
+            
+            
           </div>
         </div>
         <div class="col-lg-7 col-md-7 col-xs-12 p-1">
@@ -103,12 +108,13 @@
 
           <div class="directions_input_fields_wrap">
             <button class="btn btn-secondary directions_add_field_button btn-block btn-sm my-2">Add Step</button>
-
-            <div class="input-group mb-2"><input class="form-control" type="text" name="directions[]" required>
+            <% for(var i = 0; i < recipe.directions.length; i++) { %>
+            <div class="input-group mb-2"><input class="form-control" type="text" name="directions[]" value="<%= recipe.directions[i]%>">
               <div class="input-group-append"><button class="btn btn-outline-danger btn-sm remove_field" type="button">
           <i class="fas fa-trash-alt"></i></button>
               </div>
             </div>
+            <% } %>
           </div>
         </div>
       </div>
