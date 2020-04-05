@@ -67,9 +67,8 @@
   
   <!--SIGN UP / LOGIN BUTTON-->
   <% if(!currentUser) { %>
-  <div class="btn btn-outline-primary ml-auto d-none d-sm-block">
-    <a href="#0" class="js-cd-panel-trigger" data-panel="main"><i class="far fa-user-circle"></i> Sign Up / Login</a>
-    </div>
+  <a href="#0" class="btn btn-outline-primary ml-auto d-none d-sm-block js-cd-panel-trigger" data-panel="main">
+    <i class="far fa-user-circle"></i> Sign Up / Login</a>
     <% } %>
       <% if(currentUser) { %>
       <div class="ml-auto">

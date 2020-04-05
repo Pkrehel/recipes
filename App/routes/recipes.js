@@ -39,12 +39,13 @@ router.get("/", function (req, res) {
   });
 });
 
-//CREATE ROUTE - Create a new item in the database
+//CREATE ROUTE - Create a new recipe in the database
 router.post("/", middleware.isLoggedIn, upload.single('image'), function (req, res) {
   cloudinary.uploader.upload(req.file.path,
     function (result) {
-      // add cloudinary url for the image to the campground object under image property
+      // add cloudinary url for the image to the recipe object under image property
       var image = result.secure_url;
+      var imageId = result.public_id;
       var tags = result.tags;
       var title = req.body.title;
       var description = req.body.description;
@@ -64,7 +65,7 @@ router.post("/", middleware.isLoggedIn, upload.single('image'), function (req, r
       };
       var category = req.body.category;
       var difficulty = req.body.difficulty;
-      var newRecipe = { chef: chef, image: image, title: title, description: description, ingredients: ingredients, prepTime: prepTime, cookTime: cookTime, totalTime: totalTime, directions: directions, category: category, tags: tags, allergens: allergens, difficulty: difficulty };
+      var newRecipe = { chef: chef, image: image, imageId: imageId, title: title, description: description, ingredients: ingredients, prepTime: prepTime, cookTime: cookTime, totalTime: totalTime, directions: directions, category: category, tags: tags, allergens: allergens, difficulty: difficulty };
       Recipe.create(newRecipe, function (err, recipe) {
         if (err) {
           req.flash('error', err.message);
@@ -102,10 +103,11 @@ router.get("/:id", function (req, res) {
 });
 
 //RECIPE EDIT SHOW ROUTE:
-router.get("/edit/:id", function (req, res) {
+router.get("/:id/edit", function (req, res) {
   Recipe.findById(req.params.id, function (err, foundRecipe) {
     if (err) {
-      res.redirect("back");
+      req.flash('error', err.message);
+      return res.redirect('back');
     }
     else {
       res.render("recipes/edit", { recipe: foundRecipe });
@@ -113,17 +115,62 @@ router.get("/edit/:id", function (req, res) {
   });
 });
 
+// //RECIPE UPDATE ROUTE:
+// router.put("/:id", function (req, res) {
+//   Recipe.findByIdAndUpdate(req.params.id, req.body.recipe, function (err, updatedRecipe) {
+//     if (err) {
+//       res.send(err);
+//     }
+//     else {
+//       res.send("SUCCESSFULLY UPDATED!!!")
+//     }
+//   });
+// });
 
-//RECIPE UPDATE ROUTE:
-router.put("/edit/:id", function (req, res) {
-  Recipe.findByIdAndUpdate(req.params.id, req.body.recipe, function (err, updatedRecipe) {
-    if (err) {
-      console.log(err);
-    }
-    else {
-      res.render("home");
-    }
-  });
+
+router.put("/:id", upload.single('image'), function(req, res){
+    Recipe.findById(req.params.id, async function(err, recipe){
+        if(err){
+            req.flash("error", err.message);
+            res.redirect("back");
+        } else {
+            if (req.file) {
+              try {
+                  await cloudinary.v2.uploader.destroy(recipe.imageId);
+                  var result = await cloudinary.v2.uploader.upload(req.file.path);
+                  recipe.imageId = result.public_id;
+                  recipe.image = result.secure_url;
+                  recipe.tags = result.tags;
+              } catch(err) {
+                  req.flash("error", err.message);
+                  return res.redirect("back");
+              }
+            }
+            recipe.title = req.body.title;
+            recipe.description = req.body.description;
+            recipe.ingredients = req.body.ingredients.filter(function (ingredient) {
+              return ingredient.trim() != '';
+      });
+
+      recipe.prepTime = req.body.prepTime;
+      recipe.cookTime = req.body.cookTime;
+      recipe.totalTime = Number(req.body.prepTime) + Number(req.body.cookTime);
+      recipe.allergens = req.body.allergens;
+      recipe.directions = req.body.directions.filter(function (ingredient) { return ingredient.trim() != ''; });
+      recipe.chef = req.body.chef = {
+        id: req.user._id,
+        screenName: req.user.screenName,
+        avatar: req.user.avatar
+      };
+      recipe.category = req.body.category;
+      recipe.difficulty = req.body.difficulty;
+            recipe.save();
+            req.flash("success","Successfully Updated!");
+            res.redirect("/recipes/" + recipe._id);
+        }
+    });
 });
+
+
 
 module.exports = router;

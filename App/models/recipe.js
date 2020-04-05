@@ -5,6 +5,7 @@ var recipeSchema = new mongoose.Schema({
     createdAt: { type: Date, default: Date.now },
     description: { type: String, required: true },
     image: { type: String, required: true },
+    imageId: { type: String, required: true },
     chef: {
         id: {
             type: mongoose.Schema.Types.ObjectId,
