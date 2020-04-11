@@ -1,20 +1,35 @@
 <% include ../partials/header-recipe-show %>
 
 <div class="container-fluid">
+
+  <!-- Recipe author buttons -->
+  <% if(currentUser && recipe.chef.id.equals(currentUser._id)){ %>
+  <div class="row">
+    <div class="col">
+      <div class="form-group text-center w-25 mx-auto">
+        <a href="/recipes/<%= recipe.id %>/edit" class="btn btn-warning btn-block"><strong>Edit</strong></a>
+      </div>
+    </div>
+  </div>
+  <% } %>
+  
   <!--Recipe Info.-->
   <div class="row mb-3">
-    <div class="col-md-6 col-xs-12 p-2">
+    <div class="col-md-5 col-xs-12 p-0">
       <div class="card mb-0 border-0">
         <img class="card-img-top recipe-main-image my-0" src="<%= recipe.image %>">
       </div>
     </div>
+    <div class="col-md-1"></div>
     <!--Image-->
-    <div class="col-md-6 col-xs-12 p-2">
+    <div class="col-md-6 col-xs-12 p-0">
       <div class="card mb-2 maxheightcolumn">
         <div class="card-body maxheightcolumn recipe-show-primary-info">
           <h1 class="h2 text-primary">
             <%= recipe.title %>
           </h1>
+          <p class="card-text small"><%= recipe.description %></p>
+          <hr>
   <!--Prep Time & Cook Time: -->
           <p class="card-text mb-0"><small class="text-muted">Prep Time:&nbsp;<%= recipe.prepTime %>&nbsp;minutes</small></p>
           <p class="card-text mb-0"><small class="text-muted">Cook Time:&nbsp;<%= recipe.cookTime %>&nbsp;minutes</small></p>
@@ -83,7 +98,7 @@
   </div>
   <div class="row mb-2">
   <!--DIRECTIONS & INGREDIENTS-->
-    <div class="col-lg-6 col-md-6 col-xs-12 mb-2 p-2">
+    <div class="col-lg-5 col-md-5 col-xs-12 mb-2 p-0">
       <h2>Ingredients</h2>
       <ul class="list-group">
         <% for(i=0; i < recipe.ingredients.length; i++) {%>
@@ -93,7 +108,8 @@
         <% }; %>
       </ul>
     </div>
-    <div class="col-lg-6 col-md-6 col-xs-12 mb-2 p-2">
+    <div class="col-lg-1 col-md-1"></div>
+    <div class="col-lg-6 col-md-6 col-xs-12 mb-2 p-0">
       <h2>Directions</h2>
       <ul class="list-group">
         <% for(i=0; i < recipe.directions.length; i++) {%>
@@ -159,9 +175,9 @@
               <div class="form-group">
                       <textarea class="form-control" type="text" name="review[text]" placeholder="Write a review for this recipe..." rows="5"></textarea>
                   </div>
-              <div class="form-group">
-                      <button class="btn btn-primary btn-block">Submit Review</button>
-                  </div>
+                <div class="form-group">
+                  <button class="btn btn-primary btn-block">Submit Review</button>
+                </div>
             </form>
           <% } %>
       </div>

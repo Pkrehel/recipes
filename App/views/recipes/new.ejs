@@ -1,6 +1,5 @@
 <% include ../partials/header %>
-
-  <form action="/recipes" method="POST" enctype="multipart/form-data">
+  <form action="/recipes" method="POST" enctype="multipart/form-data" onsubmit="showLoadingAnimation()">
     <div class="container-fluid">
       <div class="row mb-3">
         <!--Row 1- LEFT COLUMN-->
