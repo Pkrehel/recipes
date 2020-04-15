@@ -294,14 +294,26 @@
       <% if(currentUser) { %>
       <div class="ml-auto">
       <form class="form-inline d-none d-md-block">
+        
+        <div class="dropdown d-inline">
+          <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Profile</button>
+          <div class="dropdown-menu text-center p-2" aria-labelledby="dropdownMenu2">
+          
+          <a href="/users/<%= currentUser.id %>" class="mb-2 btn btn-outline-dark w-100">View Profile</a>
+            
           <a href="#0" class="js-cd-panel-trigger" data-panel="main">
-            <button class="btn btn-outline-primary ml-auto">Favorites &nbsp;
+            <button class="btn btn-outline-primary w-100 mb-2">Favorites &nbsp;
               <span class="badge badge-secondary"><%= currentUser.lovedRecipes.length %></span>
             </button>
           </a>
+        
+           <a href="/logout" class="btn btn-outline-danger w-100">Logout</a>
+          </div>
+        </div>
+
           <a href="/recipes/new">
              <div class="btn btn-outline-primary ml-4">Post A Recipe</div>
-            </a>
+          </a>
       </form>
       </div>
   <% } %>  

@@ -115,19 +115,6 @@ router.get("/:id/edit", function (req, res) {
   });
 });
 
-// //RECIPE UPDATE ROUTE:
-// router.put("/:id", function (req, res) {
-//   Recipe.findByIdAndUpdate(req.params.id, req.body.recipe, function (err, updatedRecipe) {
-//     if (err) {
-//       res.send(err);
-//     }
-//     else {
-//       res.send("SUCCESSFULLY UPDATED!!!")
-//     }
-//   });
-// });
-
-
 router.put("/:id", upload.single('image'), function(req, res){
     Recipe.findById(req.params.id, async function(err, recipe){
         if(err){
@@ -170,7 +157,6 @@ router.put("/:id", upload.single('image'), function(req, res){
         }
     });
 });
-
 
 
 module.exports = router;

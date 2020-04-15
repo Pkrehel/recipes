@@ -436,10 +436,10 @@ router.post('/reset/:token', function (req, res) {
 
 //USER PUBLIC PROFILE ROUTES:
 router.get("/users/:id", function (req, res) {
-    User.findById(req.params.id, function (err, foundUser) {
+    User.findById(req.params.id).populate("recipes").exec(function (err, foundUser) {
         if (err) {
-            req.flash("error", "Cannot Find User's Profile");
-            res.redirect("/");
+            req.flash("error", "Cannot Find User's Profile.");
+            res.redirect("back");
         }
         res.render("users/public", { user: foundUser });
     });
