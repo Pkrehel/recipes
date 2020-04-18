@@ -84,7 +84,7 @@ router.get("/new", middleware.isLoggedIn, function (req, res) {
 
 //UNIQUE RECIPE SHOW ROUTE:
 router.get("/:id", function (req, res) {
-  Recipe.findByIdAndUpdate(req.params.id).populate('comments lovedBy user avatar toMake reviews').exec(function (err, foundRecipe) {
+  Recipe.findByIdAndUpdate(req.params.id).populate('comments user reviews').exec(function (err, foundRecipe) {
     if (err) {
       req.flash("error", "Whoops, we cannot find that recipe. It may have been removed.");
       res.redirect("back");

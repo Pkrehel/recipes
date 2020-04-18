@@ -3,25 +3,106 @@
     <div class="container-fluid">
         <div class="row">     
             <!--LEFT COLUMN-->
-            <div class="col-md-3 col-sm-12 p-2">
-                <div class="list-group" id="list-tab" role="tablist">
-                  <a class="list-group-item list-group-item-action" id="list-recipes-list" data-toggle="list" href="#list-recipes" role="tab" aria-controls="recipes">Favorites</a>
-                  <a class="list-group-item list-group-item-action" id="list-messages-list" data-toggle="list" href="#list-messages" role="tab" aria-controls="messages">Your Recipes</a>
-                  <a class="list-group-item list-group-item-action" id="list-settings-list" data-toggle="list" href="#list-settings" role="tab" aria-controls="settings">Settings</a>
+            <div class="col">
+              <ul class="nav nav-tabs" id="myTab" role="tablist">
+                <li class="nav-item">
+                  <a class="nav-link active" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home" aria-selected="true">Favorites</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" id="profile-tab" data-toggle="tab" href="#profile" role="tab" aria-controls="profile" aria-selected="false">Recipes</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" id="contact-tab" data-toggle="tab" href="#contact" role="tab" aria-controls="contact" aria-selected="false">Settings</a>
+                </li>
+              </ul>
+              <div class="tab-content" id="myTabContent">
+                <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
+                  <div class="card-deck pt-4">
+                      <% var favoriteRecipeCount = 0; %>
+                      <% if(foundUser.lovedRecipes.length < 6) { %>
+                         <% var favoriteRecipesLength = foundUser.lovedRecipes.length  %>
+                          <% var favoriteRecipes = foundUser.lovedRecipes %>
+                      <% } else { %>
+                      <% var favoriteRecipesLength = 6 %>
+                      <% } %>
+                          <% while((favoriteRecipeCount < favoriteRecipesLength)) { %>
+                            <div class="col-lg-4 col-md-6 col-sm-6 col-xs-12 mb-3 p-0 recipe-card">
+                              <div class="card">
+                                <div class="card-block">
+                                  <div class="img-container">
+                                    <a href="/recipes/<%= favoriteRecipes[favoriteRecipeCount].id%>">
+                                      <div class="recipeBookButton text-center">
+                                        <form action="/recipes/<%=favoriteRecipes[favoriteRecipeCount].id%>/love" method="POST">
+                                              <button class="btn rounded-circle ajax-trigger-love like-btn-homepage" data-recipe-id="<%=favoriteRecipes[favoriteRecipeCount].id%>">
+                                                  <i class="fas fa-heart"></i>
+                                                </button>
+                                        </form>
+<!---->
+                                      </div>
+                                      <img class="img-fluid recipe-index-image" src="<%= favoriteRecipes[favoriteRecipeCount].image %>">
+                                      <!--To Make Button Block-->
+                                    </a>
+                                  </div>
+
+                                  <a href="/recipes/<%= favoriteRecipes[favoriteRecipeCount]._id%>">
+                                    <div class="card-body text-center visibile-recipe-info p-1 mt-1">
+                                      <h3 class="card-title mb-1">
+                                        <%= favoriteRecipes[favoriteRecipeCount].title %>
+                                      </h3>
+                                  <% if (favoriteRecipes[favoriteRecipeCount].rating > 0) { %>
+                                  <p class="card-text text-muted">
+                                    <small>
+                                      <span class="fa fa-star checked"></span>
+                                      <span class="fa fa-star <% if (favoriteRecipes[favoriteRecipeCount].rating > 1.5) { %> checked <% } %>"></span>
+                                      <span class="fa fa-star <% if (favoriteRecipes[favoriteRecipeCount].rating > 2.5) { %> checked <% } %>"></span>
+                                      <span class="fa fa-star <% if (favoriteRecipes[favoriteRecipeCount].rating > 3.5) { %> checked <% } %>"></span>
+                                      <span class="fa fa-star <% if (favoriteRecipes[favoriteRecipeCount].rating > 4.5) { %> checked <% } %>"></span>
+                                    </small>
+                                  </p>
+                                  <% } else { %>
+                                    <p class="card-text text-muted">&nbsp;</p>
+                                  <% } %>
+                                  <div class="container small card-text text-muted pb-1">
+                                          <%if(favoriteRecipes[favoriteRecipeCount].allergens.length > 0) { %>
+                                          <p class="mb-1">
+                                          <% var allergenLength = favoriteRecipes[favoriteRecipeCount].allergens.length %>
+                                          <% for(i=0; i < allergenLength -1; i++) { %>
+                                          <%= favoriteRecipes[favoriteRecipeCount].allergens[i] %> |
+                                          <% } %>
+                                          <%= favoriteRecipes[favoriteRecipeCount].allergens.pop() %>
+                                          <% } else { %>
+                                          <p class="mb-1"></p>
+
+                                          <% } %>
+                                          </p>
+                                          <p class="m-0"><i class="far fa-clock"></i>&nbsp;<%= favoriteRecipes[favoriteRecipeCount].totalTime %> minutes</p>
+                                      </div>
+                                      <!--VIEW RECIPE BUTTON-->
+                                      <form action="/recipes/<%= favoriteRecipes[favoriteRecipeCount]._id %>" method="GET">
+                                        <button class="btn btn-outline-primary text-center btn-block recipe-view-button my-1">View</button>
+                                      </form>
+                                      <div class="row mt-2">
+                                        <div class="col pull-left text-left">
+                                          <a href="/foundUsers/<%=favoriteRecipes[favoriteRecipeCount].chef.id %>" class="card-text text-left text-muted small m-0">Chef: <%= favoriteRecipes[favoriteRecipeCount].chef.screenName%></a>
+                                        </div>
+                                        <div class="col pull-right">
+                                          <p class="card-text text-right"><small class="text-muted">Posted: <%= moment(favoriteRecipes[favoriteRecipeCount].createdAt).format("M/D/YYYY") %></small></p>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </a>
+                                  <!--END OF CARD BODY-->
+                                </div>
+                              </div>
+                            </div>
+                            <%  favoriteRecipeCount ++ %>
+                              <% } %>
+      </div>
+                  <!--End of Card Deck--> 
                 </div>
-            </div>
-            <div class="col-md-9 col-sm-12 p-2">
-                <div class="tab-content" id="nav-tabContent"> 
-                  <div class="tab-pane fade" id="list-recipes" role="tabpanel" aria-labelledby="list-recipes-list">
-                      <h1>Favorites</h1>
-                  </div>
-                  <div class="tab-pane fade" id="list-messages" role="tabpanel" aria-labelledby="list-messages-list">
-                      <h1>Your Recipes</h1>
-                  </div>
-                  <div class="tab-pane fade" id="list-settings" role="tabpanel" aria-labelledby="list-settings-list">
-                      <h1>Settings Data</h1>
-                  </div>
-                </div>
+                <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">...</div>
+                <div class="tab-pane fade" id="contact" role="tabpanel" aria-labelledby="contact-tab">...</div>
+              </div>
             </div>
         </div>
     </div>

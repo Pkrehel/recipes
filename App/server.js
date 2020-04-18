@@ -2,6 +2,7 @@ require('dotenv').config();
 
 var express = require("express"),
     app = express(),
+    router = express.Router(),
     bodyParser = require("body-parser"),
     mongoose = require("mongoose"),
     flash = require("connect-flash"),

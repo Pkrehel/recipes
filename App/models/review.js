@@ -28,7 +28,7 @@ var reviewSchema = new mongoose.Schema({
         },
         screenName: String
     },
-    // campground associated with the review
+    // recipe associated with the review
     recipe: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "Recipe"

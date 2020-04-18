@@ -15,14 +15,8 @@ var UserSchema = new mongoose.Schema({
         type: String
     },
     lovedRecipes: [{
-        id: {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: "Recipe"
-        },
-        title: String,
-        image: String,
-        createdAt: Date,
-        totalTime: Number
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Recipe"
     }],
     searches: Array,
     resetPasswordToken: String,
