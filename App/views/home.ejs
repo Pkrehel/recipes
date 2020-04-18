@@ -58,19 +58,19 @@
                                     </small>
                                   </p>
                                   <% } else { %>
-                                    <p class="card-text text-muted">&nbsp;</p>
+                                    <p class="card-text text-muted"> &nbsp; </p>
                                   <% } %>
                                       <div class="container small card-text text-muted pb-1">
+                                        <p class="mb-1">
                                           <%if(latestRecipes[latestRecipeCount].allergens.length > 0) { %>
-                                          <p class="mb-1">
+                                        
                                           <% var allergenLength = latestRecipes[latestRecipeCount].allergens.length %>
                                           <% for(i=0; i < allergenLength -1; i++) { %>
                                           <%= latestRecipes[latestRecipeCount].allergens[i] %> |
                                           <% } %>
                                           <%= latestRecipes[latestRecipeCount].allergens.pop() %>
                                           <% } else { %>
-                                          <p class="mb-1"></p>
-
+                                            &nbsp;
                                           <% } %>
                                           </p>
                                           <p class="m-0"><i class="far fa-clock"></i>&nbsp;<%= latestRecipes[latestRecipeCount].totalTime %> minutes</p>
