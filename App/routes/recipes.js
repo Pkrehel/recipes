@@ -1,6 +1,7 @@
 var express = require("express"),
   router = express.Router(),
   Recipe = require("../models/recipe"),
+  User = require("../models/user"),
   middleware = require("../middleware"),
   multer = require('multer');
 
@@ -71,6 +72,14 @@ router.post("/", middleware.isLoggedIn, upload.single('image'), function (req, r
           req.flash('error', err.message);
           return res.redirect('back');
         }
+        User.findById(req.user._id, function(err, foundUser){
+          if(err){
+            req.flash('error', err.message);
+            return res.redirect('back');
+          }
+          foundUser.recipes.push(recipe.id);
+          foundUser.save();
+        });
         res.redirect('/');
       });
     }, { categorization: "google_tagging", auto_tagging: 0.85, quality: "auto", width: 700, height: 525, gravity: "auto", crop: "fill" });

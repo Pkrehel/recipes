@@ -18,6 +18,10 @@ var UserSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: "Recipe"
     }],
+    recipes: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Recipe"
+    }],
     searches: Array,
     resetPasswordToken: String,
     resetPasswordExpires: Date,
