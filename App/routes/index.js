@@ -445,6 +445,37 @@ router.get("/users/:id", function (req, res) {
     });
 });
 
+
+
+//USER PROFILE ROUTES:
+router.put("/users/:id/update", function (req, res) {
+    User.findById(req.params.id, function (err, foundUser) {
+        if (err) {
+            req.flash("error", "Cannot Find User's Profile.");
+            res.redirect("back");
+        }
+        if(foundUser.username != req.body.username){
+            foundUser.username = req.body.username,
+            foundUser.screenName = req.body.screenName,
+            foundUser.avatar = req.body.avatar,
+            foundUser.firstName = req.body.firstName,
+            foundUser.active = false;
+            foundUser.save()
+            req.flash("success", "Please check " + foundUser.username + " to reactivate your email.");
+            res.redirect("/verification-email");
+        } else {
+            foundUser.username = req.body.username,
+            foundUser.screenName = req.body.screenName,
+            foundUser.avatar = req.body.avatar,
+            foundUser.firstName = req.body.firstName,
+            foundUser.secretToken = randomstring.generate(),
+            foundUser.save()
+            req.flash("success", "Your account has been updated!");
+            res.redirect("back");
+        }
+    });
+});
+
 function escapeRegex(text) {
     return text.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, "\\$&");
 }

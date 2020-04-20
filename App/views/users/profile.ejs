@@ -11,9 +11,11 @@
                 <li class="nav-item">
                   <a class="nav-link" id="recipes-tab" data-toggle="tab" href="#recipes" role="tab" aria-controls="profile" aria-selected="false">Recipes</a>
                 </li>
+                <% if(currentUser && foundUser._id.equals(currentUser._id)){ %>
                 <li class="nav-item">
                   <a class="nav-link" id="settings-tab" data-toggle="tab" href="#settings" role="tab" aria-controls="settings" aria-selected="false">Settings</a>
                 </li>
+                <% } %>
               </ul>
               <div class="tab-content" id="myTabContent">
                 <div class="tab-pane fade show active" id="favorites" role="tabpanel" aria-labelledby="favorites-tab">
@@ -183,9 +185,85 @@
                               <% } %>
       </div>
                 </div>
+          
+          <% if(currentUser && foundUser._id.equals(currentUser._id)){ %>
                 <div class="tab-pane fade" id="settings" role="tabpanel" aria-labelledby="settings-tab">
 <!--                Screen name, avatar, password, favorite categories, avatar, -->
+
+            <form action="/users/<%= foundUser.id %>/update?_method=PUT" method="POST">
+              <div class="form-group text-dark"> <label>First Name</label>
+                <input type="text text-dark" name="firstName" class="form-control" value="<%= foundUser.firstName %>" minlength="1" maxlength="50" required>
+              </div>
+              <div class="form-group text-dark"> <label>Username</label>
+                <input type="text text-dark" name="screenName" class="form-control" value="<%= foundUser.screenName %>" minlength="4" maxlength="20" required>
+              </div>
+              <div class="form-group text-dark" required><label>Email address</label>
+                <input type="email" name="username" class="form-control text-dark" value="<%= foundUser.username %>" required>
+              </div>
+              <div class="form-group avatars text-dark"> <label>Choose an Avatar</label>
+                <div class="btn-group btn-group-toggle row" data-toggle="buttons">
+                  <div class="col-xs-1">
+                    <label class="btn avatar">
+                    <input type="radio" name="avatar" value="😛" autocomplete="off">😛
+                  </label>
+                  </div>
+                  <div class="col-xs-1">
+                    <label class="btn avatar">
+                    <input type="radio" name="avatar" value="😎" autocomplete="off">😎
+                    </label>
+                  </div>
+                  <div class="col-xs-1">
+                    <label class="btn avatar">
+                    <input type="radio" name="avatar" value="🍉" autocomplete="off">🍉
+                  </label>
+                  </div>
+                  <div class="col-xs-1">
+                    <label class="btn avatar">
+                    <input type="radio" name="avatar" value="🌶" autocomplete="off">🌶
+                  </label>
+                  </div>
+                  <div class="col-xs-1">
+                    <label class="btn avatar">
+                    <input type="radio" name="avatar" value="🍅" autocomplete="off">🍅
+                  </label>
+                  </div>
+                  <div class="col-xs-1">
+                    <label class="btn avatar">
+                    <input type="radio" name="avatar" value="🍍" autocomplete="off">🍍
+                  </label>
+                  </div>
+                  <div class="col-xs-1">
+                    <label class="btn avatar">
+                    <input type="radio" name="avatar" value="🍄" autocomplete="off">🍄
+                  </label>
+                  </div>
+                  <div class="col-xs-1">
+                    <label class="btn avatar">
+                    <input type="radio" name="avatar" value="🍲" autocomplete="off">🍲
+                  </label>
+                  </div>
+                  <div class="col-xs-1">
+                    <label class="btn avatar">
+                    <input type="radio" name="avatar" value="☕" autocomplete="off">☕
+                  </label>
+                  </div>
+                  <div class="col-xs-1">
+                    <label class="btn avatar">
+                    <input type="radio" name="avatar" value="🍜" autocomplete="off">🍜
+                  </label>
+                  </div>
+                  <div class="col-xs-1">
+                    <label class="btn avatar">
+                    <input type="radio" name="avatar" value="🍷" autocomplete="off">🍷
+                    </label>
+                  </div>
                 </div>
+              </div>
+              <button type="submit" class="btn btn-secondary btn-block btn-lg my-2"><b>Save Changes</b></button>
+            </form>
+                  
+                </div>
+          <% } %>
               </div>
             </div>
         </div>
