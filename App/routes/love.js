@@ -4,32 +4,6 @@ var Recipe = require("../models/recipe");
 var User = require("../models/user");
 var middleware = require("../middleware");
 
-//Favorite Post
-// router.post("/", middleware.isLoggedIn, function (req, res) {
-//    //lookup recipe using ID
-//    Recipe.findByIdAndUpdate(req.params.id, { $addToSet: { 'lovedBy': { '_id': req.user.id } } }, function (err, recipe) {
-//       if (err) {
-//          req.flash('error', 'An error has occurred. ' + recipe.title + ' was not added to your favorites :(');
-//          res.redirect("back");
-//       }
-//       else {
-//          User.findOneAndUpdate(req.user.id, { $addToSet: { 'lovedRecipes': { "_id": recipe.id, "title": recipe.title, "image": recipe.image, "totalTime": recipe.totalTime } } },
-//             function (err, user) {
-//                if (err) {
-//                   console.log(err);
-//                   req.flash("error", "An Error Has Occurred. Please Try Again.");
-//                   res.redirect("back");
-//                }
-//                else {
-//                   user.save();
-//                   req.flash("success", recipe.title + " was added to your favorites!");
-//                   res.redirect("back");
-//                }
-//             });
-//       }
-//    });
-// });
-
 router.post("/", middleware.isLoggedIn, function (req, res) {
    // Update the recipe like
     Recipe.findById(req.params.id, function (err, foundRecipe) {
@@ -72,18 +46,26 @@ router.post("/", middleware.isLoggedIn, function (req, res) {
         if (foundUserLike) {
             // user already liked, removing like
             foundUser.lovedRecipes.pull(foundRecipe._id);
+           foundUser.save(function (err) {
+               if (err) {
+                   console.log(err);
+                   return res.redirect("/");
+               }
+               req.flash("success", foundRecipe.title + " was removed from your favorites!");
+               res.redirect("back");
+           });
         } else {
             // adding the new user like
             foundUser.lovedRecipes.push(foundRecipe._id);
+           foundUser.save(function (err) {
+               if (err) {
+                   console.log(err);
+                   return res.redirect("/");
+               }
+               req.flash("success", foundRecipe.title + " was added to your favorites!");
+               res.redirect("/recipes/"+ foundRecipe._id);
+           });
         }
-
-        foundUser.save(function (err) {
-            if (err) {
-                console.log(err);
-                return res.redirect("/");
-            }
-            return res.redirect("/recipes/" + foundRecipe._id);
-        });
     });
     });
 });

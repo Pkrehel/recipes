@@ -2,7 +2,6 @@
 
     <div class="container-fluid p-0">
         <div class="row">     
-            <!--LEFT COLUMN-->
             <div class="col">
               <ul class="nav nav-tabs" id="myTab" role="tablist">
                 <li class="nav-item">
@@ -17,9 +16,9 @@
                 </li>
                 <% } %>
               </ul>
-              <div class="tab-content" id="myTabContent">
+              <div class="tab-content pt-4" id="myTabContent">
                 <div class="tab-pane fade show active" id="favorites" role="tabpanel" aria-labelledby="favorites-tab">
-                  <div class="card-deck pt-4">
+                  <div class="card-deck">
                       <% var favoriteRecipeCount = 0; %>
                       <% if(foundUser.lovedRecipes.length < 6) { %>
                          <% var favoriteRecipesLength = foundUser.lovedRecipes.length  %>
@@ -33,14 +32,24 @@
                                 <div class="card-block">
                                   <div class="img-container">
                                     <a href="/recipes/<%= favoriteRecipes[favoriteRecipeCount].id%>">
-                                      <div class="recipeBookButton text-center">
-                                        <form action="/recipes/<%=favoriteRecipes[favoriteRecipeCount].id%>/love" method="POST">
-                                              <button class="btn rounded-circle ajax-trigger-love like-btn-homepage" data-recipe-id="<%=favoriteRecipes[favoriteRecipeCount].id%>">
-                                                  <i class="fas fa-heart"></i>
-                                                </button>
-                                        </form>
-<!---->
-                                      </div>
+
+                  <% if(currentUser && foundUser._id.equals(currentUser._id)){ %>
+                   <div class="recipeBookButton text-center">
+                      <form action="/recipes/<%=favoriteRecipes[favoriteRecipeCount].id%>/love" method="POST">
+                     <button type="submit" class="btn rounded-circle like-btn-homepage">
+                     <i class="fas fa-heart-broken"></i></button>
+                     </form>
+                   </div>
+                  <% } else { %>      
+                  <!--If user profile doesn't belong to current user-->
+                    <div class="recipeBookButton text-center">
+                      <form action="/recipes/<%=favoriteRecipes[favoriteRecipeCount].id%>/love" method="POST">
+                            <button class="btn rounded-circle ajax-trigger-love like-btn-homepage" data-recipe-id="<%=favoriteRecipes[favoriteRecipeCount].id%>">
+                                <i class="fas fa-heart"></i>
+                              </button>
+                      </form>
+                    </div>
+                          <% } %>            
                                       <img class="img-fluid recipe-index-image" src="<%= favoriteRecipes[favoriteRecipeCount].image %>">
                                       <!--To Make Button Block-->
                                     </a>
@@ -103,7 +112,7 @@
                   <!--End of Card Deck--> 
                 </div>
                 <div class="tab-pane fade" id="recipes" role="tabpanel" aria-labelledby="recipes-tab">
-                  <div class="card-deck pt-4">
+                  <div class="card-deck">
                       <% var userRecipeCount = 0; %>
                       <% if(foundUser.recipes.length < 6) { %>
                          <% var userRecipesLength = foundUser.recipes.length  %>
@@ -188,77 +197,41 @@
           
           <% if(currentUser && foundUser._id.equals(currentUser._id)){ %>
                 <div class="tab-pane fade" id="settings" role="tabpanel" aria-labelledby="settings-tab">
-<!--                Screen name, avatar, password, favorite categories, avatar, -->
 
             <form action="/users/<%= foundUser.id %>/update?_method=PUT" method="POST">
-              <div class="form-group text-dark"> <label>First Name</label>
-                <input type="text text-dark" name="firstName" class="form-control" value="<%= foundUser.firstName %>" minlength="1" maxlength="50" required>
-              </div>
-              <div class="form-group text-dark"> <label>Username</label>
-                <input type="text text-dark" name="screenName" class="form-control" value="<%= foundUser.screenName %>" minlength="4" maxlength="20" required>
-              </div>
-              <div class="form-group text-dark" required><label>Email address</label>
-                <input type="email" name="username" class="form-control text-dark" value="<%= foundUser.username %>" required>
-              </div>
-              <div class="form-group avatars text-dark"> <label>Choose an Avatar</label>
-                <div class="btn-group btn-group-toggle row" data-toggle="buttons">
-                  <div class="col-xs-1">
-                    <label class="btn avatar">
-                    <input type="radio" name="avatar" value="😛" autocomplete="off">😛
-                  </label>
+              <div class="container">
+                <div class="row">
+                  <div class="col-md-6">
+                    <div class="form-group text-dark"> <label>First Name</label>
+                      <input type="text" name="firstName" class="form-control" value="<%= foundUser.firstName %>" minlength="1" maxlength="50" required>
+                    </div>
+                    <div class="form-group"> <label>Username</label>
+                      <input type="text" name="screenName" class="form-control" value="<%= foundUser.screenName %>" minlength="4" maxlength="20" required>
+                    </div>
+                    <div class="form-group" required><label>Email address</label>
+                      <input type="email" name="username" class="form-control" value="<%= foundUser.username %>" required>
+                    </div>
+                    <div class="form-group input-group mb-3">
+                    <div class="input-group-prepend">
+                      <label class="input-group-text" for="avatar">Choose Avatar</label>
+                    </div>
+                    <select class="custom-select" id="avatar" name="avatar" required>
+                      <option selected>Choose...</option>
+                      <option value="😛" <%= foundUser.avatar == "😛" ? "selected": "" %>>😛</option>
+                      <option value="😎" <%= foundUser.avatar == "😎" ? "selected": "" %>>😎</option>
+                      <option value="☕" <%= foundUser.avatar == "☕" ? "selected": "" %>>☕</option>
+                      <option value="🌶" <%= foundUser.avatar == "🌶" ? "selected": "" %>>🌶</option>
+                      <option value="🍍" <%= foundUser.avatar == "🍍" ? "selected": "" %>>🍍</option>
+                      <option value="🍄" <%= foundUser.avatar == "🍄" ? "selected": "" %>>🍄</option>
+                      <option value="🍲" <%= foundUser.avatar == "🍲" ? "selected": "" %>>🍲</option>
+                      <option value="🍉" <%= foundUser.avatar == "🍉" ? "selected": "" %>>🍉</option>
+                      <option value="🍜" <%= foundUser.avatar == "🍜" ? "selected": "" %>>🍜</option>
+                      <option value="🍷" <%= foundUser.avatar == "🍷" ? "selected": "" %>>🍷</option>
+                    </select>
                   </div>
-                  <div class="col-xs-1">
-                    <label class="btn avatar">
-                    <input type="radio" name="avatar" value="😎" autocomplete="off">😎
-                    </label>
-                  </div>
-                  <div class="col-xs-1">
-                    <label class="btn avatar">
-                    <input type="radio" name="avatar" value="🍉" autocomplete="off">🍉
-                  </label>
-                  </div>
-                  <div class="col-xs-1">
-                    <label class="btn avatar">
-                    <input type="radio" name="avatar" value="🌶" autocomplete="off">🌶
-                  </label>
-                  </div>
-                  <div class="col-xs-1">
-                    <label class="btn avatar">
-                    <input type="radio" name="avatar" value="🍅" autocomplete="off">🍅
-                  </label>
-                  </div>
-                  <div class="col-xs-1">
-                    <label class="btn avatar">
-                    <input type="radio" name="avatar" value="🍍" autocomplete="off">🍍
-                  </label>
-                  </div>
-                  <div class="col-xs-1">
-                    <label class="btn avatar">
-                    <input type="radio" name="avatar" value="🍄" autocomplete="off">🍄
-                  </label>
-                  </div>
-                  <div class="col-xs-1">
-                    <label class="btn avatar">
-                    <input type="radio" name="avatar" value="🍲" autocomplete="off">🍲
-                  </label>
-                  </div>
-                  <div class="col-xs-1">
-                    <label class="btn avatar">
-                    <input type="radio" name="avatar" value="☕" autocomplete="off">☕
-                  </label>
-                  </div>
-                  <div class="col-xs-1">
-                    <label class="btn avatar">
-                    <input type="radio" name="avatar" value="🍜" autocomplete="off">🍜
-                  </label>
-                  </div>
-                  <div class="col-xs-1">
-                    <label class="btn avatar">
-                    <input type="radio" name="avatar" value="🍷" autocomplete="off">🍷
-                    </label>
                   </div>
                 </div>
-              </div>
+              </div>  
               <button type="submit" class="btn btn-secondary btn-block btn-lg my-2"><b>Save Changes</b></button>
             </form>
                   
