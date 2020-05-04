@@ -56,7 +56,7 @@ router.post("/", middleware.isLoggedIn, function (req, res) {
            });
         } else {
             // adding the new user like
-            foundUser.lovedRecipes.push(foundRecipe._id);
+         foundUser.lovedRecipes.push(foundRecipe._id);
            foundUser.save(function (err) {
                if (err) {
                    console.log(err);

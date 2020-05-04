@@ -3,12 +3,23 @@
     <div class="container-fluid p-0">
         <div class="row">     
             <div class="col">
+              <% if(currentUser && foundUser._id.equals(currentUser._id)){ %>
+              <h2>Your Profile</h2>
+              <% } else { %>
+              <h2><%= foundUser.firstName%>'s Profile <%= foundUser.avatar%></h2>
+              <% } %>
               <ul class="nav nav-tabs" id="myTab" role="tablist">
                 <li class="nav-item">
                   <a class="nav-link active" id="favorites-tab" data-toggle="tab" href="#favorites" role="tab" aria-controls="home" aria-selected="true">Favorites</a>
                 </li>
                 <li class="nav-item">
-                  <a class="nav-link" id="recipes-tab" data-toggle="tab" href="#recipes" role="tab" aria-controls="profile" aria-selected="false">Recipes</a>
+                  <a class="nav-link" id="recipes-tab" data-toggle="tab" href="#recipes" role="tab" aria-controls="profile" aria-selected="false">
+                    <% if(currentUser && foundUser._id.equals(currentUser._id)){ %>
+                    My Recipes
+                    <% } else { %>
+                  Posted Recipes
+                    <% } %>
+                  </a>
                 </li>
                 <% if(currentUser && foundUser._id.equals(currentUser._id)){ %>
                 <li class="nav-item">
@@ -19,6 +30,14 @@
               <div class="tab-content pt-4" id="myTabContent">
                 <div class="tab-pane fade show active" id="favorites" role="tabpanel" aria-labelledby="favorites-tab">
                   <div class="card-deck">
+                  <% if(currentUser && foundUser._id.equals(currentUser._id) && foundUser.lovedRecipes.length === 0){ %>
+                  <p>You have not favorited any recipes yet! Click the <span><i class="fas fa-heart"></i></span> icon to favorite a recipe.</p>
+                  <% } %>
+                    
+                 <% if(currentUser && (foundUser.id != currentUser._id) && foundUser.lovedRecipes.length === 0){ %>
+                  <p><%= foundUser.screenname %> has not favorited any recipes yet!</p>
+                <% } %>
+                    
                       <% var favoriteRecipeCount = 0; %>
                       <% if(foundUser.lovedRecipes.length < 6) { %>
                          <% var favoriteRecipesLength = foundUser.lovedRecipes.length  %>
@@ -32,24 +51,23 @@
                                 <div class="card-block">
                                   <div class="img-container">
                                     <a href="/recipes/<%= favoriteRecipes[favoriteRecipeCount].id%>">
-
-                  <% if(currentUser && foundUser._id.equals(currentUser._id)){ %>
-                   <div class="recipeBookButton text-center">
-                      <form action="/recipes/<%=favoriteRecipes[favoriteRecipeCount].id%>/love" method="POST">
-                     <button type="submit" class="btn rounded-circle like-btn-homepage">
-                     <i class="fas fa-heart-broken"></i></button>
-                     </form>
-                   </div>
-                  <% } else { %>      
-                  <!--If user profile doesn't belong to current user-->
-                    <div class="recipeBookButton text-center">
-                      <form action="/recipes/<%=favoriteRecipes[favoriteRecipeCount].id%>/love" method="POST">
-                            <button class="btn rounded-circle ajax-trigger-love like-btn-homepage" data-recipe-id="<%=favoriteRecipes[favoriteRecipeCount].id%>">
-                                <i class="fas fa-heart"></i>
-                              </button>
-                      </form>
-                    </div>
-                          <% } %>            
+                                    <% if(currentUser && foundUser._id.equals(currentUser._id)){ %>
+                                     <div class="recipeBookButton text-center">
+                                        <form action="/recipes/<%=favoriteRecipes[favoriteRecipeCount].id%>/love" method="POST">
+                                       <button type="submit" class="btn rounded-circle like-btn-homepage">
+                                       <i class="fas fa-heart-broken"></i></button>
+                                       </form>
+                                     </div>
+                                    <% } else { %>      
+                                    <!--If user profile doesn't belong to current user-->
+                                      <div class="recipeBookButton text-center">
+                                        <form action="/recipes/<%=favoriteRecipes[favoriteRecipeCount].id%>/love" method="POST">
+                                              <button class="btn rounded-circle ajax-trigger-love like-btn-homepage" data-recipe-id="<%=favoriteRecipes[favoriteRecipeCount].id%>">
+                                                  <i class="fas fa-heart"></i>
+                                                </button>
+                                        </form>
+                                      </div>
+                                            <% } %>            
                                       <img class="img-fluid recipe-index-image" src="<%= favoriteRecipes[favoriteRecipeCount].image %>">
                                       <!--To Make Button Block-->
                                     </a>
@@ -125,16 +143,25 @@
                               <div class="card">
                                 <div class="card-block">
                                   <div class="img-container">
-                                    <a href="/recipes/<%= userRecipes[userRecipeCount].id%>">
-                                      <div class="recipeBookButton text-center">
-                                        <form action="/recipes/<%=userRecipes[userRecipeCount].id%>/love" method="POST">
-                                              <button class="btn rounded-circle ajax-trigger-love like-btn-homepage" data-recipe-id="<%=userRecipes[userRecipeCount].id%>">
-                                                  <i class="fas fa-heart"></i>
-                                                </button>
-                                        </form>
-<!---->
-                                      </div>
-                                      <img class="img-fluid recipe-index-image" src="<%= userRecipes[userRecipeCount].image %>">
+                                    <a href="/recipes/<%= userRecipes[userRecipeCount].id%>">                                
+                                    <% if (currentUser && userRecipes[userRecipeCount].lovedBy.some(function (like) {
+                                        return like.equals(currentUser._id)
+                                    })) { %>
+                                          <div class="recipeBookButton text-center">
+                                            <form action="/recipes/<%=userRecipes[userRecipeCount].id%>/love" method="POST">
+                                           <button type="submit" class="btn rounded-circle like-btn-homepage">
+                                           <i class="fas fa-heart-broken"></i></button>
+                                           </form>
+                                          </div>
+                                    <% } else { %>
+                                          <div class="recipeBookButton text-center">
+                                            <form action="/recipes/<%=userRecipes[userRecipeCount].id%>/love" method="POST">
+                                           <button type="submit" class="btn rounded-circle like-btn-homepage">
+                                           <i class="fas fa-heart"></i></button>
+                                           </form>
+                                          </div>
+                                      <% } %>
+                                  <img class="img-fluid recipe-index-image" src="<%= userRecipes[userRecipeCount].image %>">
                                       <!--To Make Button Block-->
                                     </a>
                                   </div>
@@ -196,46 +223,46 @@
                 </div>
           
           <% if(currentUser && foundUser._id.equals(currentUser._id)){ %>
-                <div class="tab-pane fade" id="settings" role="tabpanel" aria-labelledby="settings-tab">
-
-            <form action="/users/<%= foundUser.id %>/update?_method=PUT" method="POST">
-              <div class="container">
-                <div class="row">
-                  <div class="col-md-6">
-                    <div class="form-group text-dark"> <label>First Name</label>
-                      <input type="text" name="firstName" class="form-control" value="<%= foundUser.firstName %>" minlength="1" maxlength="50" required>
+              <div class="tab-pane fade" id="settings" role="tabpanel" aria-labelledby="settings-tab">
+                <div class="container">
+                  <div class="row">
+                    <div class="col-md-6">
+                      <h4 class="py-1">Update Your Profile</h4>
+                      <form action="/users/<%= foundUser.id %>/update?_method=PUT" method="POST">
+                      <div class="form-group text-dark"> <label>First Name</label>
+                        <input type="text" name="firstName" class="form-control" value="<%= foundUser.firstName %>" minlength="1" maxlength="50" required>
+                      </div>
+                      <div class="form-group"> <label>Username</label>
+                        <input type="text" name="screenName" class="form-control" value="<%= foundUser.screenName %>" minlength="4" maxlength="20" required>
+                      </div>
+                      <div class="form-group" required><label>Email address</label>
+                        <input type="email" name="username" class="form-control" value="<%= foundUser.username %>" required>
+                      </div>
+                      <div class="form-group input-group mb-3">
+                      <div class="input-group-prepend">
+                        <label class="input-group-text" for="avatar">Choose Avatar</label>
+                      </div>
+                      <select class="custom-select" id="avatar" name="avatar" required>
+                        <option selected>Choose...</option>
+                        <option value="😛" <%= foundUser.avatar == "😛" ? "selected": "" %>>😛</option>
+                        <option value="😎" <%= foundUser.avatar == "😎" ? "selected": "" %>>😎</option>
+                        <option value="☕" <%= foundUser.avatar == "☕" ? "selected": "" %>>☕</option>
+                        <option value="🌶" <%= foundUser.avatar == "🌶" ? "selected": "" %>>🌶</option>
+                        <option value="🍍" <%= foundUser.avatar == "🍍" ? "selected": "" %>>🍍</option>
+                        <option value="🍄" <%= foundUser.avatar == "🍄" ? "selected": "" %>>🍄</option>
+                        <option value="🍲" <%= foundUser.avatar == "🍲" ? "selected": "" %>>🍲</option>
+                        <option value="🍉" <%= foundUser.avatar == "🍉" ? "selected": "" %>>🍉</option>
+                        <option value="🍜" <%= foundUser.avatar == "🍜" ? "selected": "" %>>🍜</option>
+                        <option value="🍷" <%= foundUser.avatar == "🍷" ? "selected": "" %>>🍷</option>
+                      </select>
                     </div>
-                    <div class="form-group"> <label>Username</label>
-                      <input type="text" name="screenName" class="form-control" value="<%= foundUser.screenName %>" minlength="4" maxlength="20" required>
-                    </div>
-                    <div class="form-group" required><label>Email address</label>
-                      <input type="email" name="username" class="form-control" value="<%= foundUser.username %>" required>
-                    </div>
-                    <div class="form-group input-group mb-3">
-                    <div class="input-group-prepend">
-                      <label class="input-group-text" for="avatar">Choose Avatar</label>
-                    </div>
-                    <select class="custom-select" id="avatar" name="avatar" required>
-                      <option selected>Choose...</option>
-                      <option value="😛" <%= foundUser.avatar == "😛" ? "selected": "" %>>😛</option>
-                      <option value="😎" <%= foundUser.avatar == "😎" ? "selected": "" %>>😎</option>
-                      <option value="☕" <%= foundUser.avatar == "☕" ? "selected": "" %>>☕</option>
-                      <option value="🌶" <%= foundUser.avatar == "🌶" ? "selected": "" %>>🌶</option>
-                      <option value="🍍" <%= foundUser.avatar == "🍍" ? "selected": "" %>>🍍</option>
-                      <option value="🍄" <%= foundUser.avatar == "🍄" ? "selected": "" %>>🍄</option>
-                      <option value="🍲" <%= foundUser.avatar == "🍲" ? "selected": "" %>>🍲</option>
-                      <option value="🍉" <%= foundUser.avatar == "🍉" ? "selected": "" %>>🍉</option>
-                      <option value="🍜" <%= foundUser.avatar == "🍜" ? "selected": "" %>>🍜</option>
-                      <option value="🍷" <%= foundUser.avatar == "🍷" ? "selected": "" %>>🍷</option>
-                    </select>
-                  </div>
+                      <button type="submit" class="btn btn-secondary btn-block btn-lg my-2"><b>Save Changes</b></button>
+                    </form>
+                    <p>Forgot your password? <b><a href="/forgot">Reset Password</a></b></p>
                   </div>
                 </div>
               </div>  
-              <button type="submit" class="btn btn-secondary btn-block btn-lg my-2"><b>Save Changes</b></button>
-            </form>
-                  
-                </div>
+              </div>
           <% } %>
               </div>
             </div>

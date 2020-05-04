@@ -10,7 +10,7 @@ var UserSchema = new mongoose.Schema({
     bio: String,
     createdAt: { type: Date, default: Date.now },
     secretToken: String,
-    active: { Boolean, default: false },
+    verified: { Boolean, default: false },
     avatar: {
         type: String
     },
