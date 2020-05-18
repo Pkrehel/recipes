@@ -5,7 +5,7 @@ var middleware = require("../middleware");
 var Review = require("../models/review");
 
 //Review Create
-router.post("/", middleware.isLoggedIn, middleware.checkReviewExistence, function (req, res) {
+router.post("/", middleware.socialRateLimits, middleware.isLoggedIn, middleware.checkReviewExistence, function (req, res) {
     //lookup recipe using ID
     Recipe.findById(req.params.id).populate("reviews").exec(function (err, recipe) {
         if (err) {

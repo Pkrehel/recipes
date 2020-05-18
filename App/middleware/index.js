@@ -1,6 +1,8 @@
 var Recipe = require("../models/recipe.js"),
     Comment = require("../models/comment.js"),
-    Review = require("../models/review.js");
+    Review = require("../models/review.js"),
+    rateLimit = require("express-rate-limit"),
+    MongoStore = require('rate-limit-mongo');
 
 var middlewareObj = {};
 
@@ -119,6 +121,43 @@ middlewareObj.checkReviewExistence = function (req, res, next) {
 };
 
 
+// RATE LIMITING:
+// Account related rate limits
+// applies to logins, account creations, forgot my password, profile updates
+middlewareObj.accountRateLimit = rateLimit({
+    store: new MongoStore({
+        uri: "mongodb://localhost/db_1",
+        collectionName: "accountRateLimit"
+  }),
+    windowMs: 10 * 60 * 1000, //10 minutes
+    max: 15, // Limit each IP to 10 requests per time window
+    message: "You've exceeded the number of requests you are able to make. Please try again in a few minutes.",
+});
+
+
+// Recipe related rate limits
+// applies to creating a new recipe, or updating an exisiting recipe
+middlewareObj.recipeRateLimits = rateLimit({
+    store: new MongoStore({
+        uri: "mongodb://localhost/db_1",
+        collectionName: "recipeRateLimits"
+  }),
+    windowMs: 10 * 60 * 1000, //10 minutes
+    max: 10, // Limit each IP to 15 requests per time window
+    message: "You've exceeded the number of requests you are able to make. Please try again in a few minutes.",
+});
+
+// Social rate limits
+// applies to liking and commenting on recipes
+middlewareObj.socialRateLimits = rateLimit({
+    store: new MongoStore({
+        uri: "mongodb://localhost/db_1",
+        collectionName: "socialRateLimits"
+  }),
+    windowMs: 1 * 60 * 1000, //10 minutes
+    max: 35, // Limit each IP to 35 requests per time window
+    message: "You've exceeded the number of requests you are able to make. Please try again in a few minutes.",
+});
 
 
 module.exports = middlewareObj;

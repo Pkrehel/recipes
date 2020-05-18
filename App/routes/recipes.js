@@ -41,7 +41,7 @@ router.get("/", function (req, res) {
 });
 
 //CREATE ROUTE - Create a new recipe in the database
-router.post("/", middleware.isLoggedIn, upload.single('image'), function (req, res) {
+router.post("/", middleware.recipeRateLimits, middleware.isLoggedIn, upload.single('image'), function (req, res) {
   cloudinary.uploader.upload(req.file.path,
     function (result) {
       // add cloudinary url for the image to the recipe object under image property
@@ -112,7 +112,7 @@ router.get("/:id", function (req, res) {
 });
 
 //RECIPE EDIT SHOW ROUTE:
-router.get("/:id/edit", function (req, res) {
+router.get("/:id/edit",  function (req, res) {
   Recipe.findById(req.params.id, function (err, foundRecipe) {
     if (err) {
       req.flash('error', err.message);
@@ -124,7 +124,8 @@ router.get("/:id/edit", function (req, res) {
   });
 });
 
-router.put("/:id", upload.single('image'), function(req, res){
+// recipe edit put route
+router.put("/:id", middleware.recipeRateLimits, upload.single('image'), function(req, res){
     Recipe.findById(req.params.id, async function(err, recipe){
         if(err){
             req.flash("error", err.message);

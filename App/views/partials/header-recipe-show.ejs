@@ -282,7 +282,7 @@
     Recipes 
     <% } %>
     <% if(currentUser) { %>
-   <%= currentUser.firstName %>'s Recipes
+   <%= currentUser.firstName %>'s Recipes <%= currentUser.avatar %>
     <% } %>
   </a>
   
@@ -294,14 +294,18 @@
       <% if(currentUser) { %>
       <div class="ml-auto">
       <form class="form-inline d-none d-md-block">
-          <a href="#0" class="js-cd-panel-trigger" data-panel="main">
-            <button class="btn btn-outline-primary ml-auto">Favorites &nbsp;
-              <span class="badge badge-secondary"><%= currentUser.lovedRecipes.length %></span>
-            </button>
-          </a>
+        
+        <div class="dropdown d-inline">
+          <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Profile</button>
+          <div class="dropdown-menu text-center p-2" aria-labelledby="dropdownMenu2">
+            <a href="/users/<%= currentUser.id %>" class="mb-2 btn btn-outline-dark w-100">View Profile</a>
+            <a href="/logout" class="btn btn-outline-danger w-100">Logout</a>
+          </div>
+        </div>
+
           <a href="/recipes/new">
              <div class="btn btn-outline-primary ml-4">Post A Recipe</div>
-            </a>
+          </a>
       </form>
       </div>
   <% } %>  
@@ -321,7 +325,7 @@
                 </div>
 
                   <div class="input-group-append">
-                    <button class="btn btn-outline-secondary" value="Search" type="submit">Search</button>
+                    <button class="btn btn-outline-secondary text-dark" value="Search" type="submit">Search</button>
                   </div>
                 </div>
           </form>
@@ -426,10 +430,10 @@
                 <input type="text text-dark" name="firstName" class="form-control" placeholder="First Name" minlength="1" maxlength="50" , required>
               </div>
               <div class="form-group text-dark"> <label>Username</label>
-                <input type="text text-dark" name="screenName" class="form-control" placeholder="different from email" minlength="4" maxlength="20" , required>
+                <input type="text text-dark" name="screenName" class="form-control" placeholder="different from email" minlength="4" maxlength="30" , required>
               </div>
               <div class="form-group text-dark" required><label>Email address</label>
-                <input type="email" name="username" class="form-control text-dark" placeholder="your.email@abc123.com" required>
+                <input type="email" name="username" class="form-control text-dark" required>
               </div>
               <div class="form-group text-dark"> <label>Password</label>
                 <input type="password" name="password" class="form-control" placeholder="Password" autocomplete=off>
@@ -504,7 +508,7 @@
             <form class="px-1 py-2" action="/login" method="POST">
               <div class="form-group">
                 <label for="nav-dropdown-email">Email</label>
-                <input type="email" class="form-control" id="nav-dropdown-email" name="username" placeholder="youremail@gmail.com" required>
+                <input type="email" class="form-control" id="nav-dropdown-email" name="username" required>
               </div>
               <div class="form-group">
                 <label for="nav-dropdown-password">Password</label>

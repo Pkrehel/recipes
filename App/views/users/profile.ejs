@@ -112,7 +112,7 @@
                                       </form>
                                       <div class="row mt-2">
                                         <div class="col pull-left text-left">
-                                          <a href="/foundUsers/<%=favoriteRecipes[favoriteRecipeCount].chef.id %>" class="card-text text-left text-muted small m-0">Chef: <%= favoriteRecipes[favoriteRecipeCount].chef.screenName%></a>
+                                          <a href="/users/<%=favoriteRecipes[favoriteRecipeCount].chef.id %>" class="card-text text-left text-muted small m-0">Chef: <%= favoriteRecipes[favoriteRecipeCount].chef.screenName%></a>
                                         </div>
                                         <div class="col pull-right">
                                           <p class="card-text text-right"><small class="text-muted">Posted: <%= moment(favoriteRecipes[favoriteRecipeCount].createdAt).format("M/D/YYYY") %></small></p>
@@ -131,6 +131,10 @@
                 </div>
                 <div class="tab-pane fade" id="recipes" role="tabpanel" aria-labelledby="recipes-tab">
                   <div class="card-deck">
+                  <% if(currentUser && foundUser._id.equals(currentUser._id) && foundUser.recipes.length == 0){ %>
+                    <p>You have not posted any recipes yet.<a href="/recipes/new"> Click here </a>  to post your first recipe</p>
+                  <% } %>
+
                       <% var userRecipeCount = 0; %>
                       <% if(foundUser.recipes.length < 6) { %>
                          <% var userRecipesLength = foundUser.recipes.length  %>
@@ -205,7 +209,7 @@
                                       </form>
                                       <div class="row mt-2">
                                         <div class="col pull-left text-left">
-                                          <a href="/foundUsers/<%=userRecipes[userRecipeCount].chef.id %>" class="card-text text-left text-muted small m-0">Chef: <%= userRecipes[userRecipeCount].chef.screenName%></a>
+                                          <a href="/users/<%=userRecipes[userRecipeCount].chef.id %>" class="card-text text-left text-muted small m-0">Chef: <%= userRecipes[userRecipeCount].chef.screenName%></a>
                                         </div>
                                         <div class="col pull-right">
                                           <p class="card-text text-right"><small class="text-muted">Posted: <%= moment(userRecipes[userRecipeCount].createdAt).format("M/D/YYYY") %></small></p>

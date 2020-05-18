@@ -8,9 +8,12 @@
   <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
   <link rel="stylesheet" type="text/css" href="/stylesheets/main.css">
   <link rel="stylesheet" type="text/css" href="/stylesheets/custom.css">
-<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
   <link href="https://fonts.googleapis.com/css?family=Nunito:300,400,600,700|Roboto:300,400,500" rel="stylesheet">
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+  <script type="text/javascript" src="/js/bootstrap-multiselect.js"></script>
+  <link rel="stylesheet" href="/stylesheets/bootstrap-multiselect.css" type="text/css"/>
+
   <style>
   #cooking-container{
     height: 100%;
@@ -298,16 +301,8 @@
         <div class="dropdown d-inline">
           <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Profile</button>
           <div class="dropdown-menu text-center p-2" aria-labelledby="dropdownMenu2">
-          
-          <a href="/users/<%= currentUser.id %>" class="mb-2 btn btn-outline-dark w-100">View Profile</a>
-            
-          <a href="#0" class="js-cd-panel-trigger" data-panel="main">
-            <button class="btn btn-outline-primary w-100 mb-2">Favorites &nbsp;
-              <span class="badge badge-secondary"><%= currentUser.lovedRecipes.length %></span>
-            </button>
-          </a>
-        
-           <a href="/logout" class="btn btn-outline-danger w-100">Logout</a>
+            <a href="/users/<%= currentUser.id %>" class="mb-2 btn btn-outline-dark w-100">View Profile</a>
+            <a href="/logout" class="btn btn-outline-danger w-100">Logout</a>
           </div>
         </div>
 

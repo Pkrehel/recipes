@@ -2,12 +2,14 @@ var express = require("express"),
     router = express.Router(),
     passport = require("passport"),
     User = require("../models/user"),
+    middleware = require("../middleware"),
     Recipe = require("../models/recipe"),
     randomstring = require("randomstring"),
     nodemailer = require('nodemailer'),
     async = require('async'),
-    crypto = require('crypto');
-
+    crypto = require('crypto'),
+    rateLimit = require("express-rate-limit"),
+    MongoStore = require('rate-limit-mongo');
 
 //Show the home page
 router.get("/", function(req, res) {
@@ -227,7 +229,7 @@ router.get("/register", function(req, res) {
 });
 
 //REGISTER LOGIC:
-router.post("/register", function(req, res) {
+router.post("/register", middleware.accountRateLimit, function(req, res) {
     // var date = new Date()
     var newUser = new User({
         username: req.body.username,
@@ -255,7 +257,7 @@ router.post("/register", function(req, res) {
 });
 
 //USER PROFILE UPDATE ROUTES:
-router.put("/users/:id/update", function(req, res) {
+router.put("/users/:id/update", middleware.accountRateLimit, function(req, res) {
     User.findById(req.params.id, function(err, foundUser) {
         if (err) {
             req.flash("error", "Cannot Find User's Profile.");
@@ -294,9 +296,9 @@ router.put("/users/:id/update", function(req, res) {
 // Send Verification Email After Account SignUp:
 var mailOptions, host, link;
 
-router.get("/verification-email", function(req, res) {
+router.get("/verification-email", middleware.accountRateLimit, function(req, res) {
     host = req.get("host");
-    link = "localhost:3000" + "/verify?id=" + req.user.secretToken;
+    link = "http://" + req.headers.host + "/verify?id=" + req.user.secretToken;
     var smtpTransporter = nodemailer.createTransport({
         host: 'smtp.gmail.com',
         port: 465,
@@ -315,11 +317,12 @@ router.get("/verification-email", function(req, res) {
     mailOptions = {
         from: process.env.TESTEMAILADDRESS,
         to: req.user.username,
-        subject: "Please Confirm Your Email Account",
-        html: "Hello, <br> Please confirm your email by clicking the link below: <br>" + link
-
+        subject: 'Please Confirm Your Email Account',
+        text: 'Hello, ' + req.user.firstName +'\n\n' +
+                    'Before you can share your recipes with the world, please verify your email by clicking the click below:\n\n' +
+                    link + '\n\n' +
+                    'If this link does not work, please copy and paste it into your browser.\n'
     };
-    console.log(mailOptions);
     smtpTransporter.sendMail(mailOptions, function(err, response) {
         if (err) {
             console.log("error with email transport");
@@ -336,7 +339,7 @@ router.get("/verification-email", function(req, res) {
 
 
 
-router.get("/verify", function(req, res) {
+router.get("/verify", middleware.accountRateLimit, function(req, res) {
     console.log(req.protocol + ":/" + req.get("host"));
     if ((req.protocol + "://" + req.get("host")) == ("http://" + host)) {
         console.log("Domain is matched. Information is from authentic email address");
@@ -365,25 +368,18 @@ router.get("/login", function(req, res) {
 });
 
 
-//handle login logic:
-// router.post('/login',
-//     passport.authenticate('local', {
-//         successRedirect: '/',
-//         failureRedirect: '/login',
-//         failureFlash: true
-//     })
-// );
-
-
-router.post('/login', 
-  passport.authenticate('local', { failureRedirect: '/login',failureFlash: true}),
-  function(req, res) {
-    console.log(req.user);
-  });
+// handle login logic:
+router.post('/login', middleware.accountRateLimit,
+    passport.authenticate('local', {
+        successRedirect: '/',
+        failureRedirect: '/login',
+        failureFlash: true
+    })
+);
 
 
 // LOGOUT LOGIC
-router.get("/logout", function(req, res) {
+router.get("/logout", middleware.accountRateLimit, function(req, res) {
     req.logout();
     req.flash("success", "You have been successfully logged out.");
     res.redirect("/");
@@ -394,7 +390,7 @@ router.get("/forgot", function(req, res) {
     res.render("forgot");
 });
 
-router.post('/forgot', function(req, res, next) {
+router.post('/forgot', middleware.accountRateLimit, function(req, res, next) {
     async.waterfall([
         function(done) {
             crypto.randomBytes(20, function(err, buf) {
@@ -457,7 +453,7 @@ router.post('/forgot', function(req, res, next) {
     });
 });
 
-router.get('/reset/:token', function(req, res) {
+router.get('/reset/:token', middleware.accountRateLimit, function(req, res) {
     console.log(req.params.token);
     User.findOne({
         resetPasswordToken: req.params.token,
@@ -475,7 +471,7 @@ router.get('/reset/:token', function(req, res) {
     });
 });
 
-router.post('/reset/:token', function(req, res) {
+router.post('/reset/:token', middleware.accountRateLimit, function(req, res) {
     console.log(req.params.token);
     async.waterfall([
         function(done) {

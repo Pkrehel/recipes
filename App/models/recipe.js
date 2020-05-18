@@ -55,7 +55,11 @@ var recipeSchema = new mongoose.Schema({
     rating: {
         type: Number,
         default: 0
-    }
+    },
+    utensils: [{
+        name: String,
+        icon: String
+    }]
 });
 
 module.exports = mongoose.model("Recipe", recipeSchema);
