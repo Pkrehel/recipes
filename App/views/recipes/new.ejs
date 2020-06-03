@@ -17,19 +17,6 @@
                 <textarea class="form-control form-control-lg" id="description-text" type="text" name="description" minlength="50" maxlength="400" placeholder="Description" required></textarea>
               </h4>
               
-              
-              <!--Utensils will go here...-->
-              <!-- Build your select: -->
-              <select id="utensils" name="utensils[]" multiple="multiple">
-                  <option value="cheese">Cheese</option>
-                  <option value="tomatoes">Tomatoes</option>
-                  <option value="mozarella">Mozzarella</option>
-                  <option value="mushrooms">Mushrooms</option>
-                  <option value="pepperoni">Pepperoni</option>
-                  <option value="onions">Onions</option>
-              </select>
-              
-              
               <!--Prep Time & Cook Time: -->
               <div class="input-group mb-3">
                 <div class="input-group-prepend">
@@ -132,6 +119,7 @@
       </div>
     </div>
   </form>
+
   <script type="text/javascript">
 var rangeValues =
 {
@@ -190,15 +178,6 @@ $(function () {
       })
     });
   </script>
-
-<!-- Initialize the plugin: -->
-<script type="text/javascript">
-    $(document).ready(function() {
-        $('#utensils').multiselect({
-            enableCaseInsensitiveFiltering: true
-        });
-    });
-</script>
 
   <script>
     $(document).ready(function() {
