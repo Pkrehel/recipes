@@ -13,23 +13,29 @@
               <h1 class="card-title text-primary display-3">
                 <input class="form-control form-control-lg" type="text" name="title" placeholder="Recipe Title" minlength="5" maxlength="200" required>
               </h1>
-              <h4 class="card-title text-primary display-3">
-                <textarea class="form-control form-control-lg" id="description-text" type="text" name="description" minlength="50" maxlength="400" placeholder="Description" required></textarea>
-              </h4>
+
+            <div class="form-group">
+              <textarea class="form-control form-control-lg" id="description-editor" type="textarea" name="description" placeholder="Description (1 - 3 paragraphs)"></textarea>
+            </div>
               
               <!--Prep Time & Cook Time: -->
-              <div class="input-group mb-3">
+              <div class="form-row mb-3">
+              <div class="input-group col">
                 <div class="input-group-prepend">
                   <label class="input-group-text" for="prepTime"><small>Prep Time</small></label>
                 </div>
                 <input class="form-control" type="number" name="prepTime" id="prepTime" placeholder="minutes" maxlength="4" required>
               </div>
-              <div class="input-group mb-3">
+              
+              <div class="input-group col">
                 <div class="input-group-prepend">
-                  <label class="input-group-text font-weight-bold" for="cookTime"><small>Cook Time</small></label>
+                  <label class="input-group-text font-weight-bold" for="cookTime"><small><i class="fa fa-clock-o" aria-hidden="true"></i>
+Cook Time</small></label>
                 </div>
                 <input class="form-control" type="number" name="cookTime" id="cookTime" placeholder="minutes" maxlength="4" required>
               </div>
+              </div>
+              
               <div class="input-group mb-3">
                 <div class="input-group-prepend">
                   <label class="input-group-text font-weight-bold" for="category"><small>Category</small></label>
@@ -225,5 +231,13 @@ $(function () {
       var cs = $(this).val().length;
       $('#character-count').text(cs);
     }
+  </script>
+  <script>
+    tinymce.init({
+      selector: 'textarea#description-editor',
+      toolbar: 'undo redo | bold italic',
+      menubar: false,
+      skin: 'bootstrap'
+    });
   </script>
   <% include ../partials/footer %>

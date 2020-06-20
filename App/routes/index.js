@@ -372,7 +372,7 @@ router.get("/login", function(req, res) {
 router.post('/login', middleware.accountRateLimit,
     passport.authenticate('local', {
         successRedirect: '/',
-        failureRedirect: '/login',
+        failureRedirect: '/register',
         failureFlash: true
     })
 );

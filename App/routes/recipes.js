@@ -112,7 +112,7 @@ router.get("/:id", function (req, res) {
 });
 
 //RECIPE EDIT SHOW ROUTE:
-router.get("/:id/edit",  function (req, res) {
+router.get("/:id/edit", middleware.checkRecipeOwnership, function (req, res) {
   Recipe.findById(req.params.id, function (err, foundRecipe) {
     if (err) {
       req.flash('error', err.message);
@@ -125,7 +125,7 @@ router.get("/:id/edit",  function (req, res) {
 });
 
 // recipe edit put route
-router.put("/:id", middleware.recipeRateLimits, upload.single('image'), function(req, res){
+router.put("/:id", middleware.recipeRateLimits, middleware.checkRecipeOwnership, upload.single('image'), function(req, res){
     Recipe.findById(req.params.id, async function(err, recipe){
         if(err){
             req.flash("error", err.message);

@@ -21,7 +21,7 @@ middlewareObj.checkRecipeOwnership = function (req, res, next) {
     if (req.isAuthenticated()) {
         Recipe.findById(req.params.id, function (err, foundRecipe) {
             if (err || !foundRecipe) {
-                req.flash("error", "Recipe Not Found. This may have been deleted from the original chef.");
+                req.flash("error", "Recipe Not Found. This may have been deleted from the owner.");
                 res.redirect("back");
             }
             else {
@@ -30,7 +30,7 @@ middlewareObj.checkRecipeOwnership = function (req, res, next) {
                     next();
                 }
                 else {
-                    req.flash("error", "You don't have permission to do that!");
+                    req.flash("error", "You aren't the recipe owner. You cannot edit this recipe.");
                     res.redirect("back");
                 }
             }
@@ -81,7 +81,7 @@ middlewareObj.checkReviewOwnership = function (req, res, next) {
                     next();
                 }
                 else {
-                    req.flash("error", "You don't have permission to do that");
+                    req.flash("error", "This is not your review. You cannot modify or delete the review.");
                     res.redirect("back");
                 }
             }

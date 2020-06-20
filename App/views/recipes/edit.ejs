@@ -14,7 +14,7 @@
                 <input class="form-control form-control-lg" type="text" name="title" value="<%= recipe.title %>" placeholder="Recipe Title" minlength="5" maxlength="200" required>
               </h1>
               <h4 class="card-title text-primary display-3">
-                <textarea class="form-control form-control-lg" id="description-text" type="text" name="description" minlength="50" maxlength="400" placeholder="Description" required><%=recipe.description %></textarea>
+                <textarea class="form-control form-control-lg" id="description-editor" type="textarea" name="description" placeholder="Description (1 - 3 paragraphs)" required><%=recipe.description %></textarea>
               </h4>
               <!--Prep Time & Cook Time: -->
               <div class="input-group mb-3">
@@ -228,5 +228,12 @@ $(function () {
       $('#character-count').text(cs);
     }
   </script>
-
+  <script>
+    tinymce.init({
+      selector: 'textarea#description-editor',
+      toolbar: 'undo redo | bold italic',
+      menubar: false,
+      skin: 'bootstrap'
+    });
+  </script>
   <% include ../partials/footer %>

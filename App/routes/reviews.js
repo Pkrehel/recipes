@@ -37,7 +37,7 @@ router.post("/", middleware.socialRateLimits, middleware.isLoggedIn, middleware.
 });
 
 // Reviews Delete
-router.delete("/:review_id", function (req, res) {
+router.delete("/:review_id", middleware.checkCommentOwnership, middleware.socialRateLimits, middleware.isLoggedIn, middleware.checkReviewExistence, function (req, res) {
     Review.findByIdAndRemove(req.params.review_id, function (err) {
         if (err) {
             req.flash("error", err.message);
