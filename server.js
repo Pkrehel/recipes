@@ -24,9 +24,9 @@ var commentRoutes = require("./routes/comments"),
     loveRecipeRoutes = require("./routes/love"),
     apiRoutes = require("./routes/api");
 
-
 var url = process.env.DATABASEURL || "mongodb://localhost/db_1"
-mongoose.connect(url, { useNewUrlParser: true, useUnifiedTopology: true});
+// mongoose.connect(url, { useNewUrlParser: true, useUnifiedTopology: true});
+mongoose.connect(url);
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.set("view engine", "ejs");
