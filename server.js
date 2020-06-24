@@ -24,7 +24,10 @@ var commentRoutes = require("./routes/comments"),
     loveRecipeRoutes = require("./routes/love"),
     apiRoutes = require("./routes/api");
 
-mongoose.connect("mongodb://localhost/db_1", { useNewUrlParser: true, useUnifiedTopology: true});
+
+var url = process.env.DATABASEURL || "mongodb://localhost/db_1"
+mongoose.connect(url, { useNewUrlParser: true, useUnifiedTopology: true});
+
 app.use(bodyParser.urlencoded({ extended: true }));
 app.set("view engine", "ejs");
 app.use(express.static(__dirname + "/public"));
