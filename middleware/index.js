@@ -126,7 +126,7 @@ middlewareObj.checkReviewExistence = function (req, res, next) {
 // applies to logins, account creations, forgot my password, profile updates
 middlewareObj.accountRateLimit = rateLimit({
     store: new MongoStore({
-        uri: "mongodb://localhost/db_1",
+        uri: process.env.MONGODB_URI || "mongodb://localhost/db_1",
         collectionName: "accountRateLimit"
   }),
     windowMs: 10 * 60 * 1000, //10 minutes
@@ -139,7 +139,7 @@ middlewareObj.accountRateLimit = rateLimit({
 // applies to creating a new recipe, or updating an exisiting recipe
 middlewareObj.recipeRateLimits = rateLimit({
     store: new MongoStore({
-        uri: "mongodb://localhost/db_1",
+        uri: process.env.MONGODB_URI || "mongodb://localhost/db_1",
         collectionName: "recipeRateLimits"
   }),
     windowMs: 10 * 60 * 1000, //10 minutes
@@ -151,7 +151,7 @@ middlewareObj.recipeRateLimits = rateLimit({
 // applies to liking and commenting on recipes
 middlewareObj.socialRateLimits = rateLimit({
     store: new MongoStore({
-        uri: "mongodb://localhost/db_1",
+        uri: process.env.MONGODB_URI || "mongodb://localhost/db_1",
         collectionName: "socialRateLimits"
   }),
     windowMs: 1 * 60 * 1000, //10 minutes
