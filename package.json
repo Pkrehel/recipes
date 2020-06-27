@@ -39,5 +39,7 @@
     "pusher": "^1.5.1",
     "randomstring": "^1.1.5",
     "rate-limit-mongo": "^2.1.0"
-  }
+  },
+  "devDependencies": {},
+  "keywords": []
 }

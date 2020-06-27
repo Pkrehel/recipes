@@ -24,9 +24,9 @@ var commentRoutes = require("./routes/comments"),
     loveRecipeRoutes = require("./routes/love"),
     apiRoutes = require("./routes/api");
 
-var url = process.env.DATABASE_URL;
+const databaseUri = process.env.MONGODB_URI || 'mongodb://localhost/db_1';
 
-mongoose.connect(url, {
+mongoose.connect(databaseUri, {
     useNewUrlParser: true, 
     useCreateIndex: true,
     useUnifiedTopology: true

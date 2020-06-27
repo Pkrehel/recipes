@@ -97,7 +97,7 @@ router.get("/", function(req, res) {
                 req.flash("error", "Sorry, an error has occurred.");
                 res.redirect("back");
             } else {
-                res.render("home.ejs", {
+                res.render("home", {
                     latestRecipes: latestRecipes,
                     current: pageNumber,
                     pages: Math.ceil(count / perPage),
