@@ -57,7 +57,7 @@ app.use(require("express-session")({
 // global rate limiter - applies to all requests
 var globalRateLimit = rateLimit({
     store: new MongoStore({
-        uri: "mongodb://localhost/db_1",
+        uri: process.env.MONGODB_URI || "mongodb://localhost/db_1",
         collectionName: "globalRateLimit"
   }),
     windowMs: 1 * 60 * 1000, //1 minute
