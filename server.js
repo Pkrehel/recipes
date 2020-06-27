@@ -26,6 +26,8 @@ var commentRoutes = require("./routes/comments"),
 
 var databaseUri = process.env.MONGODB_URI
 
+console.log("database URL = " + databaseUri);
+
 mongoose.connect(databaseUri, {
     useNewUrlParser: true, 
     useCreateIndex: true,
