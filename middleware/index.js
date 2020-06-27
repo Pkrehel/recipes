@@ -1,3 +1,4 @@
+require('dotenv').config();
 var Recipe = require("../models/recipe.js"),
     Comment = require("../models/comment.js"),
     Review = require("../models/review.js"),
