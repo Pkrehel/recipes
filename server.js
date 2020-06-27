@@ -26,17 +26,19 @@ var commentRoutes = require("./routes/comments"),
 
 var databaseUri = process.env.MONGODB_URI
 
-console.log("database URL = " + databaseUri);
+mongoose.connect( databaseUri, { useNewUrlParser: true, useCreateIndex: true, useUnifiedTopology: true })
+     .then(() => console.log( 'Database Connected' ))
+     .catch(err => console.log( err ));
 
-mongoose.connect(databaseUri, {
-    useNewUrlParser: true, 
-    useCreateIndex: true,
-    useUnifiedTopology: true
-}).then(() => {
-    console.log("connected to DB!");
-}).catch(err => {
-    console.log("ERROR:", err.message);
-});
+// mongoose.connect(databaseUri, {
+//     useNewUrlParser: true, 
+//     useCreateIndex: true,
+//     useUnifiedTopology: true
+// }).then(() => {
+//     console.log("connected to DB!");
+// }).catch(err => {
+//     console.log("ERROR:", err.message);
+// });
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.set("view engine", "ejs");
