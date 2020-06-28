@@ -14,7 +14,7 @@ var express = require("express"),
     MongoStore = require('rate-limit-mongo'),
     compression = require('compression'),
     enforce = require('express-sslify'),
-    User = require("./models/user"),
+    User = require("./models/user");
 
 //requiring routes
 var commentRoutes = require("./routes/comments"),
