@@ -16,7 +16,6 @@ var express = require("express"),
     enforce = require('express-sslify'),
     User = require("./models/user"),
 
-
 //requiring routes
 var commentRoutes = require("./routes/comments"),
     recipeRoutes = require("./routes/recipes"),
