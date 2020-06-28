@@ -24,7 +24,7 @@ var commentRoutes = require("./routes/comments"),
     loveRecipeRoutes = require("./routes/love"),
     apiRoutes = require("./routes/api");
 
-var databaseUri = process.env.MONGODB_URI
+var databaseUri = process.env.MONGODB_URI || "mongodb://localhost/db_1";
 
 mongoose.connect( databaseUri, { useNewUrlParser: true, useCreateIndex: true, useUnifiedTopology: true })
      .then(() => console.log( 'Database Connected' ))
