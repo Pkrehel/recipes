@@ -13,7 +13,8 @@ var express = require("express"),
     rateLimit = require("express-rate-limit"),
     MongoStore = require('rate-limit-mongo'),
     compression = require('compression'),
-    User = require("./models/user");
+    enforce = require('express-sslify'),
+    User = require("./models/user"),
 
 
 //requiring routes
@@ -46,6 +47,7 @@ app.use(express.static(__dirname + "/public"));
 app.use(methodOverride("_method"));
 app.use(flash());
 app.use(compression());
+app.use(enforce.HTTPS({ trustProtoHeader: true }));
 
 //passport configuration
 app.use(require("express-session")({
