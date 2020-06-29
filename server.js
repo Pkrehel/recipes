@@ -13,7 +13,7 @@ var express = require("express"),
     rateLimit = require("express-rate-limit"),
     MongoStore = require('rate-limit-mongo'),
     compression = require('compression'),
-    enforce = require('express-sslify'),
+    // enforce = require('express-sslify'),
     User = require("./models/user");
 
 //requiring routes
@@ -36,7 +36,7 @@ app.use(express.static(__dirname + "/public"));
 app.use(methodOverride("_method"));
 app.use(flash());
 app.use(compression());
-app.use(enforce.HTTPS({ trustProtoHeader: true }));
+// app.use(enforce.HTTPS({ trustProtoHeader: true }));
 
 //passport configuration
 app.use(require("express-session")({
@@ -62,7 +62,6 @@ app.locals.moment = require("moment");
 app.use(passport.initialize());
 app.use(passport.session());
 passport.use(new LocalStrategy(User.authenticate()));
-// passport.serializeUser(User.serializeUser());
 
 passport.serializeUser(function(user, done) {
   done(null, user.id);
@@ -73,7 +72,6 @@ passport.deserializeUser(function(id, done) {
     done(err, user);
   });
 });
-
 
 passport.deserializeUser(User.deserializeUser());
 

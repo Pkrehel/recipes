@@ -16,7 +16,6 @@ middlewareObj.isLoggedIn = function (req, res, next) {
 };
 
 
-
 middlewareObj.checkRecipeOwnership = function (req, res, next) {
     // is the user logged in?
     if (req.isAuthenticated()) {
