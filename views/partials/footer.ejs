@@ -8,10 +8,7 @@
   <% if(currentUser) { %>
   <form class="form-inline d-lg-none">
     <div class="col-6 text-center">
-      <a href="#0" class="js-cd-panel-trigger" data-panel="main">
-        <button class="btn btn-outline-primary">Favorites &nbsp;
-          <span class="badge badge-secondary"><%= currentUser.lovedRecipes.length %></span>
-        </button>
+      <a href="/users/<%= currentUser.id %>" class="btn btn-outline-primary">My Profile
       </a>
     </div>
     <div class="col-6 text-center">

@@ -21,6 +21,11 @@
     text-align: center;
     background-color: #ffde6b;
   }
+  #cooking-container-navigation {
+    height: 25px;
+    width: 100%;
+    text-align: left;
+    }
   #cooking h4 {
     position: relative;
     margin: 0 auto;
@@ -41,6 +46,13 @@
     margin: 0 auto;
     top: 25vh;
     height: 45vh;
+    overflow: hidden;
+  }
+  #cooking-navigation {
+    display: inline;
+    text-align: center;
+    position: relative;
+    margin: 0 auto;
     overflow: hidden;
   }
   #cooking .bubble {
@@ -139,7 +151,7 @@
   #cooking #area #pancake #pastry {
     position: absolute;
     bottom: 26%;
-    right: 37%;
+    right: 20%;
     width: 40%;
     height: 45%;
     background-color: #333;
@@ -149,6 +161,66 @@
     animation: fly 2.1s ease-in-out infinite;
   }
 
+    
+/*Navigation animations   */
+  #cooking-navigation #area {
+    position: absolute;
+    top: 10px;
+    left: 20px;
+    width: 100%;
+    height: 100%;
+    background-color: transparent;
+    transform-origin: 15% 60%;
+    animation: navigation-flip 4s ease-in-out infinite;
+  }
+  #cooking-navigation #area #sides {
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    transform-origin: 15% 60%;
+  }
+  #cooking-navigation #area #sides #handle {
+    position: absolute;
+    bottom: 18%;
+    right: 80%;
+    width: 17px;
+    height: 17px;
+    background-color: transparent;
+    border-top: 1vh solid #333;
+    border-left: 1vh solid transparent;
+    border-radius: 100%;
+    transform: rotate(20deg) rotateX(0deg) scale(1.3, 0.9);
+  }
+  #cooking-navigation #area #sides #pan {
+    position: absolute;
+    width: 35px;
+    height: 6px;
+    background-color: #333;
+    border-radius: 0 0 1.4em 1.4em;
+    transform-origin: -15% 0;
+  }
+  #cooking-navigation #area #pancake {
+    position: absolute;
+    left: 30px;
+    top: 24%;
+    width: 100%;
+    height: 100%;
+    animation: navigation-jump 4s ease infinite;
+  }
+  #cooking-navigation #area #pancake #pastry {
+    position: absolute;
+    bottom: 5%;
+    right: -20%;
+    width: 17px;
+    height: 17px;
+    background-color: #eda635;
+    border: 2px #ffffff solid;
+    border-radius: 100%;
+    animation: navigation-fly 1.5s ease-in-out infinite;
+  }
+  .brand{
+      float: left;
+    }
   @keyframes jump {
     0% {
       top: 24%;
@@ -251,11 +323,69 @@
       opacity: 0.25;
     }
   }
+    
+  @keyframes navigation-fly {
+    0% {
+      bottom: 0%;
+    }
+    25% {
+      bottom: 30%;
+    }
+    40% {
+      bottom: 40%;
+    }
+    75%{
+      bottom: 30%;
+    }
+    100% {
+      bottom: 0%;
+    }
+  }
+  @keyframes navigation-jump {
+    0% {
+      top: 0px;
+      transform: rotateX(-90deg);
+    }
+    25% {
+      top: -4px;
+      transform: rotateX(-20deg);
+    }
+    30%{
+      top: -12px;
+      transform: rotateX(-85deg);  
+    }
+    40% {
+      top:-13px;
+      transform: rotateX(-120deg);
+    }
+    65% {
+      top:-8px;
+      transform: rotateX(-40deg);
+    }
+    100% {
+      top:0px;
+      transform: rotateX(-90deg);
+    }
+  }
+  @keyframes navigation-flip {
+    0% {
+      transform: rotate(0deg);
+    }
+    10% {
+      transform: rotate(-27deg);
+    }
+    30%,
+    50% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(0deg);
+    }
+  }
 </style>
 </head>
 
 <body>
-
 <div id="cooking-container">
   <div id="cooking">
   <div class="bubble"></div>
@@ -275,17 +405,26 @@
       <h4>Uploading Your Recipe...</h4>
 </div>
 </div>
-
   <div id="fullPageHide">
   <div class="container">
     <nav class="navbar navbar-expand-md fixed-top-sm justify-content-start flex-nowrap bg-light navbar-light pl-0 pr-0">
   <a href="/" class="navbar-brand">
-    <% if(!currentUser) { %>
-    Recipes 
-    <% } %>
-    <% if(currentUser) { %>
-   <%= currentUser.firstName %>'s Recipes <%= currentUser.avatar %>
-    <% } %>
+    <div id="cooking-container-navigation">
+  <div id="cooking-navigation">
+  <div id="area">
+    <div id="sides">
+      <div id="pan"></div>
+      <div id="handle"></div>
+    </div>
+    <div id="pancake">
+      <div id="pastry"></div>
+    </div>
+  </div>
+</div>
+  <div class="brand">
+  <h6>Flippin' Good Recipes</h6>
+  </div>
+</div>
   </a>
   
   <!--SIGN UP / LOGIN BUTTON-->
