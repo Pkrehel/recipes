@@ -21,11 +21,6 @@
     text-align: center;
     background-color: #ffde6b;
   }
-  #cooking-container-navigation {
-    height: 25px;
-    width: 100%;
-    text-align: left;
-    }
   #cooking h4 {
     position: relative;
     margin: 0 auto;
@@ -46,13 +41,6 @@
     margin: 0 auto;
     top: 25vh;
     height: 45vh;
-    overflow: hidden;
-  }
-  #cooking-navigation {
-    display: inline;
-    text-align: center;
-    position: relative;
-    margin: 0 auto;
     overflow: hidden;
   }
   #cooking .bubble {
@@ -161,6 +149,25 @@
     animation: fly 2.1s ease-in-out infinite;
   }
 
+
+    
+ #cooking-container-navigation {
+    height: 30px;
+    min-width: 220px;
+    }
+  #cooking-navigation {
+    display: inline;
+    position: relative;
+    margin: 0 auto;
+    overflow: hidden;
+  }
+    
+    .right{
+      position: relative;
+      width: auto;
+      float: right;
+      text-align: left;
+    }
     
 /*Navigation animations   */
   #cooking-navigation #area {
@@ -218,16 +225,6 @@
     border-radius: 100%;
     animation: navigation-fly 1.5s ease-in-out infinite;
   }
-  .brand{
-      float: left;
-    }
-    
-    #cooking-container-navigation .left {
-      float: left;
-    }
-    #cooking-container-navigation .right {
-      float: right;
-    }
     
   @keyframes jump {
     0% {
@@ -417,22 +414,22 @@
   <div class="container">
     <nav class="navbar navbar-expand-md fixed-top-sm justify-content-start flex-nowrap bg-light navbar-light pl-0 pr-0">
   <a href="/" class="navbar-brand">
-    <div id="cooking-container-navigation" class="left">
-  <div id="cooking-navigation">
-  <div id="area">
-    <div id="sides">
-      <div id="pan"></div>
-      <div id="handle"></div>
+    <div id="cooking-container-navigation">
+      <div id="cooking-navigation" class="left">
+      <div id="area">
+        <div id="sides">
+          <div id="pan"></div>
+          <div id="handle"></div>
+        </div>
+        <div id="pancake">
+          <div id="pastry"></div>
+        </div>
+      </div>
     </div>
-    <div id="pancake">
-      <div id="pastry"></div>
+      <div class="right">
+      <h6>Flippin' Good Recipes</h6>
+      </div>
     </div>
-  </div>
-</div>
-  <div class="right">
-  <h6>Flippin' Good Recipes</h6>
-  </div>
-</div>
   </a>
   
   <!--SIGN UP / LOGIN BUTTON-->
