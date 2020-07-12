@@ -298,24 +298,28 @@ var mailOptions, host, link;
 
 router.get("/verification-email", middleware.accountRateLimit, function(req, res) {
     host = req.get("host");
-    link = "http://" + req.headers.host + "/verify?id=" + req.user.secretToken;
-    var smtpTransporter = nodemailer.createTransport({
-        host: 'smtp.gmail.com',
-        port: 465,
-        secure: true,
-        auth: {
-            type: 'OAuth2',
-            clientId: process.env.NODEMAILER_CLIENTID,
-            clientSecret: process.env.NODEMAILER_CLIENTSECRET,
-            user: process.env.NODEMAILER_USER,
-            refreshToken: process.env.NODEMAILER_REFRESHTOKEN,
-            accessToken: process.env.NODEMAILER_ACCESSTOKEN,
-            expires: process.env.NODEMAILER_EXPIRES
-        }
-    });
+    link = "https://" + req.headers.host + "/verify?id=" + req.user.secretToken;
+    
+var smtpTransporter = nodemailer.createTransport({
+  host: 'mail.privateemail.com',
+  port: 587,
+  secure: false,
+  auth: {
+      user: process.env.DOMAIN_EMAIL,
+      pass: process.env.DOMAIN_EMAIL_PASSWORD
+  }
+});
+
+smtpTransporter.sendMail(mailOptions, function(error, info){
+              if (error) {
+                console.log(error);
+              } else {
+                console.log('Email sent: ' + info.response);
+              }
+            });
 
     mailOptions = {
-        from: process.env.TESTEMAILADDRESS,
+        from: process.env.DOMAIN_EMAIL,
         to: req.user.username,
         subject: 'Please Confirm Your Email Account',
         text: 'Hello, ' + req.user.firstName +'\n\n' +
@@ -340,10 +344,7 @@ router.get("/verification-email", middleware.accountRateLimit, function(req, res
 
 
 router.get("/verify", middleware.accountRateLimit, function(req, res) {
-    console.log(req.protocol + ":/" + req.get("host"));
     if ((req.protocol + "://" + req.get("host")) == ("http://" + host)) {
-        console.log("Domain is matched. Information is from authentic email address");
-
         User.findOneAndUpdate(req.query.id, {
             $set: {
                 active: true,
@@ -366,7 +367,6 @@ router.get("/verify", middleware.accountRateLimit, function(req, res) {
 router.get("/login", function(req, res) {
     res.render("login");
 });
-
 
 // handle login logic:
 router.post('/login', middleware.accountRateLimit,
@@ -416,24 +416,19 @@ router.post('/forgot', middleware.accountRateLimit, function(req, res, next) {
             });
         },
         function(token, user, done) {
-            var smtpTransporter1 = nodemailer.createTransport({
-                host: 'smtp.gmail.com',
-                port: 465,
-                secure: true,
-                auth: {
-                    type: 'OAuth2',
-                    clientId: process.env.NODEMAILER_CLIENTID,
-                    clientSecret: process.env.NODEMAILER_CLIENTSECRET,
-                    user: process.env.NODEMAILER_USER,
-                    refreshToken: process.env.NODEMAILER_REFRESHTOKEN,
-                    accessToken: process.env.NODEMAILER_ACCESSTOKEN,
-                    expires: process.env.NODEMAILER_EXPIRES
-                }
+            var smtpTransporter = nodemailer.createTransport({
+              host: 'mail.privateemail.com',
+              port: 587,
+              secure: false,
+              auth: {
+                  user: process.env.DOMAIN_EMAIL,
+                  pass: process.env.DOMAIN_EMAIL_PASSWORD
+              }
             });
 
             var mailOptions = {
                 to: user.username,
-                from: process.env.TESTEMAILADDRESS,
+                from: process.env.DOMAIN_EMAIL,
                 subject: 'Please Reset Your Password',
                 text: 'You are receiving this because you have requested the reset of the password for your account.\n\n' +
                     'Please click on the following link, or paste this into your browser to complete the process:\n\n' +
@@ -504,12 +499,14 @@ router.post('/reset/:token', middleware.accountRateLimit, function(req, res) {
             });
         },
         function(user, done) {
-            var smtpTransport = nodemailer.createTransport({
-                service: 'Gmail',
-                auth: {
-                    user: process.env.TESTEMAILADDRESS,
-                    pass: process.env.TESTEMAILPASSWORD
-                }
+            var smtpTransporter = nodemailer.createTransport({
+              host: 'mail.privateemail.com',
+              port: 587,
+              secure: false,
+              auth: {
+                  user: process.env.DOMAIN_EMAIL,
+                  pass: process.env.DOMAIN_EMAIL_PASSWORD
+              }
             });
             var mailOptions = {
                 to: user.username,
