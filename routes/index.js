@@ -1,547 +1,253 @@
-var express = require("express"),
-    router = express.Router(),
-    passport = require("passport"),
-    User = require("../models/user"),
-    middleware = require("../middleware"),
-    Recipe = require("../models/recipe"),
-    randomstring = require("randomstring"),
-    nodemailer = require('nodemailer'),
-    async = require('async'),
-    crypto = require('crypto'),
-    rateLimit = require("express-rate-limit"),
-    MongoStore = require('rate-limit-mongo');
+const express = require("express");
+const mongoose = require("mongoose");
+const User = require("../models/user");
+const Recipe = require("../models/recipe");
+const middleware = require("../middleware");
+const seo = require("../lib/seo");
 
-//Show the home page
-router.get("/", function(req, res) {
-    var query = {}
-    var pageTitle = req.query.pageTitle
-    var difficulty = req.query.difficulty
-    var perPage
-    var pageLimit = parseInt(req.query.pageLimit);
-    var sort
-    var sortBy = req.query.sortBy
-    var orderBy = req.query.orderBy
-    var lessThan = parseInt(req.query.lt)
-    var greaterThan = parseInt(req.query.gt)
-    var category = req.query.category
-    var allergens = req.query.allergens
+const router = express.Router();
 
-    //PARSING QUERY STRING VALUES:
-    var queryString = '?'
-    var urlParamObj = Object.entries(req.query)
-    for (let key in urlParamObj) {
-        var value = urlParamObj[key].toString();
-        value = value.replace(',', '=')
-        queryString = queryString.concat('&' + value)
-    }
-    queryString = queryString.replace('?&', '?')
+const PER_PAGE_DEFAULT = 12;
+const PER_PAGE_MAX = 24;
+const SORTS = { createdAt: "Newest", views: "Most viewed", rating: "Highest rated", totalTime: "Quickest" };
 
-    if (pageLimit) {
-        if (pageLimit <= 12) {
-            perPage = pageLimit
-        } else {
-            perPage = 6
-        }
-    } else {
-        perPage = 6
-    }
+// Curated browse pages: pretty, crawlable URLs that map to a filter + SEO copy.
+const COLLECTIONS = {
+  vegetarian: { title: "Vegetarian Recipes", description: "Meat-free recipes for every meal, from quick weeknight dinners to weekend brunch.", filter: { allergens: "Vegetarian" } },
+  vegan: { title: "Vegan Recipes", description: "Plant-based recipes with no animal products.", filter: { allergens: "Vegan" } },
+  "gluten-free": { title: "Gluten-Free Recipes", description: "Recipes made without wheat, barley or rye.", filter: { allergens: "Gluten-Free" } },
+  "dairy-free": { title: "Dairy-Free Recipes", description: "Recipes with no milk, cheese, butter or cream.", filter: { allergens: "Dairy-Free" } },
+  "nut-free": { title: "Nut-Free Recipes", description: "Recipes that skip peanuts and tree nuts.", filter: { allergens: "Nut-Free" } },
+  breakfast: { title: "Breakfast Recipes", description: "Start the day right with pancakes, eggs, oats and more.", filter: { category: "Breakfast" } },
+  lunch: { title: "Lunch Recipes", description: "Sandwiches, salads, bowls and soups for midday.", filter: { category: "Lunch" } },
+  dinner: { title: "Dinner Recipes", description: "Main courses for weeknights and special occasions.", filter: { category: "Dinner" } },
+  snack: { title: "Snack Recipes", description: "Small bites and appetizers.", filter: { category: "Snack" } },
+  dessert: { title: "Dessert Recipes", description: "Cakes, cookies, pies and sweet treats.", filter: { category: "Dessert" } },
+  beverage: { title: "Drink Recipes", description: "Cocktails, smoothies, coffee and more.", filter: { category: "Beverage" } },
+  easy: { title: "Easy Recipes", description: "Beginner-friendly recipes with simple steps.", filter: { difficulty: 0 } },
+  intermediate: { title: "Intermediate Recipes", description: "Recipes for confident home cooks.", filter: { difficulty: 1 } },
+  challenging: { title: "Challenging Recipes", description: "Ambitious recipes worth the effort.", filter: { difficulty: 2 } },
+  quick: { title: "Quick Recipes (10 minutes or less)", description: "Recipes you can finish in ten minutes or less.", filter: { totalTime: { $lte: 10 } } },
+  "under-45-minutes": { title: "Recipes Under 45 Minutes", description: "Recipes that take between 11 and 45 minutes.", filter: { totalTime: { $gt: 10, $lte: 45 } } },
+  "weekend-projects": { title: "Long Recipes (45+ minutes)", description: "Slow cooks, bakes and braises for when you have time.", filter: { totalTime: { $gt: 45 } } },
+  "most-viewed": { title: "Most Viewed Recipes", description: "The recipes our community looks at most.", filter: {}, sort: "-views" },
+  "highest-rated": { title: "Highest Rated Recipes", description: "Top-rated recipes according to reviews.", filter: { rating: { $gt: 0 } }, sort: "-rating" }
+};
+router.COLLECTIONS = COLLECTIONS;
 
-    if (!orderBy) {
-        orderBy = "createdAt"
-    }
+function parsePaging(req) {
+  let perPage = parseInt(req.query.pageLimit, 10) || PER_PAGE_DEFAULT;
+  perPage = Math.min(Math.max(perPage, 1), PER_PAGE_MAX);
+  const page = Math.max(parseInt(req.query.page, 10) || 1, 1);
+  return { perPage, page };
+}
 
-    if (sortBy === '1') {
-        sort = "" + orderBy
-    } else {
-        sort = '-' + orderBy
-    }
+function parseSort(req, fallback = "-createdAt") {
+  const orderBy = SORTS[req.query.orderBy] ? req.query.orderBy : null;
+  if (!orderBy) return fallback;
+  return (req.query.sortBy === "1" ? "" : "-") + orderBy;
+}
 
-    if (difficulty) {
-        query['difficulty'] = difficulty
-    }
+function pageUrl(basePath, query, page) {
+  const q = new URLSearchParams(query);
+  if (page > 1) q.set("page", page);
+  else q.delete("page");
+  const s = q.toString();
+  return basePath + (s ? `?${s}` : "");
+}
 
-    if (lessThan && greaterThan) {
-        query['totalTime'] = {
-            $gt: greaterThan,
-            $lt: lessThan
-        }
-    }
+async function renderListing(req, res, { filter, sort, basePath, title, description, view = "home", robots, canonicalQuery = {} }) {
+  const { perPage, page } = parsePaging(req);
+  const [recipes, count] = await Promise.all([
+    Recipe.find(filter)
+      .sort(sort)
+      .skip(perPage * (page - 1))
+      .limit(perPage)
+      .lean(),
+    Recipe.countDocuments(filter)
+  ]);
+  const pages = Math.max(Math.ceil(count / perPage), 1);
+  const pageTitle = page > 1 ? `${title} (Page ${page})` : title;
+  const keep = { ...canonicalQuery };
+  if (req.query.pageLimit && Number(req.query.pageLimit) !== PER_PAGE_DEFAULT) keep.pageLimit = req.query.pageLimit;
+  if (req.query.orderBy && SORTS[req.query.orderBy]) keep.orderBy = req.query.orderBy;
+  if (req.query.sortBy === "1") keep.sortBy = "1";
 
-    if (lessThan && !greaterThan) {
-        query['totalTime'] = {
-            $lt: lessThan
-        }
-    }
+  const meta = res.locals.buildMeta({
+    title: pageTitle,
+    description,
+    canonical: pageUrl(basePath, keep, page),
+    robots: robots || (count === 0 ? "noindex,follow" : undefined),
+    prev: page > 1 ? pageUrl(basePath, keep, page - 1) : null,
+    next: page < pages ? pageUrl(basePath, keep, page + 1) : null,
+    image: recipes[0]?.image,
+    jsonLd: [seo.websiteJsonLd(), seo.itemListJsonLd(recipes, { name: pageTitle, url: pageUrl(basePath, keep, page) })]
+  });
 
-    if (!lessThan && greaterThan) {
-        query['totalTime'] = {
-            $gt: greaterThan
-        }
-    }
+  res.render(view, {
+    meta,
+    recipes,
+    pageTitle: title,
+    description,
+    current: page,
+    pages,
+    count,
+    perPage,
+    sorts: SORTS,
+    pageUrl: (p) => pageUrl(basePath, keep, p),
+    basePath,
+    query: keep
+  });
+}
 
-    if (category) {
-        query['category'] = category
-    }
+// ---------- Home ----------
+router.get("/", async (req, res) => {
+  // Legacy query-string filters (still supported): ?category=Dinner&allergens=Vegan&difficulty=1&lt=45&gt=10
+  const filter = {};
+  const q = req.query;
+  if (Recipe.CATEGORIES.includes(q.category)) filter.category = q.category;
+  if (Recipe.DIETS.includes(q.allergens)) filter.allergens = q.allergens;
+  if (["0", "1", "2"].includes(q.difficulty)) filter.difficulty = Number(q.difficulty);
+  const lt = parseInt(q.lt, 10);
+  const gt = parseInt(q.gt, 10);
+  if (lt || gt) filter.totalTime = { ...(gt ? { $gt: gt } : {}), ...(lt ? { $lt: lt } : {}) };
 
-    if (allergens) {
-        query['allergens'] = allergens
-    }
-
-
-    var pageQuery = parseInt(req.query.page);
-    var pageNumber = pageQuery ? pageQuery : 1;
-    var noMatch = null;
-    Recipe.find(query).skip((perPage * pageNumber) - perPage).limit(perPage).sort(sort.toString()).exec(function(err, latestRecipes) {
-        Recipe.count(query).exec(function(err, count) {
-            if (err) {
-                req.flash("error", "Sorry, an error has occurred.");
-                res.redirect("back");
-            } else {
-                res.render("home", {
-                    latestRecipes: latestRecipes,
-                    current: pageNumber,
-                    pages: Math.ceil(count / perPage),
-                    noMatch: noMatch,
-                    search: false,
-                    perPage: perPage,
-                    pageTitle: pageTitle,
-                    queryString: queryString
-                });
-            }
-        });
-    });
-});
-
-router.get("/s", function(req, res) {
-    var perPage
-    var pageLimit = parseInt(req.query.pageLimit);
-    if (pageLimit) {
-        if (pageLimit <= 12) {
-            perPage = pageLimit
-        } else {
-            perPage = 6
-        }
-    } else {
-        perPage = 6
-    }
-
-    var orderBy = req.query.orderBy
-    var sort
-    var sortBy = req.query.sortBy
-    if (sortBy === '1') {
-        sort = "" + orderBy
-    } else {
-        sort = '-' + orderBy
-    }
-    var pageQuery = parseInt(req.query.page);
-    var pageNumber = pageQuery ? pageQuery : 1;
-    var noMatch = null;
-    var queryString = req.query.search;
-    var regex = new RegExp(escapeRegex(queryString), 'gi');
-    Recipe.find({
-        $or: [{
-            "title": regex
-        }, {
-            "tags": regex
-        }, {
-            "category": regex
-        }, {
-            "ingredients": regex
-        }, {
-            "directions": regex
-        }, {
-            "description": regex
-        }, {
-            "allergens": regex
-        }]
-    }).skip((perPage * pageNumber) - perPage).limit(perPage).sort(sort.toString()).exec(function(err, foundRecipe) {
-        Recipe.count({
-            $or: [{
-                "title": regex
-            }, {
-                "tags": regex
-            }, {
-                "category": regex
-            }, {
-                "ingredients": regex
-            }, {
-                "directions": regex
-            }, {
-                "description": regex
-            }, {
-                "allergens": regex
-            }]
-        }).exec(function(err, count) {
-            if (err) {
-                req.flash("error", "Sorry, an error has occurred.");
-                res.redirect("back");
-            } else {
-                if (foundRecipe.length == 0 || queryString.length == 0) {
-                    req.flash("error", "No results for \"" + queryString + "\". Please update your search and try again.");
-                    res.redirect("back");
-                } else {
-                    if (req.user) {
-                        User.findByIdAndUpdate(req.user.id, {
-                            $push: {
-                                'searches': queryString
-                            }
-                        }, function(err, foundUser) {
-                            if (err) {
-                                req.flash("error", "An Error Occurred. Please search again.");
-                                res.redirect("back");
-                            } else {
-                                foundUser.save();
-                                res.render("search", {
-                                    foundRecipe: foundRecipe,
-                                    current: pageNumber,
-                                    pages: Math.ceil(count / perPage),
-                                    noMatch: noMatch,
-                                    search: queryString,
-                                    perPage: perPage
-                                });
-                            }
-                        });
-                    } else {
-                        res.render("search", {
-                            foundRecipe: foundRecipe,
-                            current: pageNumber,
-                            pages: Math.ceil(count / perPage),
-                            noMatch: noMatch,
-                            search: queryString,
-                            perPage: perPage,
-                        });
-                    }
-                }
-            }
-        });
-    });
-});
-
-//===================
-// USER REGISTRATION:
-//===================
-
-//Show the signup page
-router.get("/register", function(req, res) {
-    res.render("register", {
-        message: req.flash("signupMessage")
-    });
-});
-
-//REGISTER LOGIC:
-router.post("/register", middleware.accountRateLimit, function(req, res) {
-    // var date = new Date()
-    var newUser = new User({
-        username: req.body.username,
-        // date.getFullYear().toString() + "-" + (date.getMonth()+1).toString() + "-" +  date.getDate().toString() + "-" + date.getHours().toString() + "-" + date.getMinutes().toString() + "-" + date.getSeconds().toString() + "-" + randomstring.generate(),
-        screenName: req.body.screenName,
-        avatar: req.body.avatar,
-        firstName: req.body.firstName,
-        favoriteCategories: req.body.favoriteCategories,
-        // Randomstring Generation
-        secretToken: randomstring.generate(),
-
-        // Flag account as not verified
-        verified: false
-    });
-    User.register(newUser, req.body.password, function(err, user) {
-        if (err) {
-            req.flash("error", err.message);
-            return res.redirect("register");
-        }
-        passport.authenticate("local")(req, res, function() {
-            req.flash("success", "Your account is almost finsihed! Please check " + user.email + " to complete your account.");
-            res.redirect("/verification-email");
-        });
-    });
-});
-
-//USER PROFILE UPDATE ROUTES:
-router.put("/users/:id/update", middleware.accountRateLimit, function(req, res) {
-    User.findById(req.params.id, function(err, foundUser) {
-        if (err) {
-            req.flash("error", "Cannot Find User's Profile.");
-            res.redirect("back");
-        }
-        // If user changes email address on profile page
-        if (foundUser.username !== req.body.username) {
-                foundUser.username = req.body.username,
-                foundUser.secretToken = randomstring.generate(),
-                foundUser.screenName = req.body.screenName,
-                foundUser.avatar = req.body.avatar,
-                foundUser.firstName = req.body.firstName,
-                foundUser.verified = false,
-                foundUser.save(function(err) {
-                    if (err) {
-                        console.log(err);
-                        return res.redirect("/");
-                    }
-                    req.flash("success", "Please check " + req.body.username + " to reactivate your email.");
-                    return res.redirect("/verification-email");
-                });
-        } else {
-            // If user does not change email address on profile page
-            console.log("Update user - email not changed");
-            foundUser.username = req.body.username,
-                foundUser.screenName = req.body.screenName,
-                foundUser.avatar = req.body.avatar,
-                foundUser.firstName = req.body.firstName,
-                foundUser.save()
-            req.flash("success", "Your account has been updated!");
-            res.redirect("back");
-        }
-    });
-});
-
-// Send Verification Email After Account SignUp:
-var mailOptions, host, link;
-
-router.get("/verification-email", middleware.accountRateLimit, function(req, res) {
-    host = req.get("host");
-    link = "https://" + req.headers.host + "/verify?id=" + req.user.secretToken;
-    
-var smtpTransporter = nodemailer.createTransport({
-  host: 'mail.privateemail.com',
-  port: 587,
-  secure: false,
-  auth: {
-      user: process.env.DOMAIN_EMAIL,
-      pass: process.env.DOMAIN_EMAIL_PASSWORD
+  // Redirect legacy filter URLs to their canonical collection page when one matches.
+  if (Object.keys(filter).length === 1) {
+    const match = Object.entries(COLLECTIONS).find(([, c]) => JSON.stringify(c.filter) === JSON.stringify(filter) && !c.sort);
+    if (match) return res.redirect(301, `/recipes/collections/${match[0]}`);
   }
+
+  const filtered = Object.keys(filter).length > 0;
+  await renderListing(req, res, {
+    filter,
+    sort: parseSort(req),
+    basePath: "/",
+    title: filtered ? String(q.pageTitle || "Filtered Recipes").slice(0, 80) : "Recent Recipes",
+    description: filtered ? `Browse ${String(q.pageTitle || "recipes").toLowerCase()} shared by home cooks.` : `${seo.SITE.tagline} Browse the newest recipes shared by our community of home cooks, with ingredients, step-by-step directions, prep and cook times, and reviews.`,
+    robots: filtered ? "noindex,follow" : undefined,
+    canonicalQuery: filtered ? Object.fromEntries(Object.entries(q).filter(([k]) => ["category", "allergens", "difficulty", "lt", "gt"].includes(k))) : {}
+  });
 });
 
-smtpTransporter.sendMail(mailOptions, function(error, info){
-              if (error) {
-                console.log(error);
-              } else {
-                console.log('Email sent: ' + info.response);
-              }
-            });
-
-    mailOptions = {
-        from: process.env.DOMAIN_EMAIL,
-        to: req.user.username,
-        subject: 'Please Confirm Your Email Account',
-        text: 'Hello, ' + req.user.firstName +'\n\n' +
-                    'Before you can share your recipes with the world, please verify your email by clicking the click below:\n\n' +
-                    link + '\n\n' +
-                    'If this link does not work, please copy and paste it into your browser.\n'
-    };
-    smtpTransporter.sendMail(mailOptions, function(err, response) {
-        if (err) {
-            console.log("error with email transport");
-            console.log(err);
-            res.send(err);
-        } else {
-            console.log("message sent");
-            req.flash("success", "A confirmation email has been sent to " + req.user.username + ". Please check your email to complete your account.");
-            req.logout();
-            res.redirect("/register");
-        }
-    });
+// ---------- Curated collections ----------
+router.get("/recipes/collections/:collection", async (req, res, next) => {
+  const c = COLLECTIONS[req.params.collection];
+  if (!c) return next();
+  await renderListing(req, res, {
+    filter: c.filter,
+    sort: c.sort || parseSort(req),
+    basePath: `/recipes/collections/${req.params.collection}`,
+    title: c.title,
+    description: `${c.description} Every recipe includes ingredients, step-by-step directions, prep and cook times, and community reviews.`
+  });
 });
 
+// ---------- Search ----------
+router.get("/s", async (req, res) => {
+  const term = String(req.query.search || "").trim().slice(0, 100);
+  if (!term) return res.redirect("/");
+  const filter = { $text: { $search: term } };
+  const { perPage, page } = parsePaging(req);
+  let recipes;
+  let count;
+  try {
+    [recipes, count] = await Promise.all([
+      Recipe.find(filter, { score: { $meta: "textScore" } })
+        .sort({ score: { $meta: "textScore" }, createdAt: -1 })
+        .skip(perPage * (page - 1))
+        .limit(perPage)
+        .lean(),
+      Recipe.countDocuments(filter)
+    ]);
+  } catch (_) {
+    // Fallback if the text index doesn't exist yet
+    const rx = new RegExp(escapeRegex(term), "i");
+    const or = { $or: [{ title: rx }, { tags: rx }, { ingredients: rx }, { description: rx }] };
+    [recipes, count] = await Promise.all([Recipe.find(or).sort("-createdAt").skip(perPage * (page - 1)).limit(perPage).lean(), Recipe.countDocuments(or)]);
+  }
+  const pages = Math.max(Math.ceil(count / perPage), 1);
+  const basePath = "/s";
+  const keep = { search: term };
+  res.render("search", {
+    meta: res.locals.buildMeta({ title: `Search results for "${term}"`, robots: "noindex,follow", canonical: pageUrl(basePath, keep, page) }),
+    recipes,
+    term,
+    count,
+    current: page,
+    pages,
+    perPage,
+    pageTitle: `Results for "${term}"`,
+    pageUrl: (p) => pageUrl(basePath, keep, p)
+  });
+});
 
+// ---------- User profiles ----------
+router.get("/users/:id", async (req, res, next) => {
+  if (!mongoose.isValidObjectId(req.params.id)) return next();
+  const foundUser = await User.findById(req.params.id).populate("recipes lovedRecipes").lean();
+  if (!foundUser) return next();
+  const isOwner = req.user && req.user._id.equals(foundUser._id);
+  res.render("users/profile", {
+    meta: res.locals.buildMeta({
+      title: `${foundUser.screenName}'s recipes`,
+      description: foundUser.bio || `Recipes shared by ${foundUser.screenName} on ${seo.SITE.name}.`,
+      robots: isOwner || foundUser.recipes.length === 0 ? "noindex,follow" : undefined,
+      jsonLd: [seo.profileJsonLd(foundUser)]
+    }),
+    foundUser,
+    isOwner
+  });
+});
 
-router.get("/verify", middleware.accountRateLimit, function(req, res) {
-    if ((req.protocol + "://" + req.get("host")) == ("http://" + host)) {
-        User.findOneAndUpdate(req.query.id, {
-            $set: {
-                active: true,
-                secretToken: ""
-            }
-        }, function(err, user) {
-            if (err) {
-                req.flash("error", "An Error Has Occurred. Please Try Again.");
-                res.redirect("/register");
-            } else {
-                user.save();
-                req.flash("success", "Your email has been verified.");
-                res.redirect("/");
-            }
-        });
+router.put("/users/:id", middleware.accountRateLimit, middleware.isLoggedIn, async (req, res) => {
+  if (!req.user._id.equals(req.params.id)) {
+    req.flash("error", "You can only edit your own profile.");
+    return res.redirect(`/users/${req.user._id}`);
+  }
+  const user = req.user;
+  const { firstName, screenName, bio, avatar, username } = req.body;
+  if (screenName && screenName !== user.screenName) {
+    const taken = await User.exists({ _id: { $ne: user._id }, screenName: new RegExp(`^${escapeRegex(screenName)}$`, "i") });
+    if (taken) {
+      req.flash("error", "That username is taken.");
+      return res.redirect(`/users/${user._id}`);
     }
+    user.screenName = screenName;
+  }
+  if (firstName) user.firstName = firstName;
+  if (typeof bio === "string") user.bio = bio.slice(0, 500);
+  if (avatar) user.avatar = avatar;
+
+  let emailChanged = false;
+  const newEmail = String(username || "").toLowerCase().trim();
+  if (newEmail && newEmail !== user.username) {
+    if (await User.exists({ username: newEmail })) {
+      req.flash("error", "That email address is already in use.");
+      return res.redirect(`/users/${user._id}`);
+    }
+    user.username = newEmail;
+    user.verified = false;
+    user.verificationToken = require("crypto").randomBytes(24).toString("hex");
+    user.verificationExpires = Date.now() + 24 * 3600 * 1000;
+    emailChanged = true;
+  }
+  await user.save();
+
+  // Keep denormalized chef info on recipes in sync
+  await Recipe.updateMany({ "chef.id": user._id }, { $set: { "chef.screenName": user.screenName, "chef.avatar": user.avatar } });
+
+  if (emailChanged) {
+    await require("../lib/mailer").sendVerificationEmail(req, user);
+    req.flash("success", `Profile updated. Please check ${user.username} to verify your new email address.`);
+  } else {
+    req.flash("success", "Your profile has been updated.");
+  }
+  res.redirect(`/users/${user._id}`);
 });
-// End of email send / verification process
-
-router.get("/login", function(req, res) {
-    res.render("login");
-});
-
-// handle login logic:
-router.post('/login', middleware.accountRateLimit,
-    passport.authenticate('local', {
-        successRedirect: '/',
-        failureRedirect: '/register',
-        failureFlash: true
-    })
-);
-
-
-// LOGOUT LOGIC
-router.get("/logout", middleware.accountRateLimit, function(req, res) {
-    req.logout();
-    req.flash("success", "You have been successfully logged out.");
-    res.redirect("/");
-});
-
-// Forgot Password Logic
-router.get("/forgot", function(req, res) {
-    res.render("forgot");
-});
-
-router.post('/forgot', middleware.accountRateLimit, function(req, res, next) {
-    async.waterfall([
-        function(done) {
-            crypto.randomBytes(20, function(err, buf) {
-                var token = buf.toString('hex');
-                done(err, token);
-            });
-        },
-        function(token, done) {
-            User.findOne({
-                username: req.body.email
-            }, function(err, user) {
-                if (!user) {
-                    req.flash('error', 'No account with that email address exists.');
-                    return res.redirect('/forgot');
-                }
-
-                user.resetPasswordToken = token;
-                user.resetPasswordExpires = Date.now() + 3600000; // 1 hour
-
-                user.save(function(err) {
-                    done(err, token, user);
-                });
-            });
-        },
-        function(token, user, done) {
-            var smtpTransporter = nodemailer.createTransport({
-              host: 'mail.privateemail.com',
-              port: 587,
-              secure: false,
-              auth: {
-                  user: process.env.DOMAIN_EMAIL,
-                  pass: process.env.DOMAIN_EMAIL_PASSWORD
-              }
-            });
-
-            var mailOptions = {
-                to: user.username,
-                from: process.env.DOMAIN_EMAIL,
-                subject: 'Please Reset Your Password',
-                text: 'You are receiving this because you have requested the reset of the password for your account.\n\n' +
-                    'Please click on the following link, or paste this into your browser to complete the process:\n\n' +
-                    'https://' + req.headers.host + '/reset/' + token + '\n\n' +
-                    'If you did not request this, please ignore this email and your password will remain unchanged.\n'
-            };
-
-            smtpTransporter1.sendMail(mailOptions, function(err) {
-                console.log('mail sent');
-                req.flash('success', 'An e-mail has been sent to ' + user.username + ' with further instructions.');
-                done(err, 'done');
-            });
-        }
-    ], function(err) {
-        if (err) return next(err);
-        res.redirect('forgot');
-    });
-});
-
-router.get('/reset/:token', middleware.accountRateLimit, function(req, res) {
-    console.log(req.params.token);
-    User.findOne({
-        resetPasswordToken: req.params.token,
-        resetPasswordExpires: {
-            $gt: Date.now()
-        }
-    }, function(err, user) {
-        if (!user) {
-            req.flash('error', 'Password reset token is invalid or has expired.');
-            return res.redirect('/forgot');
-        }
-        res.render('reset', {
-            token: req.params.token
-        });
-    });
-});
-
-router.post('/reset/:token', middleware.accountRateLimit, function(req, res) {
-    console.log(req.params.token);
-    async.waterfall([
-        function(done) {
-            User.findOne({
-                resetPasswordToken: req.params.token,
-                resetPasswordExpires: {
-                    $gt: Date.now()
-                }
-            }, function(err, user) {
-                console.log(user);
-                if (!user) {
-                    req.flash('error', 'Password reset token is invalid or has expired.');
-                    return res.redirect('back');
-                }
-                if (req.body.password === req.body.confirm) {
-                    user.setPassword(req.body.password, function(err) {
-                        user.resetPasswordToken = undefined;
-                        user.resetPasswordExpires = undefined;
-
-                        user.save(function(err) {
-                            req.logIn(user, function(err) {
-                                done(err, user);
-                            });
-                        });
-                    });
-                } else {
-                    req.flash("error", "Passwords do not match.");
-                    return res.redirect('back');
-                }
-            });
-        },
-        function(user, done) {
-            var smtpTransporter = nodemailer.createTransport({
-              host: 'mail.privateemail.com',
-              port: 587,
-              secure: false,
-              auth: {
-                  user: process.env.DOMAIN_EMAIL,
-                  pass: process.env.DOMAIN_EMAIL_PASSWORD
-              }
-            });
-            var mailOptions = {
-                to: user.username,
-                from: process.env.TESTEMAILADDRESS,
-                subject: 'Your password has been changed',
-                text: 'Hello,\n\n' +
-                    'This is a confirmation that the password for your account ' + user.username + ' has just been changed.\n'
-            };
-            smtpTransport.sendMail(mailOptions, function(err) {
-                console.log('mail sent');
-                req.flash('success', 'An e-mail has been sent to ' + user.username + ' for confirmation.');
-                done(err, 'done');
-            });
-        }
-    ], function(err) {
-        res.redirect('/forgot');
-    });
-});
-
-//USER PROFILE ROUTES:
-router.get("/users/:id", function(req, res) {
-    User.findById(req.params.id).populate("recipes lovedRecipes").exec(function(err, foundUser) {
-        if (err) {
-            req.flash("error", "Cannot Find User's Profile.");
-            res.redirect("back");
-        }
-        res.render("users/profile", {
-            foundUser: foundUser
-        });
-    });
-});
-
 
 function escapeRegex(text) {
-    return text.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, "\\$&");
+  return text.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, "\\$&");
 }
 
 module.exports = router;

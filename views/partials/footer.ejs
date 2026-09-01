@@ -1,63 +1,48 @@
-<div class="container">
-<nav class="navbar fixed-bottom navbar-light bg-light border border-secondary d-block d-md-none">
-  <% if(!currentUser) { %>
-  <a href="#0" class="js-cd-panel-trigger" data-panel="main">
-    <div class="btn btn-outline-primary ml-auto">Sign Up / Login</div>
-  </a>
-  <% } %>
-  <% if(currentUser) { %>
-  <form class="form-inline d-lg-none">
-    <div class="col-6 text-center">
-      <a href="/users/<%= currentUser.id %>" class="btn btn-outline-primary">My Profile
-      </a>
-    </div>
-    <div class="col-6 text-center">
-      <a href="/recipes/new">
-         <div class="btn btn-outline-primary">Post A Recipe</div>
-        </a>
-    </div>
-  </form>
+</main>
+
+<nav class="navbar fixed-bottom navbar-light bg-light border border-secondary d-block d-md-none" aria-label="Mobile">
+  <% if (!currentUser) { %>
+  <a href="#0" class="js-cd-panel-trigger btn btn-outline-primary btn-block" data-panel="main">Sign Up / Login</a>
+  <% } else { %>
+  <div class="row no-gutters">
+    <div class="col-6 text-center pr-1"><a href="/users/<%= currentUser._id %>" class="btn btn-outline-primary btn-block">My Profile</a></div>
+    <div class="col-6 text-center pl-1"><a href="/recipes/new" class="btn btn-outline-primary btn-block">Post A Recipe</a></div>
+  </div>
   <% } %>
 </nav>
-</div>
 
-</main>
-<footer>
-<div class="bg-dark text-white mt-5 py-3">
+<footer class="bg-dark text-white mt-5 py-4 site-footer">
   <div class="container">
-            <div class="row">
-              <div class="col-md-12 mt-3 text-center">
-                <p>© Copyright 2020 - All rights reserved.</p>
-              </div>
-            </div>
-          </div>
-</div>
+    <div class="row">
+      <div class="col-md-4 mb-3">
+        <h6 class="text-uppercase"><%= meta.site.name %></h6>
+        <p class="small mb-0"><%= meta.site.tagline %></p>
+      </div>
+      <div class="col-md-4 mb-3">
+        <h6 class="text-uppercase">Browse</h6>
+        <ul class="list-unstyled small mb-0">
+          <li><a href="/recipes/collections/breakfast" class="text-white-50">Breakfast</a> · <a href="/recipes/collections/lunch" class="text-white-50">Lunch</a> · <a href="/recipes/collections/dinner" class="text-white-50">Dinner</a> · <a href="/recipes/collections/dessert" class="text-white-50">Dessert</a></li>
+          <li><a href="/recipes/collections/vegetarian" class="text-white-50">Vegetarian</a> · <a href="/recipes/collections/vegan" class="text-white-50">Vegan</a> · <a href="/recipes/collections/gluten-free" class="text-white-50">Gluten-Free</a></li>
+          <li><a href="/recipes/collections/quick" class="text-white-50">Quick recipes</a> · <a href="/recipes/collections/highest-rated" class="text-white-50">Highest rated</a></li>
+        </ul>
+      </div>
+      <div class="col-md-4 mb-3">
+        <h6 class="text-uppercase">Site</h6>
+        <ul class="list-unstyled small mb-0">
+          <li><a href="/about" class="text-white-50">About</a></li>
+          <li><a href="/recipes/new" class="text-white-50">Share a recipe</a></li>
+          <li><a href="/sitemap.xml" class="text-white-50">Sitemap</a></li>
+        </ul>
+      </div>
+    </div>
+    <p class="small text-center text-white-50 mb-0">&copy; <%= new Date().getFullYear() %> <%= meta.site.name %>. All rights reserved.</p>
+  </div>
 </footer>
-</div>
-<script src="../js/slide-in-panel.js"></script>
-<script>
-  $(".accountToggleButton").click(function() {
-    $(".accountToggleContainer").toggle();
-  });
-</script>
-<script>
-  $(function() {
-    $('[data-toggle="tooltip"]').tooltip()
-  });
-</script>
-<script>
-function showLoadingAnimation(){
-  var fullPageHide = document.getElementById("fullPageHide");
-  fullPageHide.style.display = "none";
-  var cookingContainer = document.getElementById("cooking-container");
-  cookingContainer.style.display = "block";
-}
-</script>
+</div><!-- /#fullPageHide -->
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js" integrity="sha384-cs/chFZiN24E4KMATLdqdvsezGxaGsi4hLGOzlXwp5UZB1LY//20VyM2taTB4QvJ" crossorigin="anonymous"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js" integrity="sha384-uefMccjFJAIv6A+rW+L4AHf99KvxDjWSu1z9VI8SKNVmz4sk7buKt/6v9KI65qnm" crossorigin="anonymous"></script>
-<script src="../js/jquery.caret.min.js"></script>
-<script src="../js/jquery.tag-editor.min.js"></script>
-<script src="../js/main.js"></script>
+<script src="/vendor/jquery/jquery.min.js"></script>
+<script src="/vendor/bootstrap/bootstrap.bundle.min.js"></script>
+<script src="/js/slide-in-panel.js"></script>
+<script src="/js/main.js"></script>
 </body>
 </html>

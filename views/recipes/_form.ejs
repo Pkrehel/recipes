@@ -1,0 +1,140 @@
+<%
+  // Shared form for new + edit. Expects `r` (recipe or {}) and `mode` ("new" | "edit").
+  var r = typeof recipe !== "undefined" && recipe ? recipe : {};
+  var isEdit = mode === "edit";
+  var val = function (k, d) { return r[k] !== undefined && r[k] !== null ? r[k] : (d === undefined ? "" : d); };
+  var ingredients = (r.ingredients && r.ingredients.length) ? r.ingredients : [""];
+  var directions = (r.directions && r.directions.length) ? r.directions : [""];
+%>
+<form id="recipe-form" action="<%= isEdit ? '/recipes/' + r.slug + '?_method=PUT' : '/recipes' %>" method="POST" enctype="multipart/form-data">
+  <div class="container-fluid px-0">
+    <div class="row mb-3">
+      <div class="col-lg-6 col-12 mb-2">
+        <h1 class="h3"><%= isEdit ? "Edit " + r.title : "Share Your Recipe" %></h1>
+
+        <div class="form-group">
+          <label for="image" class="font-weight-bold">Photo <% if (!isEdit) { %><span class="text-danger">*</span><% } %></label>
+          <div class="custom-file">
+            <input type="file" class="custom-file-input" name="image" id="image" accept="image/*" <%= isEdit ? "" : "required" %>>
+            <label class="custom-file-label" for="image"><%= isEdit ? "Choose a new photo (optional)" : "Choose a photo (JPG, PNG, WEBP, up to 8 MB)" %></label>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="title" class="font-weight-bold">Recipe title <span class="text-danger">*</span></label>
+          <input class="form-control form-control-lg" type="text" name="title" id="title" value="<%= val('title') %>" placeholder="e.g. Grandma's Buttermilk Pancakes" minlength="3" maxlength="200" required>
+          <small class="form-text text-muted">Be specific: include the main ingredient and dish type. This becomes the page title in search results.</small>
+        </div>
+
+        <div class="form-group">
+          <label for="summary" class="font-weight-bold">One-sentence summary</label>
+          <input class="form-control" type="text" name="summary" id="summary" value="<%= val('summary') %>" maxlength="300" placeholder="e.g. Fluffy, tangy pancakes ready in 20 minutes with pantry staples.">
+          <small class="form-text text-muted"><span id="summaryCount">0</span>/300. Shown in search results and social previews.</small>
+        </div>
+
+        <div class="form-group">
+          <label for="description" class="font-weight-bold">Description <span class="text-danger">*</span></label>
+          <textarea class="form-control" id="description" name="description" rows="6" placeholder="Tell the story of this recipe: where it comes from, what makes it special, tips for success." required><%= seo.htmlToText(val('description')) %></textarea>
+          <small class="form-text text-muted">Plain text. Blank lines start new paragraphs. Basic formatting (bold, italics, lists) is preserved.</small>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group col-sm-4">
+            <label for="prepTime">Prep time (min) <span class="text-danger">*</span></label>
+            <input class="form-control" type="number" name="prepTime" id="prepTime" value="<%= val('prepTime') %>" min="0" max="10000" required>
+          </div>
+          <div class="form-group col-sm-4">
+            <label for="cookTime">Cook time (min) <span class="text-danger">*</span></label>
+            <input class="form-control" type="number" name="cookTime" id="cookTime" value="<%= val('cookTime') %>" min="0" max="10000" required>
+          </div>
+          <div class="form-group col-sm-4">
+            <label for="servings">Servings</label>
+            <input class="form-control" type="number" name="servings" id="servings" value="<%= val('servings') %>" min="1" max="500" placeholder="4">
+          </div>
+        </div>
+        <p class="small text-muted">Total time: <strong id="totalTimeText"></strong></p>
+
+        <div class="form-row">
+          <div class="form-group col-sm-6">
+            <label for="category">Category <span class="text-danger">*</span></label>
+            <select class="custom-select" name="category" id="category" required>
+              <% categories.forEach(function (c) { %>
+              <option value="<%= c %>" <%= val('category') === c ? 'selected' : '' %>><%= c %></option>
+              <% }); %>
+            </select>
+          </div>
+          <div class="form-group col-sm-6">
+            <label for="cuisine">Cuisine</label>
+            <input class="form-control" type="text" name="cuisine" id="cuisine" value="<%= val('cuisine') %>" maxlength="60" placeholder="e.g. Italian, Mexican, American">
+          </div>
+        </div>
+
+        <fieldset class="form-group">
+          <legend class="col-form-label pt-0">Dietary</legend>
+          <% var selected = r.allergens || []; diets.forEach(function (d) { var id = 'diet-' + d.toLowerCase().replace(/[^a-z]/g, ''); %>
+          <div class="form-check form-check-inline">
+            <input class="form-check-input" type="checkbox" name="allergens[]" id="<%= id %>" value="<%= d %>" <%= selected.includes(d) ? 'checked' : '' %>>
+            <label class="form-check-label" for="<%= id %>"><%= d %></label>
+          </div>
+          <% }); %>
+        </fieldset>
+
+        <div class="form-group">
+          <label for="tags">Tags <small class="text-muted">(comma separated)</small></label>
+          <input class="form-control" type="text" name="tags" id="tags" value="<%= (r.tags || []).join(', ') %>" maxlength="300" placeholder="e.g. weeknight, one-pot, kid-friendly">
+        </div>
+
+        <div class="form-group">
+          <label for="difficultySlider">Difficulty: <span class="text-muted" id="rangeText">Easy</span></label>
+          <input type="range" class="custom-range" id="difficultySlider" name="difficulty" value="<%= val('difficulty', 0) %>" min="0" max="2" step="1">
+        </div>
+
+        <% if (isEdit) { %>
+        <div class="form-group form-check">
+          <input class="form-check-input" type="checkbox" name="regenerateSlug" id="regenerateSlug">
+          <label class="form-check-label small" for="regenerateSlug">Update the web address to match the new title <span class="text-muted">(old links will stop working)</span></label>
+        </div>
+        <% } %>
+      </div>
+
+      <div class="col-lg-6 col-12 mb-2">
+        <div class="centered-div pt-4 text-center">
+          <img id="imagePreview" class="img-fluid rounded <%= r.image ? '' : 'd-none' %>" src="<%= r.image ? seo.imageUrl(r.image, { width: 800 }) : '' %>" alt="Recipe photo preview">
+        </div>
+      </div>
+    </div>
+
+    <div class="row mb-3">
+      <div class="col-lg-5 col-md-5 col-12 p-1">
+        <h2 class="h4">Ingredients <span class="text-danger">*</span></h2>
+        <p class="small text-muted">One ingredient per line, with quantity. Press Enter to add another.</p>
+        <div class="ingredients_input_fields_wrap">
+          <% ingredients.forEach(function (ing) { %>
+          <div class="input-group mb-2">
+            <input class="form-control" type="text" name="ingredients[]" value="<%= ing %>" placeholder="e.g. 2 cups all-purpose flour" maxlength="500" required>
+            <div class="input-group-append"><button class="btn btn-outline-danger btn-sm remove_field" type="button" aria-label="Remove"><i class="fas fa-trash-alt" aria-hidden="true"></i></button></div>
+          </div>
+          <% }); %>
+          <button class="btn btn-secondary ingredients_add_field_button btn-block btn-sm my-2" type="button">Add Ingredient</button>
+        </div>
+      </div>
+      <div class="col-lg-7 col-md-7 col-12 p-1">
+        <h2 class="h4">Directions <span class="text-danger">*</span></h2>
+        <p class="small text-muted">One step per line. Press Enter to add another.</p>
+        <div class="directions_input_fields_wrap">
+          <% directions.forEach(function (step) { %>
+          <div class="input-group mb-2">
+            <input class="form-control" type="text" name="directions[]" value="<%= step %>" placeholder="Describe this step" maxlength="500" required>
+            <div class="input-group-append"><button class="btn btn-outline-danger btn-sm remove_field" type="button" aria-label="Remove"><i class="fas fa-trash-alt" aria-hidden="true"></i></button></div>
+          </div>
+          <% }); %>
+          <button class="btn btn-secondary directions_add_field_button btn-block btn-sm my-2" type="button">Add Step</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <button type="submit" class="btn btn-primary btn-block btn-lg my-2"><b><%= isEdit ? "Save Changes" : "Publish Recipe" %></b></button>
+    </div>
+  </div>
+</form>

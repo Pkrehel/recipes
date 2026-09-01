@@ -1,0 +1,46 @@
+# Render Blueprint: https://render.com/docs/blueprint-spec
+# In the Render dashboard: New + > Blueprint > pick this repo. Fill in the secret env vars when prompted.
+services:
+  - type: web
+    name: recipes
+    runtime: node
+    plan: free            # upgrade to "starter" to avoid cold starts
+    region: ohio
+    branch: develop
+    buildCommand: npm ci --omit=dev
+    startCommand: npm start
+    healthCheckPath: /healthz
+    autoDeploy: true
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: NODE_VERSION
+        value: 22
+      - key: SESSION_SECRET
+        generateValue: true
+      - key: MONGODB_URI
+        sync: false        # paste your MongoDB Atlas connection string
+      - key: SITE_URL
+        sync: false        # e.g. https://recipes.onrender.com, then your custom domain
+      - key: CANONICAL_HOST
+        sync: false        # e.g. www.yourdomain.com (optional)
+      - key: CLOUDINARY_CLOUD_NAME
+        sync: false
+      - key: CLOUDINARY_API_KEY
+        sync: false
+      - key: CLOUDINARY_API_SECRET
+        sync: false
+      - key: SMTP_HOST
+        value: mail.privateemail.com
+      - key: SMTP_PORT
+        value: 587
+      - key: SMTP_SECURE
+        value: false
+      - key: SMTP_USER
+        sync: false
+      - key: SMTP_PASSWORD
+        sync: false
+      - key: MAIL_FROM
+        sync: false
+      - key: GTM_ID
+        sync: false

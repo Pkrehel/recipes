@@ -1,228 +1,172 @@
-<% include ../partials/header %>
+<%- include("../partials/header") %>
+<% var totalReviews = reviews.length; %>
 
-<div class="container-fluid">
+<nav aria-label="Breadcrumb" class="small py-2">
+  <ol class="breadcrumb bg-transparent p-0 mb-0">
+    <li class="breadcrumb-item"><a href="/">Home</a></li>
+    <li class="breadcrumb-item"><a href="/recipes/collections/<%= recipe.category.toLowerCase() %>"><%= recipe.category %> Recipes</a></li>
+    <li class="breadcrumb-item active" aria-current="page"><%= recipe.title %></li>
+  </ol>
+</nav>
 
-  <!-- Recipe author buttons -->
-  <% if(currentUser && recipe.chef.id.equals(currentUser._id)){ %>
-  <div class="row">
-    <div class="col">
-      <div class="form-group text-center w-25 mx-auto">
-        <a href="/recipes/<%= recipe.id %>/edit" class="btn btn-warning btn-block"><strong>Edit</strong></a>
-      </div>
-    </div>
+<article class="recipe" itemscope>
+  <% if (isOwner) { %>
+  <div class="text-right mb-2">
+    <a href="<%= recipe.url %>/edit" class="btn btn-sm btn-warning"><i class="fas fa-edit" aria-hidden="true"></i> Edit recipe</a>
   </div>
   <% } %>
 
-  <!--Recipe Info.-->
   <div class="row mb-3">
-    <div class="col-md-5 col-xs-12 p-0">
-      <div class="card mb-0 border-0">
-        <img class="card-img-top recipe-main-image my-0" src="<%= recipe.image %>">
+    <div class="col-md-5 col-12 p-0 mb-3 mb-md-0">
+      <img class="recipe-main-image rounded w-100" src="<%= seo.imageUrl(recipe.image, { width: 800, height: 600 }) %>" srcset="<%= seo.imageUrl(recipe.image, { width: 480, height: 360 }) %> 480w, <%= seo.imageUrl(recipe.image, { width: 800, height: 600 }) %> 800w, <%= seo.imageUrl(recipe.image, { width: 1200, height: 900 }) %> 1200w" sizes="(max-width: 768px) 100vw, 42vw" alt="<%= recipe.title %>" width="800" height="600" fetchpriority="high">
+    </div>
+    <div class="col-md-7 col-12 pl-md-4 p-0">
+      <div class="card h-100">
+        <div class="card-body recipe-show-primary-info">
+          <h1 class="h2 text-primary mb-1"><%= recipe.title %></h1>
+          <p class="small text-muted mb-2">
+            By <a href="/users/<%= recipe.chef.id %>"><%= recipe.chef.avatar %> <%= recipe.chef.screenName %></a>
+            · <time datetime="<%= new Date(recipe.createdAt).toISOString() %>"><%= formatDate(recipe.createdAt) %></time>
+            <% if (recipe.updatedAt && new Date(recipe.updatedAt) - new Date(recipe.createdAt) > 86400000) { %>· Updated <time datetime="<%= new Date(recipe.updatedAt).toISOString() %>"><%= formatDate(recipe.updatedAt) %></time><% } %>
+          </p>
+          <% if (recipe.rating > 0) { %>
+          <p class="card-text text-muted mb-2">
+            <a href="#reviews" class="text-muted"><%- include("../partials/stars", { rating: recipe.rating }) %> <strong><%= recipe.rating %></strong> <em>(<%= totalReviews %> review<%= totalReviews === 1 ? "" : "s" %>)</em></a>
+          </p>
+          <% } %>
+          <% if (recipe.summary) { %><p class="lead recipe-summary"><%= recipe.summary %></p><% } %>
+          <div class="recipe-description-container"><%- recipe.description %></div>
+          <hr>
+          <dl class="row recipe-facts small mb-0">
+            <dt class="col-5 col-sm-4">Prep time</dt><dd class="col-7 col-sm-8"><%= recipe.prepTime %> minutes</dd>
+            <dt class="col-5 col-sm-4">Cook time</dt><dd class="col-7 col-sm-8"><%= recipe.cookTime %> minutes</dd>
+            <dt class="col-5 col-sm-4">Total time</dt><dd class="col-7 col-sm-8"><%= recipe.totalTime %> minutes</dd>
+            <% if (recipe.servings) { %><dt class="col-5 col-sm-4">Servings</dt><dd class="col-7 col-sm-8"><%= recipe.servings %></dd><% } %>
+            <dt class="col-5 col-sm-4">Category</dt><dd class="col-7 col-sm-8"><a href="/recipes/collections/<%= recipe.category.toLowerCase() %>"><%= recipe.category %></a></dd>
+            <% if (recipe.cuisine) { %><dt class="col-5 col-sm-4">Cuisine</dt><dd class="col-7 col-sm-8"><%= recipe.cuisine %></dd><% } %>
+            <dt class="col-5 col-sm-4">Difficulty</dt><dd class="col-7 col-sm-8"><%= recipe.difficultyLabel %></dd>
+            <% if (recipe.allergens && recipe.allergens.length) { %>
+            <dt class="col-5 col-sm-4">Diet</dt>
+            <dd class="col-7 col-sm-8"><% recipe.allergens.forEach(function (a, i) { %><a href="/recipes/collections/<%= a.toLowerCase() %>"><%= a %></a><%= i < recipe.allergens.length - 1 ? ", " : "" %><% }); %></dd>
+            <% } %>
+            <% if (recipe.tags && recipe.tags.length) { %>
+            <dt class="col-5 col-sm-4">Tags</dt>
+            <dd class="col-7 col-sm-8"><% recipe.tags.forEach(function (t) { %><a class="badge badge-light border mr-1" href="/s?search=<%= encodeURIComponent(t) %>"><%= t %></a><% }); %></dd>
+            <% } %>
+          </dl>
+        </div>
+        <div class="card-footer text-center">
+          <form action="<%= recipe.url %>/love" method="POST" class="d-inline">
+            <button class="btn btn-secondary rounded-circle like-btn <%= loved ? 'loved' : '' %>" aria-label="<%= loved ? 'Remove from favorites' : 'Add to favorites' %>" title="<%= loved ? 'Remove from favorites' : 'Add to favorites' %>"><i class="fas fa-heart" aria-hidden="true"></i></button>
+          </form>
+          <p class="card-text font-weight-bold text-secondary mt-2 mb-0">
+            <% var n = (recipe.lovedBy || []).length; %>
+            <%= n === 0 ? "Be the first to favorite this recipe" : n === 1 ? "Favorited by 1 person" : "Favorited by " + n + " people" %>
+          </p>
+          <button type="button" class="btn btn-link btn-sm" onclick="window.print()"><i class="fas fa-print" aria-hidden="true"></i> Print</button>
+        </div>
       </div>
     </div>
-    <div class="col-md-1"></div>
-    <!--Image-->
-    <div class="col-md-6 col-xs-12 p-0">
-      <div class="card mb-2 maxheightcolumn">
-        <div class="card-body maxheightcolumn recipe-show-primary-info">
-          <h1 class="h2 text-primary">
-            <%= recipe.title %>
-          </h1>
-          <% if (recipe.rating > 0) { %>
-            <p class="card-text text-muted">
-              <small>
-                <span class="fa fa-star checked"></span>
-                <span class="fa fa-star <% if (recipe.rating > 1.5) { %> checked <% } %>"></span>
-                <span class="fa fa-star <% if (recipe.rating > 2.5) { %> checked <% } %>"></span>
-                <span class="fa fa-star <% if (recipe.rating > 3.5) { %> checked <% } %>"></span>
-                <span class="fa fa-star <% if (recipe.rating > 4.5) { %> checked <% } %>"></span>
-                <em><%= recipe.reviews.length %>  Reviews</em>
-                </small>
-            </p>
-          <% } %>
-          <div class="recipe-description-container">
-          <%- recipe.description %>
-          </div>
-          <hr>
-  <!--Prep Time & Cook Time: -->
-          <div class="row">
-            <div class="col">
-              <p class="card-text mb-0"><small class="text-muted">Prep Time:&nbsp;<%= recipe.prepTime %>&nbsp;minutes</small></p>
-              <p class="card-text mb-0"><small class="text-muted">Cook Time:&nbsp;<%= recipe.cookTime %>&nbsp;minutes</small></p> 
-            </div>
-            <div class="col">
-             <p class="card-text m-0"><small class="text-muted">Category:&nbsp;<%= recipe.category %></small></p>
-                        
-  <!--Difficulty Logic-->
-          <p class="card-text m-0">
-          <small class="text-muted">Difficulty:&nbsp;
-          <% if(recipe.difficulty == 0) { %>
-          Easy
-          <% } else if(recipe.difficulty == 1) { %>
-          Medium
-          <% } else { %>
-          Challenging
-          <% } %>
-          </small>
-          </p>
-            </div>
-          </div>
-
-  <!--Recipe Allergen Info-->
-          <%if(recipe.allergens.length > 0) { %>
-          <% var allergenLength = recipe.allergens.length %>
-          <p class="card-text m-0">
-          <small class="text-muted">Diet:&nbsp;
-          <% for(i=0; i < allergenLength -1; i++) { %>
-          <%= recipe.allergens[i] %>,
-          <% } %>
-          <%= recipe.allergens.pop() %>
-          </small>
-          </p>
-          <% } %>
-          </div>
-          <div class="card-footer">
-          <div class="container text-center p-0">
-  <!--Favorite button & count-->
-              <div class="row mx-auto">
-                <div class="col-12 mb-2">
-                  <form action="/recipes/<%=recipe._id%>/love" method="POST">
-                    <button class="btn btn-secondary rounded-circle like-btn">
-                        <i class="fas fa-heart"></i>
-                      </button>
-                  </form>
-                </div>
-                  <div class="col-12 font-weight-bold text-secondary">
-                    <%if(recipe.lovedBy.length === 1) { %>
-                      <p class="card-text">Favorited by 1 person</p>
-                    <% } else { %>
-                      <p class="card-text">Favorited by <%= recipe.lovedBy.length %> people</p>
-                    <% } %>
-                  </div>
-                </div>
-
-              </div>
-              </div>
-            </div>
-    </div>
   </div>
+
   <div class="row mb-2">
-  <!--DIRECTIONS & INGREDIENTS-->
-    <div class="col-lg-5 col-md-5 col-xs-12 mb-2 p-0">
-      <h2>Ingredients</h2>
-      <ul class="list-group">
-        <% for(i=0; i < recipe.ingredients.length; i++) {%>
-          <li class="list-group-item">
-            <%= recipe.ingredients[i] %>
-          </li>
-        <% }; %>    
+    <section class="col-lg-5 col-md-5 col-12 mb-3 p-0 pr-md-3" aria-labelledby="ingredients-heading">
+      <h2 id="ingredients-heading">Ingredients</h2>
+      <ul class="list-group ingredients">
+        <% recipe.ingredients.forEach(function (ing) { %>
+        <li class="list-group-item"><%= ing %></li>
+        <% }); %>
       </ul>
-    </div>
-    <div class="col-lg-1 col-md-1"></div>
-    <div class="col-lg-6 col-md-6 col-xs-12 mb-2 p-0">
-      <h2>Directions</h2>
-      <ul class="list-group">
-        <% for(i=0; i < recipe.directions.length; i++) {%>
-          <li class="list-group-item">
-            <%= recipe.directions[i] %>
-          </li>
-          <% }; %>
-      </ul>
-    </div>
+    </section>
+    <section class="col-lg-7 col-md-7 col-12 mb-3 p-0" aria-labelledby="directions-heading">
+      <h2 id="directions-heading">Directions</h2>
+      <ol class="list-group list-group-numbered directions">
+        <% recipe.directions.forEach(function (step, i) { %>
+        <li class="list-group-item d-flex" id="step-<%= i + 1 %>"><span class="step-number mr-3"><%= i + 1 %></span><span><%= step %></span></li>
+        <% }); %>
+      </ol>
+    </section>
   </div>
-  <hr>
+</article>
+
+<hr>
+
+<section id="reviews" class="mb-4" aria-labelledby="reviews-heading">
+  <h2 id="reviews-heading">Reviews <% if (totalReviews) { %><small class="text-muted">(<%= totalReviews %>)</small><% } %></h2>
   <div class="row">
-    <div class="col-12">
-      <h2>Comments & Reviews</h2>
-    </div>
-  </div>
-  <div class="row mb-3">
-    <div class="col-lg-6 col-md-6 col-xs-12 mb-2 p-2">
-      <div class="list-group-item">
-        <!--Comment section title-->
-        <% if(!currentUser) { %>
-          <!--If the user is not logged in, direct him to the login page-->
-          <h5><strong><a href="/login">Login </a></strong>to post a comment.</h5>
-          <% } %>
-            <% if(currentUser) { %>
-              <!--If the user is logged in, show the new comment form-->
-              <p>Submit Comment & Rating<span class="glyphicon glyphicon glyphicon-pencil" aria-hidden="true"></span></p>
-            <form action="/recipes/<%= recipe._id %>/reviews" method="POST">
+    <div class="col-lg-5 col-12 mb-3">
+      <div class="card">
+        <div class="card-body">
+          <% if (!currentUser) { %>
+            <p class="mb-0"><a href="/login"><strong>Log in</strong></a> or <a href="/register"><strong>sign up</strong></a> to rate this recipe.</p>
+          <% } else if (userReview) { %>
+            <p class="mb-1">Your rating: <%- include("../partials/stars", { rating: userReview.rating }) %></p>
+            <% if (userReview.text) { %><p class="text-muted small"><%= userReview.text %></p><% } %>
+            <form action="<%= recipe.url %>/reviews/<%= userReview._id %>?_method=DELETE" method="POST" onsubmit="return confirm('Delete your review?');">
+              <button class="btn btn-sm btn-outline-danger">Delete my review</button>
+            </form>
+          <% } else { %>
+            <h3 class="h5">Rate this recipe</h3>
+            <form action="<%= recipe.url %>/reviews" method="POST">
+              <fieldset class="form-group star-rating">
+                <legend class="sr-only">Star rating</legend>
+                <% for (var s = 5; s >= 1; s--) { %>
+                <input type="radio" id="rate-<%= s %>" name="review[rating]" value="<%= s %>" <%= s === 5 ? "checked" : "" %> required>
+                <label for="rate-<%= s %>" title="<%= s %> star<%= s === 1 ? '' : 's' %>"><span class="fa fa-star" aria-hidden="true"></span><span class="sr-only"><%= s %> stars</span></label>
+                <% } %>
+              </fieldset>
               <div class="form-group">
-                      <fieldset class="starability-basic form-group" id="rating">
-                      <div>
-                      <input type="radio" id="first-rate5" name="review[rating]" value="5" checked />
-                      <label for="first-rate5" title="5 stars - Amazing">
-                          <%- '<span class="fa fa-star checked"></span>'.repeat(5) %>
-                      </label>
-                      </div>
-                      <div>
-                      <input type="radio" id="first-rate4" name="review[rating]" value="4" />
-                      <label for="first-rate4" title="4 stars - Very good">
-                          <%- '<span class="fa fa-star checked"></span>'.repeat(4) %>
-                      </label>
-                      </div>
-                      <div>
-                      <input type="radio" id="first-rate3" name="review[rating]" value="3" />
-                      <label for="first-rate3" title="3 stars - Average">
-                          <%- '<span class="fa fa-star checked"></span>'.repeat(3) %>
-                      </label>
-                      </div>
-                      <div>
-                      <input type="radio" id="first-rate2" name="review[rating]" value="2" />
-                      <label for="first-rate2" title="2 stars - Not good">
-                          <%- '<span class="fa fa-star checked"></span>'.repeat(2) %>
-                      </label>
-                      </div>
-                      <div>
-                      <input type="radio" id="first-rate1" name="review[rating]" value="1" />
-                      <label for="first-rate1" title="1 star - Terrible">
-                          <%- '<span class="fa fa-star checked"></span>'.repeat(1) %>
-                      </label>
-                      </div>
-                      </fieldset>
-                  </div>
-              <div class="form-group">
-                      <textarea class="form-control" type="text" name="review[text]" placeholder="Write a review for this recipe..." rows="5"></textarea>
-                  </div>
-                <div class="form-group">
-                  <button class="btn btn-primary btn-block">Submit Review</button>
-                </div>
+                <label for="review-text" class="sr-only">Review</label>
+                <textarea class="form-control" id="review-text" name="review[text]" placeholder="What did you think? Any tips or substitutions?" rows="4" maxlength="2000"></textarea>
+              </div>
+              <button class="btn btn-primary btn-block">Submit Review</button>
             </form>
           <% } %>
+        </div>
       </div>
     </div>
-    <div class="col-lg-6 col-md-6 col-xs-12 mb-2 p-2">
-  <% if (recipe.rating > 0) { %>
-  <% recipe.reviews.forEach(function(review){ %>
-  <div class="row">
-      <div class="col-md-12 text-muted">
-          <%- '<span class="fa fa-star checked"></span>'.repeat(review.rating) %><%- '<span class="fa fa-star"></span>'.repeat(5 - review.rating) %>
-          <div>Review by: <strong><%= review.author.screenName %></strong></div>
-          <span><em><%= review.updatedAt.toDateString() %></em></span>
-      </div>
-        <div class="col-md-12">
-          <p style="text-align: justify; word-wrap: break-word;">
-              <%= review.text %>
-          </p>
-          <% if(currentUser && review.author.id.equals(currentUser._id)){ %>
-          <form id="delete-form" action="/recipes/<%=recipe._id %>/reviews/<%= review._id %>?_method=DELETE" method="POST">
-              <input type="submit" class="btn btn-xs btn-outline-danger" value="Delete">
-          </form>
-          <% } %>
-      </div>
+    <div class="col-lg-7 col-12">
+      <% if (reviews.length === 0) { %>
+        <p class="text-muted">No reviews yet.</p>
+      <% } %>
+      <% reviews.forEach(function (review) { %>
+      <article class="review mb-3 pb-3 border-bottom">
+        <div class="text-muted small">
+          <%- include("../partials/stars", { rating: review.rating }) %>
+          <strong class="ml-2"><%= review.author.screenName %></strong>
+          · <time datetime="<%= new Date(review.createdAt).toISOString() %>"><%= formatDate(review.createdAt) %></time>
+        </div>
+        <% if (review.text) { %><p class="mb-1 review-text"><%= review.text %></p><% } %>
+      </article>
+      <% }); %>
+    </div>
   </div>
-  <hr>
-  <% }); %>
+</section>
+
+<section id="comments" class="mb-5" aria-labelledby="comments-heading">
+  <h2 id="comments-heading">Comments <% if (comments.length) { %><small class="text-muted">(<%= comments.length %>)</small><% } %></h2>
+  <% if (currentUser) { %>
+  <form action="<%= recipe.url %>/comments" method="POST" class="mb-3">
+    <div class="form-group">
+      <label for="comment-text" class="sr-only">Comment</label>
+      <textarea class="form-control" id="comment-text" name="comment[text]" rows="3" maxlength="2000" placeholder="Ask a question or share how it turned out..." required></textarea>
+    </div>
+    <button class="btn btn-outline-primary">Post Comment</button>
+  </form>
+  <% } else { %>
+  <p><a href="/login"><strong>Log in</strong></a> to join the conversation.</p>
   <% } %>
-</div>
+  <% comments.forEach(function (c) { %>
+  <div class="comment mb-3 pb-2 border-bottom">
+    <div class="small text-muted"><strong><%= c.author.screenName %></strong> · <time datetime="<%= new Date(c.createdAt).toISOString() %>"><%= formatDate(c.createdAt) %></time></div>
+    <p class="mb-1"><%= c.text %></p>
+    <% if (currentUser && String(c.author.id) === String(currentUser._id)) { %>
+    <form action="<%= recipe.url %>/comments/<%= c._id %>?_method=DELETE" method="POST" class="d-inline">
+      <button class="btn btn-link btn-sm text-danger p-0">Delete</button>
+    </form>
+    <% } %>
   </div>
-</div>
+  <% }); %>
+</section>
 
-<% if(!currentUser) { %>
-<% console.log("no") %>
-<%  } else{ %>
-<%    console.log("yes") %>
-<%  } %>
-
-<% include ../partials/footer %>
+<%- include("../partials/footer") %>
