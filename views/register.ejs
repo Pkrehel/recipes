@@ -1,15 +1,10 @@
 <%- include("./partials/header") %>
-<div class="py-4">
-  <div class="row justify-content-center">
-    <div class="col-md-8 col-lg-6">
-      <div class="card thick-border register-login-form">
-        <div class="card-body">
-          <h1 class="mb-4 text-center text-primary">Sign Up</h1>
-          <%- include("./partials/register-form", { idPrefix: "reg", avatars: avatars }) %>
-          <p class="text-center small mt-3 mb-0">Already have an account? <a href="/login"><strong>Log in</strong></a></p>
-        </div>
-      </div>
-    </div>
+<div class="auth-wrap">
+  <h1>Create your account</h1>
+  <p class="sub">Save favorites, rate recipes, and share your own.</p>
+  <div class="surface surface-pad">
+    <%- include("./partials/register-form", { idPrefix: "reg", avatars: avatars }) %>
   </div>
+  <p class="text-center small mt-3 text-muted">Already have an account? <a href="/login"><strong>Log in</strong></a></p>
 </div>
 <%- include("./partials/footer") %>

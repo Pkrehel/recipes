@@ -1,8 +1,9 @@
 <%- include("../partials/header") %>
-<div class="text-center py-5">
-  <h1 class="display-4 text-primary">Something went wrong</h1>
-  <p class="lead">Sorry about that. Please try again in a moment.</p>
-  <% if (typeof message !== "undefined" && message) { %><pre class="small text-left d-inline-block bg-light p-3 rounded"><%= message %></pre><% } %>
+<div class="empty my-5">
+  <p class="eyebrow">Error</p>
+  <h1 class="h2">Something went wrong</h1>
+  <p class="mb-3">Sorry about that. Please try again in a moment.</p>
+  <% if (typeof message !== "undefined" && message) { %><pre class="small text-left d-inline-block surface p-3"><%= message %></pre><% } %>
   <p><a href="/" class="btn btn-primary">Back to recipes</a></p>
 </div>
 <%- include("../partials/footer") %>

@@ -6,6 +6,7 @@
   <title><%= meta.title %></title>
   <meta name="description" content="<%= meta.description %>">
   <meta name="robots" content="<%= meta.robots %>">
+  <meta name="theme-color" content="#faf7f1">
   <% if (meta.canonical) { %><link rel="canonical" href="<%= meta.canonical %>"><% } %>
   <% if (meta.prev) { %><link rel="prev" href="<%= meta.prev %>"><% } %>
   <% if (meta.next) { %><link rel="next" href="<%= meta.next %>"><% } %>
@@ -43,15 +44,14 @@
   <link rel="alternate" type="application/json" title="Recipes API" href="/api/v1/recipes">
 
   <link rel="preconnect" href="https://res.cloudinary.com" crossorigin>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
   <link href="/vendor/bootstrap/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer">
-  <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css?family=Nunito:300,400,600,700|Roboto:300,400,500|Amatic+SC:700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/stylesheets/main.css">
-  <link rel="stylesheet" href="/stylesheets/custom.css">
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,500&family=Inter:wght@400;500;600&family=Amatic+SC:wght@700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/stylesheets/animation.css">
-  <link rel="stylesheet" href="/stylesheets/site.css">
+  <link rel="stylesheet" href="/stylesheets/theme.css">
 
   <% if (gtmId) { %>
   <!-- Google Tag Manager -->
@@ -65,7 +65,7 @@
 <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=<%= gtmId %>" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 <% } %>
 
-<!-- Full-page "flipping pancake" loading animation, shown while a recipe uploads -->
+<!-- Full-page pancake-flip loading animation, shown while a recipe uploads -->
 <div id="cooking-container" role="status" aria-live="polite">
   <div id="cooking">
     <div class="bubble"></div>
@@ -88,129 +88,109 @@
 
 <div id="fullPageHide">
 <a class="sr-only sr-only-focusable" href="#main-content">Skip to main content</a>
-<div class="container">
-  <nav class="navbar navbar-expand-md fixed-top-sm justify-content-start flex-nowrap bg-light navbar-light pl-0 pr-0" aria-label="Primary">
-    <a href="/" class="navbar-brand" aria-label="<%= meta.site.name %> home">
-      <div id="cooking-container-navigation">
-        <div id="cooking-navigation" class="left" aria-hidden="true">
-          <div id="area">
-            <div id="sides">
-              <div id="pan"></div>
-              <div id="handle"></div>
+
+<header class="site-header">
+  <div class="container">
+    <nav class="navbar navbar-expand-lg p-0" aria-label="Primary">
+      <a href="/" class="brand navbar-brand m-0 p-0" aria-label="<%= meta.site.name %> home">
+        <span class="brand-mark" aria-hidden="true">
+          <span id="cooking-container-navigation">
+            <span id="cooking-navigation" class="left">
+              <span id="area">
+                <span id="sides"><span id="pan"></span><span id="handle"></span></span>
+                <span id="pancake"><span id="pastry"></span></span>
+              </span>
+            </span>
+          </span>
+        </span>
+        <span class="brand-word"><%= meta.site.name %></span>
+      </a>
+
+      <button class="navbar-toggler ml-auto" type="button" data-toggle="collapse" data-target="#siteNav" aria-controls="siteNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      <div class="collapse navbar-collapse" id="siteNav">
+        <form action="/s" method="GET" role="search" class="nav-search mx-lg-4 w-100">
+          <label for="searchbar" class="sr-only">Search recipes</label>
+          <input class="form-control" id="searchbar" name="search" type="search" placeholder="Search recipes, ingredients..." value="<%= searchQuery %>" maxlength="100" autocomplete="off">
+        </form>
+
+        <ul class="navbar-nav ml-auto align-items-lg-center">
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="browseMenu" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Browse</a>
+            <div class="dropdown-menu dropdown-menu-right browse-menu" aria-labelledby="browseMenu">
+              <div class="row no-gutters">
+                <div class="col-6 col-lg-3">
+                  <h6>Meal</h6>
+                  <a class="dropdown-item" href="/recipes/collections/breakfast">Breakfast</a>
+                  <a class="dropdown-item" href="/recipes/collections/lunch">Lunch</a>
+                  <a class="dropdown-item" href="/recipes/collections/dinner">Dinner</a>
+                  <a class="dropdown-item" href="/recipes/collections/snack">Snacks</a>
+                  <a class="dropdown-item" href="/recipes/collections/dessert">Dessert</a>
+                  <a class="dropdown-item" href="/recipes/collections/beverage">Drinks</a>
+                </div>
+                <div class="col-6 col-lg-3">
+                  <h6>Diet</h6>
+                  <a class="dropdown-item" href="/recipes/collections/vegetarian">Vegetarian</a>
+                  <a class="dropdown-item" href="/recipes/collections/vegan">Vegan</a>
+                  <a class="dropdown-item" href="/recipes/collections/gluten-free">Gluten-Free</a>
+                  <a class="dropdown-item" href="/recipes/collections/dairy-free">Dairy-Free</a>
+                  <a class="dropdown-item" href="/recipes/collections/nut-free">Nut-Free</a>
+                </div>
+                <div class="col-6 col-lg-3">
+                  <h6>Time</h6>
+                  <a class="dropdown-item" href="/recipes/collections/quick">10 minutes or less</a>
+                  <a class="dropdown-item" href="/recipes/collections/under-45-minutes">Under 45 minutes</a>
+                  <a class="dropdown-item" href="/recipes/collections/weekend-projects">Weekend projects</a>
+                </div>
+                <div class="col-6 col-lg-3">
+                  <h6>Popular</h6>
+                  <a class="dropdown-item" href="/">Newest</a>
+                  <a class="dropdown-item" href="/recipes/collections/most-viewed">Most viewed</a>
+                  <a class="dropdown-item" href="/recipes/collections/highest-rated">Highest rated</a>
+                  <a class="dropdown-item" href="/recipes/collections/easy">Easy</a>
+                </div>
+              </div>
             </div>
-            <div id="pancake">
-              <div id="pastry"></div>
+          </li>
+
+          <% if (!currentUser) { %>
+          <li class="nav-item"><a class="nav-link" href="/login">Log in</a></li>
+          <li class="nav-item ml-lg-2 mt-2 mt-lg-0"><a class="btn btn-primary btn-block" href="/register">Sign up</a></li>
+          <% } else { %>
+          <li class="nav-item ml-lg-2 mt-2 mt-lg-0"><a class="btn btn-accent btn-block" href="/recipes/new"><i class="fas fa-plus mr-1" aria-hidden="true"></i> Post a recipe</a></li>
+          <li class="nav-item dropdown ml-lg-2 mt-2 mt-lg-0">
+            <a class="avatar-pill" href="#" id="profileMenu" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              <span class="emoji" aria-hidden="true"><%= currentUser.avatar %></span> <%= currentUser.screenName %>
+            </a>
+            <div class="dropdown-menu dropdown-menu-right" aria-labelledby="profileMenu">
+              <a class="dropdown-item" href="/users/<%= currentUser._id %>">My profile</a>
+              <a class="dropdown-item" href="/users/<%= currentUser._id %>#favorites">Favorites</a>
+              <div class="dropdown-divider"></div>
+              <form action="/logout" method="POST" class="m-0"><button type="submit" class="dropdown-item">Log out</button></form>
             </div>
-          </div>
-        </div>
-        <div class="right">
-          <h6><%= meta.site.name %></h6>
-        </div>
+          </li>
+          <% } %>
+        </ul>
       </div>
-    </a>
-
-    <% if (!currentUser) { %>
-    <a href="#0" class="btn btn-outline-primary ml-auto d-none d-sm-block js-cd-panel-trigger" data-panel="main">
-      <i class="far fa-user-circle" aria-hidden="true"></i> Sign Up / Login</a>
-    <% } else { %>
-    <div class="ml-auto d-none d-md-flex align-items-center">
-      <div class="dropdown d-inline">
-        <button class="btn btn-secondary dropdown-toggle" type="button" id="profileMenu" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><%= currentUser.avatar %> <%= currentUser.screenName %></button>
-        <div class="dropdown-menu dropdown-menu-right text-center p-2" aria-labelledby="profileMenu">
-          <a href="/users/<%= currentUser._id %>" class="mb-2 btn btn-outline-dark w-100">My Profile</a>
-          <a href="#0" class="mb-2 btn btn-outline-dark w-100 js-cd-panel-trigger" data-panel="main"><i class="fas fa-heart text-danger" aria-hidden="true"></i> Favorites</a>
-          <form action="/logout" method="POST" class="m-0"><button type="submit" class="btn btn-outline-danger w-100">Logout</button></form>
-        </div>
-      </div>
-      <a href="/recipes/new" class="btn btn-outline-primary ml-3">Post A Recipe</a>
-    </div>
-    <% } %>
-    <button class="navbar-toggler ml-auto border-0" type="button" data-toggle="collapse" data-target="#navbar2" aria-controls="navbar2" aria-expanded="false" aria-label="Toggle search and categories">
-      <i class="fa fa-search" aria-hidden="true"></i>
-    </button>
-  </nav>
-
-  <nav class="navbar navbar-expand-md bg-light navbar-light p-0" aria-label="Search and browse">
-    <div class="navbar-collapse collapse pt-2 pt-md-0" id="navbar2">
-      <ul class="navbar-nav">
-        <li class="nav-item mb-2 mr-2">
-          <form action="/s" class="form-inline" method="GET" role="search">
-            <div class="input-group">
-              <div id="input_container">
-                <input class="form-control" id="searchbar" name="search" type="search" placeholder="Search recipes" aria-label="Search recipes" value="<%= searchQuery %>" maxlength="100">
-                <i class="fa fa-search search-icon" aria-hidden="true"></i>
-              </div>
-              <div class="input-group-append">
-                <button class="btn btn-outline-secondary text-dark" type="submit">Search</button>
-              </div>
-            </div>
-          </form>
-        </li>
-        <li class="nav-item dropdown megamenu-li">
-          <a class="nav-link btn btn-outline-primary dropdown-toggle" href="#" id="browseMenu" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Browse Recipes</a>
-          <div class="dropdown-menu megamenu bg-light border border-secondary" aria-labelledby="browseMenu">
-            <div class="row">
-              <div class="col-sm-6 col-lg-3 mb-2">
-                <h5>Diet</h5>
-                <a class="dropdown-item" href="/recipes/collections/vegetarian">Vegetarian</a>
-                <a class="dropdown-item" href="/recipes/collections/vegan">Vegan</a>
-                <a class="dropdown-item" href="/recipes/collections/gluten-free">Gluten-Free</a>
-                <a class="dropdown-item" href="/recipes/collections/dairy-free">Dairy-Free</a>
-                <a class="dropdown-item" href="/recipes/collections/nut-free">Nut-Free</a>
-              </div>
-              <div class="col-sm-6 col-lg-3 mb-2">
-                <h5>Meal</h5>
-                <a class="dropdown-item" href="/recipes/collections/breakfast">Breakfast</a>
-                <a class="dropdown-item" href="/recipes/collections/lunch">Lunch</a>
-                <a class="dropdown-item" href="/recipes/collections/dinner">Dinner</a>
-                <a class="dropdown-item" href="/recipes/collections/snack">Snacks</a>
-                <a class="dropdown-item" href="/recipes/collections/dessert">Dessert</a>
-                <a class="dropdown-item" href="/recipes/collections/beverage">Drinks</a>
-              </div>
-              <div class="col-sm-6 col-lg-3 mb-2">
-                <h5>Difficulty</h5>
-                <a class="dropdown-item" href="/recipes/collections/easy">Easy</a>
-                <a class="dropdown-item" href="/recipes/collections/intermediate">Intermediate</a>
-                <a class="dropdown-item" href="/recipes/collections/challenging">Challenging</a>
-              </div>
-              <div class="col-sm-6 col-lg-3 mb-2">
-                <h5>Kitchen Time</h5>
-                <a class="dropdown-item" href="/recipes/collections/quick">Quick <span class="small">(10 min or less)</span></a>
-                <a class="dropdown-item" href="/recipes/collections/under-45-minutes">Under 45 minutes</a>
-                <a class="dropdown-item" href="/recipes/collections/weekend-projects">Weekend projects</a>
-              </div>
-            </div>
-            <hr>
-            <div class="row">
-              <div class="col-sm-6 col-lg-3 mb-2"><a href="/">Newest</a></div>
-              <div class="col-sm-6 col-lg-3 mb-2"><a href="/recipes/collections/most-viewed">Most Viewed</a></div>
-              <div class="col-sm-6 col-lg-3 mb-2"><a href="/recipes/collections/highest-rated">Highest Rated</a></div>
-              <div class="col-sm-6 col-lg-3 mb-2"><a href="/recipes/new" class="btn btn-primary">Post A New Recipe</a></div>
-            </div>
-          </div>
-        </li>
-      </ul>
-    </div>
-  </nav>
-</div>
-
-<div class="container">
-  <div class="alert-container mt-2">
-    <% if (error && error.length > 0) { %>
-    <div class="alert alert-danger alert-dismissible m-0 p-2 w-100" role="alert">
-      <button type="button" class="close" data-dismiss="alert" aria-label="Close">&times;</button>
-      <p class="mb-0 text-center"><%= error %></p>
-    </div>
-    <% } %>
-    <% if (success && success.length > 0) { %>
-    <div class="alert alert-success alert-dismissible m-0 p-2 w-100" role="alert">
-      <button type="button" class="close" data-dismiss="alert" aria-label="Close">&times;</button>
-      <p class="mb-0 text-center"><%= success %></p>
-    </div>
-    <% } %>
+    </nav>
   </div>
-</div>
+</header>
 
-<%- include("./slide-panel") %>
+<div class="alert-container">
+  <% if (error && error.length > 0) { %>
+  <div class="alert alert-danger alert-dismissible fade show" role="alert">
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close">&times;</button>
+    <%= error %>
+  </div>
+  <% } %>
+  <% if (success && success.length > 0) { %>
+  <div class="alert alert-success alert-dismissible fade show" role="alert">
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close">&times;</button>
+    <%= success %>
+  </div>
+  <% } %>
+</div>
 
 <main id="main-content" class="container">
