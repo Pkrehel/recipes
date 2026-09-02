@@ -1,74 +1,34 @@
-var express = require("express");
-var router = express.Router({ mergeParams: true });
-var Recipe = require("../models/recipe");
-var middleware = require("../middleware");
-var Review = require("../models/review");
+const express = require("express");
+const Recipe = require("../models/recipe");
+const Review = require("../models/review");
+const middleware = require("../middleware");
 
-//Review Create
-router.post("/", middleware.socialRateLimits, middleware.isLoggedIn, middleware.checkReviewExistence, function (req, res) {
-    //lookup recipe using ID
-    Recipe.findById(req.params.id).populate("reviews").exec(function (err, recipe) {
-        if (err) {
-            console.log(err);
-            res.redirect("/recipes");
-        }
-        else {
-            Review.create(req.body.review, function (err, review) {
-                if (err) {
-                    req.flash("error", err.message);
-                    return res.redirect("back");
-                }
-                //add author username/id and associated recipe to the review
-                review.author.id = req.user._id;
-                review.author.screenName = req.user.screenName;
-                review.recipe = recipe;
-                //save review
-                review.save();
-                recipe.reviews.push(review);
-                // calculate the new average review for the recipe
-                recipe.rating = calculateAverage(recipe.reviews);
-                //save recipe
-                recipe.save();
-                req.flash("success", "Your review has been successfully added.");
-                res.redirect('/recipes/' + recipe._id);
-            });
-        }
-    });
-});
+const router = express.Router({ mergeParams: true });
 
-// Reviews Delete
-router.delete("/:review_id", middleware.checkCommentOwnership, middleware.socialRateLimits, middleware.isLoggedIn, middleware.checkReviewExistence, function (req, res) {
-    Review.findByIdAndRemove(req.params.review_id, function (err) {
-        if (err) {
-            req.flash("error", err.message);
-            return res.redirect("back");
-        }
-        Recipe.findByIdAndUpdate(req.params.id, { $pull: { 'reviews': { '_id': req.params.review_id } } }, { new: true }).populate("reviews").exec(function (err, recipe) {
-            if (err) {
-                req.flash("error", err.message);
-                return res.redirect("back");
-            }
-            // recalculate recipe average
-            recipe.rating = calculateAverage(recipe.reviews);
-            //save changes
-            recipe.save();
-            req.flash("success", "Your review was deleted successfully.");
-            res.redirect("/recipes/" + req.params.id);
-        });
-    });
-});
-
-
-function calculateAverage(reviews) {
-    if (reviews.length === 0) {
-        return 0;
-        console.log("zero length!");
-    }
-    var sum = 0;
-    reviews.forEach(function (element) {
-        sum += element.rating;
-    });
-    return sum / reviews.length;
+async function recalcRating(recipeId) {
+  const reviews = await Review.find({ recipe: recipeId }).select("_id rating").lean();
+  const avg = reviews.length ? Math.round((reviews.reduce((s, r) => s + r.rating, 0) / reviews.length) * 10) / 10 : 0;
+  await Recipe.updateOne({ _id: recipeId }, { $set: { rating: avg, reviews: reviews.map((r) => r._id) } });
 }
+
+router.post("/", middleware.socialRateLimit, middleware.isLoggedIn, middleware.loadRecipe, middleware.checkReviewExistence, async (req, res) => {
+  const body = req.body.review || {};
+  await Review.create({
+    rating: Number(body.rating),
+    text: String(body.text || "").trim().slice(0, 2000),
+    author: { id: req.user._id, screenName: req.user.screenName },
+    recipe: req.recipe._id
+  });
+  await recalcRating(req.recipe._id);
+  req.flash("success", "Thanks for your review!");
+  res.redirect(req.recipe.url);
+});
+
+router.delete("/:review_id", middleware.socialRateLimit, middleware.isLoggedIn, middleware.loadRecipe, middleware.checkReviewOwnership, async (req, res) => {
+  await req.review.deleteOne();
+  await recalcRating(req.recipe._id);
+  req.flash("success", "Your review was deleted.");
+  res.redirect(req.recipe.url);
+});
 
 module.exports = router;

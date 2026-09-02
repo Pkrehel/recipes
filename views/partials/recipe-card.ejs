@@ -1,0 +1,35 @@
+<%
+  // Expects `r` (lean recipe) and optional `eager` (boolean) for above-the-fold images.
+  var href = "/recipes/" + r.slug;
+  var lovedCount = (r.lovedBy || []).length;
+  var isLoved = currentUser && (r.lovedBy || []).some(function (id) { return String(id) === String(currentUser._id); });
+%>
+<article class="col-lg-4 col-md-6 col-sm-6 col-12 mb-3 p-0 recipe-card">
+  <div class="card h-100">
+    <div class="img-container">
+      <a href="<%= href %>" aria-label="<%= r.title %>">
+        <img class="img-fluid recipe-index-image" src="<%= seo.imageUrl(r.image, { width: 600, height: 450 }) %>" srcset="<%= seo.imageUrl(r.image, { width: 400, height: 300 }) %> 400w, <%= seo.imageUrl(r.image, { width: 600, height: 450 }) %> 600w, <%= seo.imageUrl(r.image, { width: 900, height: 675 }) %> 900w" sizes="(max-width: 576px) 100vw, (max-width: 992px) 50vw, 33vw" alt="<%= r.title %>" width="600" height="450" loading="<%= (typeof eager !== 'undefined' && eager) ? 'eager' : 'lazy' %>" <%= (typeof eager !== 'undefined' && eager) ? 'fetchpriority="high"' : '' %>>
+      </a>
+      <div class="recipeBookButton text-center">
+        <form action="<%= href %>/love" method="POST">
+          <button class="btn rounded-circle like-btn-homepage <%= isLoved ? 'loved' : '' %>" aria-label="<%= isLoved ? 'Remove from' : 'Add to' %> favorites" title="<%= isLoved ? 'Remove from favorites' : 'Add to favorites' %>"><i class="fas fa-heart" aria-hidden="true"></i></button>
+        </form>
+      </div>
+    </div>
+    <div class="card-body text-center visibile-recipe-info p-2 d-flex flex-column">
+      <h3 class="card-title h5 mb-1"><a href="<%= href %>" class="text-dark stretched-link-safe"><%= r.title %></a></h3>
+      <p class="card-text text-muted mb-1 small">
+        <% if (r.rating > 0) { %>
+          <%- include("./stars", { rating: r.rating }) %> <span class="sr-only"><%= r.rating %> out of 5</span>
+        <% } else { %>&nbsp;<% } %>
+      </p>
+      <p class="small text-muted mb-1"><%= (r.allergens || []).join(" · ") || " " %></p>
+      <p class="small text-muted mb-2"><i class="far fa-clock" aria-hidden="true"></i>&nbsp;<%= r.totalTime %> min · <%= r.category %><% if (lovedCount) { %> · <i class="fas fa-heart" aria-hidden="true"></i> <%= lovedCount %><% } %></p>
+      <a href="<%= href %>" class="btn btn-outline-primary btn-block recipe-view-button my-1 mt-auto">View Recipe</a>
+      <div class="d-flex justify-content-between mt-2 small text-muted">
+        <a href="/users/<%= r.chef.id %>" class="text-muted">Chef: <%= r.chef.screenName %></a>
+        <time datetime="<%= new Date(r.createdAt).toISOString() %>"><%= formatDate(r.createdAt) %></time>
+      </div>
+    </div>
+  </div>
+</article>

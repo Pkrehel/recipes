@@ -1,0 +1,16 @@
+<% if (pages > 1) { %>
+<nav aria-label="Pagination" class="mt-4">
+  <ul class="pagination justify-content-center flex-wrap">
+    <li class="page-item <%= current == 1 ? 'disabled' : '' %>"><a class="page-link" href="<%= pageUrl(1) %>" aria-label="First page">First</a></li>
+    <li class="page-item <%= current == 1 ? 'disabled' : '' %>"><a class="page-link" href="<%= pageUrl(Math.max(current - 1, 1)) %>" rel="prev" aria-label="Previous page">&laquo;</a></li>
+    <% var start = Math.max(current - 3, 1); var end = Math.min(current + 3, pages); %>
+    <% if (start > 1) { %><li class="page-item disabled"><span class="page-link">…</span></li><% } %>
+    <% for (var i = start; i <= end; i++) { %>
+      <li class="page-item <%= i == current ? 'active' : '' %>" <%= i == current ? 'aria-current="page"' : '' %>><a class="page-link" href="<%= pageUrl(i) %>"><%= i %></a></li>
+    <% } %>
+    <% if (end < pages) { %><li class="page-item disabled"><span class="page-link">…</span></li><% } %>
+    <li class="page-item <%= current == pages ? 'disabled' : '' %>"><a class="page-link" href="<%= pageUrl(Math.min(current + 1, pages)) %>" rel="next" aria-label="Next page">&raquo;</a></li>
+    <li class="page-item <%= current == pages ? 'disabled' : '' %>"><a class="page-link" href="<%= pageUrl(pages) %>" aria-label="Last page">Last</a></li>
+  </ul>
+</nav>
+<% } %>

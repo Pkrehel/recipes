@@ -1,276 +1,92 @@
-<% include ../partials/header %>
+<%- include("../partials/header") %>
+<% var avatars = ["😛", "😎", "🍉", "🌶", "🍅", "🍍", "🍄", "🍲", "☕", "🍜", "🍷", "🍳"]; %>
 
-    <div class="container-fluid p-0">
-        <div class="row">     
-            <div class="col">
-              <% if(currentUser && foundUser._id.equals(currentUser._id)){ %>
-              <h2>Your Profile</h2>
-              <% } else { %>
-              <h2><%= foundUser.firstName%>'s Profile <%= foundUser.avatar%></h2>
-              <% } %>
-              <ul class="nav nav-tabs" id="myTab" role="tablist">
-                <li class="nav-item">
-                  <a class="nav-link active" id="favorites-tab" data-toggle="tab" href="#favorites" role="tab" aria-controls="home" aria-selected="true">Favorites</a>
-                </li>
-                <li class="nav-item">
-                  <a class="nav-link" id="recipes-tab" data-toggle="tab" href="#recipes" role="tab" aria-controls="profile" aria-selected="false">
-                    <% if(currentUser && foundUser._id.equals(currentUser._id)){ %>
-                    My Recipes
-                    <% } else { %>
-                  Posted Recipes
-                    <% } %>
-                  </a>
-                </li>
-                <% if(currentUser && foundUser._id.equals(currentUser._id)){ %>
-                <li class="nav-item">
-                  <a class="nav-link" id="settings-tab" data-toggle="tab" href="#settings" role="tab" aria-controls="settings" aria-selected="false">Settings</a>
-                </li>
-                <% } %>
-              </ul>
-              <div class="tab-content pt-4" id="myTabContent">
-                <div class="tab-pane fade show active" id="favorites" role="tabpanel" aria-labelledby="favorites-tab">
-                  <div class="card-deck">
-                  <% if(currentUser && foundUser._id.equals(currentUser._id) && foundUser.lovedRecipes.length === 0){ %>
-                  <p>You have not favorited any recipes yet! Click the <span><i class="fas fa-heart"></i></span> icon to favorite a recipe.</p>
-                  <% } %>
-                    
-                 <% if(currentUser && (foundUser.id != currentUser._id) && foundUser.lovedRecipes.length === 0){ %>
-                  <p><%= foundUser.screenname %> has not favorited any recipes yet!</p>
-                <% } %>
-                    
-                      <% var favoriteRecipeCount = 0; %>
-                      <% if(foundUser.lovedRecipes.length < 6) { %>
-                         <% var favoriteRecipesLength = foundUser.lovedRecipes.length  %>
-                          <% var favoriteRecipes = foundUser.lovedRecipes %>
-                      <% } else { %>
-                      <% var favoriteRecipesLength = 6 %>
-                      <% } %>
-                          <% while((favoriteRecipeCount < favoriteRecipesLength)) { %>
-                            <div class="col-lg-4 col-md-6 col-sm-6 col-xs-12 mb-3 p-0 recipe-card">
-                              <div class="card">
-                                <div class="card-block">
-                                  <div class="img-container">
-                                    <a href="/recipes/<%= favoriteRecipes[favoriteRecipeCount].id%>">
-                                    <% if(currentUser && foundUser._id.equals(currentUser._id)){ %>
-                                     <div class="recipeBookButton text-center">
-                                        <form action="/recipes/<%=favoriteRecipes[favoriteRecipeCount].id%>/love" method="POST">
-                                       <button type="submit" class="btn rounded-circle like-btn-homepage">
-                                       <i class="fas fa-heart-broken"></i></button>
-                                       </form>
-                                     </div>
-                                    <% } else { %>      
-                                    <!--If user profile doesn't belong to current user-->
-                                      <div class="recipeBookButton text-center">
-                                        <form action="/recipes/<%=favoriteRecipes[favoriteRecipeCount].id%>/love" method="POST">
-                                              <button class="btn rounded-circle ajax-trigger-love like-btn-homepage" data-recipe-id="<%=favoriteRecipes[favoriteRecipeCount].id%>">
-                                                  <i class="fas fa-heart"></i>
-                                                </button>
-                                        </form>
-                                      </div>
-                                            <% } %>            
-                                      <img class="img-fluid recipe-index-image" src="<%= favoriteRecipes[favoriteRecipeCount].image %>">
-                                      <!--To Make Button Block-->
-                                    </a>
-                                  </div>
+<header class="py-3">
+  <h1 class="h2 text-primary"><%= foundUser.avatar %> <%= isOwner ? "Your Profile" : foundUser.screenName %></h1>
+  <% if (foundUser.bio) { %><p class="text-muted"><%= foundUser.bio %></p><% } %>
+  <p class="small text-muted mb-0"><%= foundUser.recipes.length %> recipe<%= foundUser.recipes.length === 1 ? "" : "s" %> · <%= foundUser.lovedRecipes.length %> favorite<%= foundUser.lovedRecipes.length === 1 ? "" : "s" %> · Joined <%= formatDate(foundUser.createdAt) %></p>
+</header>
 
-                                  <a href="/recipes/<%= favoriteRecipes[favoriteRecipeCount]._id%>">
-                                    <div class="card-body text-center visibile-recipe-info p-1 mt-1">
-                                      <h3 class="card-title mb-1">
-                                        <%= favoriteRecipes[favoriteRecipeCount].title %>
-                                      </h3>
-                                  <% if (favoriteRecipes[favoriteRecipeCount].rating > 0) { %>
-                                  <p class="card-text text-muted">
-                                    <small>
-                                      <span class="fa fa-star checked"></span>
-                                      <span class="fa fa-star <% if (favoriteRecipes[favoriteRecipeCount].rating > 1.5) { %> checked <% } %>"></span>
-                                      <span class="fa fa-star <% if (favoriteRecipes[favoriteRecipeCount].rating > 2.5) { %> checked <% } %>"></span>
-                                      <span class="fa fa-star <% if (favoriteRecipes[favoriteRecipeCount].rating > 3.5) { %> checked <% } %>"></span>
-                                      <span class="fa fa-star <% if (favoriteRecipes[favoriteRecipeCount].rating > 4.5) { %> checked <% } %>"></span>
-                                    </small>
-                                  </p>
-                                  <% } else { %>
-                                    <p class="card-text text-muted">&nbsp;</p>
-                                  <% } %>
-                                  <div class="container small card-text text-muted pb-1">
-                                          <%if(favoriteRecipes[favoriteRecipeCount].allergens.length > 0) { %>
-                                          <p class="mb-1">
-                                          <% var allergenLength = favoriteRecipes[favoriteRecipeCount].allergens.length %>
-                                          <% for(i=0; i < allergenLength -1; i++) { %>
-                                          <%= favoriteRecipes[favoriteRecipeCount].allergens[i] %> |
-                                          <% } %>
-                                          <%= favoriteRecipes[favoriteRecipeCount].allergens.pop() %>
-                                          <% } else { %>
-                                          <p class="mb-1"></p>
+<% if (isOwner && !currentUser.verified) { %>
+<div class="alert alert-warning">
+  <strong>Please verify your email.</strong> We sent a link to <%= currentUser.username %>. You need to verify before you can post recipes.
+  <form action="/verify/resend" method="POST" class="d-inline ml-2"><button class="btn btn-sm btn-outline-dark">Resend link</button></form>
+</div>
+<% } %>
 
-                                          <% } %>
-                                          </p>
-                                          <p class="m-0"><i class="far fa-clock"></i>&nbsp;<%= favoriteRecipes[favoriteRecipeCount].totalTime %> minutes</p>
-                                      </div>
-                                      <!--VIEW RECIPE BUTTON-->
-                                      <form action="/recipes/<%= favoriteRecipes[favoriteRecipeCount]._id %>" method="GET">
-                                        <button class="btn btn-outline-primary text-center btn-block recipe-view-button my-1">View</button>
-                                      </form>
-                                      <div class="row mt-2">
-                                        <div class="col pull-left text-left">
-                                          <a href="/users/<%=favoriteRecipes[favoriteRecipeCount].chef.id %>" class="card-text text-left text-muted small m-0">Chef: <%= favoriteRecipes[favoriteRecipeCount].chef.screenName%></a>
-                                        </div>
-                                        <div class="col pull-right">
-                                          <p class="card-text text-right"><small class="text-muted">Posted: <%= moment(favoriteRecipes[favoriteRecipeCount].createdAt).format("M/D/YYYY") %></small></p>
-                                        </div>
-                                      </div>
-                                    </div>
-                                  </a>
-                                  <!--END OF CARD BODY-->
-                                </div>
-                              </div>
-                            </div>
-                            <%  favoriteRecipeCount ++ %>
-                              <% } %>
+<ul class="nav nav-tabs" id="profileTabs" role="tablist">
+  <li class="nav-item"><a class="nav-link active" id="recipes-tab" data-toggle="tab" href="#recipes" role="tab" aria-controls="recipes" aria-selected="true"><%= isOwner ? "My Recipes" : "Recipes" %></a></li>
+  <li class="nav-item"><a class="nav-link" id="favorites-tab" data-toggle="tab" href="#favorites" role="tab" aria-controls="favorites" aria-selected="false">Favorites</a></li>
+  <% if (isOwner) { %><li class="nav-item"><a class="nav-link" id="settings-tab" data-toggle="tab" href="#settings" role="tab" aria-controls="settings" aria-selected="false">Settings</a></li><% } %>
+</ul>
+
+<div class="tab-content pt-4" id="profileTabContent">
+  <div class="tab-pane fade show active" id="recipes" role="tabpanel" aria-labelledby="recipes-tab">
+    <% if (foundUser.recipes.length === 0) { %>
+      <p class="text-muted"><%= isOwner ? "You haven't posted any recipes yet." : foundUser.screenName + " hasn't posted any recipes yet." %> <% if (isOwner) { %><a href="/recipes/new">Share your first recipe</a>.<% } %></p>
+    <% } else { %>
+      <div class="row">
+        <% foundUser.recipes.forEach(function (r) { %><%- include("../partials/recipe-card", { r: r }) %><% }); %>
       </div>
-                  <!--End of Card Deck--> 
-                </div>
-                <div class="tab-pane fade" id="recipes" role="tabpanel" aria-labelledby="recipes-tab">
-                  <div class="card-deck">
-                  <% if(currentUser && foundUser._id.equals(currentUser._id) && foundUser.recipes.length == 0){ %>
-                    <p>You have not posted any recipes yet.<a href="/recipes/new"> Click here </a>  to post your first recipe</p>
-                  <% } %>
+    <% } %>
+  </div>
 
-                      <% var userRecipeCount = 0; %>
-                      <% if(foundUser.recipes.length < 6) { %>
-                         <% var userRecipesLength = foundUser.recipes.length  %>
-                          <% var userRecipes = foundUser.recipes %>
-                      <% } else { %>
-                      <% var userRecipesLength = 6 %>
-                      <% } %>
-                          <% while((userRecipeCount < userRecipesLength)) { %>
-                            <div class="col-lg-4 col-md-6 col-sm-6 col-xs-12 mb-3 p-0 recipe-card">
-                              <div class="card">
-                                <div class="card-block">
-                                  <div class="img-container">
-                                    <a href="/recipes/<%= userRecipes[userRecipeCount].id%>">                                
-                                    <% if (currentUser && userRecipes[userRecipeCount].lovedBy.some(function (like) {
-                                        return like.equals(currentUser._id)
-                                    })) { %>
-                                          <div class="recipeBookButton text-center">
-                                            <form action="/recipes/<%=userRecipes[userRecipeCount].id%>/love" method="POST">
-                                           <button type="submit" class="btn rounded-circle like-btn-homepage">
-                                           <i class="fas fa-heart-broken"></i></button>
-                                           </form>
-                                          </div>
-                                    <% } else { %>
-                                          <div class="recipeBookButton text-center">
-                                            <form action="/recipes/<%=userRecipes[userRecipeCount].id%>/love" method="POST">
-                                           <button type="submit" class="btn rounded-circle like-btn-homepage">
-                                           <i class="fas fa-heart"></i></button>
-                                           </form>
-                                          </div>
-                                      <% } %>
-                                  <img class="img-fluid recipe-index-image" src="<%= userRecipes[userRecipeCount].image %>">
-                                      <!--To Make Button Block-->
-                                    </a>
-                                  </div>
-
-                                  <a href="/recipes/<%= userRecipes[userRecipeCount]._id%>">
-                                    <div class="card-body text-center visibile-recipe-info p-1 mt-1">
-                                      <h3 class="card-title mb-1">
-                                        <%= userRecipes[userRecipeCount].title %>
-                                      </h3>
-                                  <% if (userRecipes[userRecipeCount].rating > 0) { %>
-                                  <p class="card-text text-muted">
-                                    <small>
-                                      <span class="fa fa-star checked"></span>
-                                      <span class="fa fa-star <% if (userRecipes[userRecipeCount].rating > 1.5) { %> checked <% } %>"></span>
-                                      <span class="fa fa-star <% if (userRecipes[userRecipeCount].rating > 2.5) { %> checked <% } %>"></span>
-                                      <span class="fa fa-star <% if (userRecipes[userRecipeCount].rating > 3.5) { %> checked <% } %>"></span>
-                                      <span class="fa fa-star <% if (userRecipes[userRecipeCount].rating > 4.5) { %> checked <% } %>"></span>
-                                    </small>
-                                  </p>
-                                  <% } else { %>
-                                    <p class="card-text text-muted">&nbsp;</p>
-                                  <% } %>
-                                  <div class="container small card-text text-muted pb-1">
-                                          <%if(userRecipes[userRecipeCount].allergens.length > 0) { %>
-                                          <p class="mb-1">
-                                          <% var allergenLength = userRecipes[userRecipeCount].allergens.length %>
-                                          <% for(i=0; i < allergenLength -1; i++) { %>
-                                          <%= userRecipes[userRecipeCount].allergens[i] %> |
-                                          <% } %>
-                                          <%= userRecipes[userRecipeCount].allergens.pop() %>
-                                          <% } else { %>
-                                          <p class="mb-1"></p>
-
-                                          <% } %>
-                                          </p>
-                                          <p class="m-0"><i class="far fa-clock"></i>&nbsp;<%= userRecipes[userRecipeCount].totalTime %> minutes</p>
-                                      </div>
-                                      <!--VIEW RECIPE BUTTON-->
-                                      <form action="/recipes/<%= userRecipes[userRecipeCount]._id %>" method="GET">
-                                        <button class="btn btn-outline-primary text-center btn-block recipe-view-button my-1">View</button>
-                                      </form>
-                                      <div class="row mt-2">
-                                        <div class="col pull-left text-left">
-                                          <a href="/users/<%=userRecipes[userRecipeCount].chef.id %>" class="card-text text-left text-muted small m-0">Chef: <%= userRecipes[userRecipeCount].chef.screenName%></a>
-                                        </div>
-                                        <div class="col pull-right">
-                                          <p class="card-text text-right"><small class="text-muted">Posted: <%= moment(userRecipes[userRecipeCount].createdAt).format("M/D/YYYY") %></small></p>
-                                        </div>
-                                      </div>
-                                    </div>
-                                  </a>
-                                  <!--END OF CARD BODY-->
-                                </div>
-                              </div>
-                            </div>
-                            <%  userRecipeCount ++ %>
-                              <% } %>
+  <div class="tab-pane fade" id="favorites" role="tabpanel" aria-labelledby="favorites-tab">
+    <% if (foundUser.lovedRecipes.length === 0) { %>
+      <p class="text-muted"><%= isOwner ? "You haven't favorited any recipes yet. Click the heart on a recipe to save it here." : foundUser.screenName + " hasn't favorited any recipes yet." %></p>
+    <% } else { %>
+      <div class="row">
+        <% foundUser.lovedRecipes.forEach(function (r) { %><%- include("../partials/recipe-card", { r: r }) %><% }); %>
       </div>
-                </div>
-          
-          <% if(currentUser && foundUser._id.equals(currentUser._id)){ %>
-              <div class="tab-pane fade" id="settings" role="tabpanel" aria-labelledby="settings-tab">
-                <div class="container">
-                  <div class="row">
-                    <div class="col-md-6">
-                      <h4 class="py-1">Update Your Profile</h4>
-                      <form action="/users/<%= foundUser.id %>/update?_method=PUT" method="POST">
-                      <div class="form-group text-dark"> <label>First Name</label>
-                        <input type="text" name="firstName" class="form-control" value="<%= foundUser.firstName %>" minlength="1" maxlength="50" required>
-                      </div>
-                      <div class="form-group"> <label>Username</label>
-                        <input type="text" name="screenName" class="form-control" value="<%= foundUser.screenName %>" minlength="4" maxlength="20" required>
-                      </div>
-                      <div class="form-group" required><label>Email address</label>
-                        <input type="email" name="username" class="form-control" value="<%= foundUser.username %>" required>
-                      </div>
-                      <div class="form-group input-group mb-3">
-                      <div class="input-group-prepend">
-                        <label class="input-group-text" for="avatar">Choose Avatar</label>
-                      </div>
-                      <select class="custom-select" id="avatar" name="avatar" required>
-                        <option selected>Choose...</option>
-                        <option value="😛" <%= foundUser.avatar == "😛" ? "selected": "" %>>😛</option>
-                        <option value="😎" <%= foundUser.avatar == "😎" ? "selected": "" %>>😎</option>
-                        <option value="☕" <%= foundUser.avatar == "☕" ? "selected": "" %>>☕</option>
-                        <option value="🌶" <%= foundUser.avatar == "🌶" ? "selected": "" %>>🌶</option>
-                        <option value="🍍" <%= foundUser.avatar == "🍍" ? "selected": "" %>>🍍</option>
-                        <option value="🍄" <%= foundUser.avatar == "🍄" ? "selected": "" %>>🍄</option>
-                        <option value="🍲" <%= foundUser.avatar == "🍲" ? "selected": "" %>>🍲</option>
-                        <option value="🍉" <%= foundUser.avatar == "🍉" ? "selected": "" %>>🍉</option>
-                        <option value="🍜" <%= foundUser.avatar == "🍜" ? "selected": "" %>>🍜</option>
-                        <option value="🍷" <%= foundUser.avatar == "🍷" ? "selected": "" %>>🍷</option>
-                      </select>
-                    </div>
-                      <button type="submit" class="btn btn-secondary btn-block btn-lg my-2"><b>Save Changes</b></button>
-                    </form>
-                    <p>Forgot your password? <b><a href="/forgot">Reset Password</a></b></p>
-                  </div>
-                </div>
-              </div>  
-              </div>
-          <% } %>
-              </div>
+    <% } %>
+  </div>
+
+  <% if (isOwner) { %>
+  <div class="tab-pane fade" id="settings" role="tabpanel" aria-labelledby="settings-tab">
+    <div class="row">
+      <div class="col-md-7">
+        <form action="/users/<%= foundUser._id %>?_method=PUT" method="POST">
+          <div class="form-group">
+            <label for="firstName">First name</label>
+            <input type="text" class="form-control" id="firstName" name="firstName" value="<%= foundUser.firstName %>" maxlength="50" required>
+          </div>
+          <div class="form-group">
+            <label for="screenName">Username <small class="text-muted">(shown publicly)</small></label>
+            <input type="text" class="form-control" id="screenName" name="screenName" value="<%= foundUser.screenName %>" minlength="3" maxlength="30" pattern="[A-Za-z0-9_\-. ]+" required>
+          </div>
+          <div class="form-group">
+            <label for="username">Email address</label>
+            <input type="email" class="form-control" id="username" name="username" value="<%= foundUser.username %>" required>
+            <small class="form-text text-muted">Changing your email will require re-verification.</small>
+          </div>
+          <div class="form-group">
+            <label for="bio">Short bio <small class="text-muted">(shown on your public profile)</small></label>
+            <textarea class="form-control" id="bio" name="bio" rows="3" maxlength="500" placeholder="Home cook from Michigan who loves..."><%= foundUser.bio || "" %></textarea>
+          </div>
+          <fieldset class="form-group">
+            <legend class="col-form-label">Avatar</legend>
+            <div class="btn-group btn-group-toggle d-flex flex-wrap" data-toggle="buttons">
+              <% avatars.forEach(function (a) { %>
+              <label class="btn avatar <%= foundUser.avatar === a ? 'active' : '' %>"><input type="radio" name="avatar" value="<%= a %>" autocomplete="off" <%= foundUser.avatar === a ? 'checked' : '' %>> <%= a %></label>
+              <% }); %>
             </div>
+          </fieldset>
+          <button class="btn btn-primary">Save changes</button>
+        </form>
+      </div>
+      <div class="col-md-5 mt-4 mt-md-0">
+        <div class="card">
+          <div class="card-body">
+            <h3 class="h6">Account</h3>
+            <p class="small mb-2">Email: <%= foundUser.username %> <%- currentUser.verified ? '<span class="badge badge-success">verified</span>' : '<span class="badge badge-warning">unverified</span>' %></p>
+            <a href="/forgot" class="btn btn-sm btn-outline-secondary mb-2">Change password</a>
+            <form action="/logout" method="POST"><button class="btn btn-sm btn-outline-danger">Log out</button></form>
+          </div>
         </div>
+      </div>
     </div>
+  </div>
+  <% } %>
+</div>
 
-<% include ../partials/footer %>
+<%- include("../partials/footer") %>

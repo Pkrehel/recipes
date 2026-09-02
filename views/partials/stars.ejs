@@ -1,0 +1,1 @@
+<% var full = Math.round(Number(rating) || 0); for (var s = 1; s <= 5; s++) { %><span class="fa fa-star <%= s <= full ? 'checked' : '' %>" aria-hidden="true"></span><% } %>

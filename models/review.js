@@ -1,41 +1,25 @@
-var mongoose = require("mongoose");
+const mongoose = require("mongoose");
 
-var reviewSchema = new mongoose.Schema({
+const reviewSchema = new mongoose.Schema(
+  {
     rating: {
-        // Setting the field type
-        type: Number,
-        // Making the star rating required
-        required: "Please provide a rating (1-5 stars).",
-        // Defining min and max values
-        min: 1,
-        max: 5,
-        // Adding validation to see if the entry is an integer
-        validate: {
-            // validator accepts a function definition which it uses for validation
-            validator: Number.isInteger,
-            message: "{VALUE} is not an integer value."
-        }
+      type: Number,
+      required: [true, "Please provide a rating (1-5 stars)."],
+      min: 1,
+      max: 5,
+      validate: { validator: Number.isInteger, message: "{VALUE} is not a whole number." }
     },
-    // review text
-    text: {
-        type: String
-    },
-    // author id and screenName fields
+    text: { type: String, trim: true, maxlength: 2000 },
     author: {
-        id: {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: "User"
-        },
-        screenName: String
+      id: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
+      screenName: String
     },
-    // recipe associated with the review
-    recipe: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Recipe"
-    }
-}, {
-    // if timestamps are set to true, mongoose assigns createdAt and updatedAt fields to your schema, the type assigned is Date.
-    timestamps: true
-});
+    recipe: { type: mongoose.Schema.Types.ObjectId, ref: "Recipe", required: true, index: true }
+  },
+  { timestamps: true }
+);
+
+// one review per user per recipe
+reviewSchema.index({ recipe: 1, "author.id": 1 }, { unique: true });
 
 module.exports = mongoose.model("Review", reviewSchema);

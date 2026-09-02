@@ -1,73 +1,28 @@
-var express = require("express");
-var router = express.Router({ mergeParams: true });
-var Recipe = require("../models/recipe");
-var User = require("../models/user");
-var middleware = require("../middleware");
+const express = require("express");
+const Recipe = require("../models/recipe");
+const User = require("../models/user");
+const middleware = require("../middleware");
 
-router.post("/", middleware.socialRateLimits, middleware.isLoggedIn, function (req, res) {
-   // Update the recipe like
-    Recipe.findById(req.params.id, function (err, foundRecipe) {
-        if (err) {
-            console.log(err);
-            return res.redirect("/");
-        }
+const router = express.Router({ mergeParams: true });
 
-        // check if req.user._id exists in foundRecipe.likes
-        var foundUserLike = foundRecipe.lovedBy.some(function (like) {
-            return like.equals(req.user._id);
-        });
+// Toggle favorite. POST and DELETE both toggle so old templates keep working.
+async function toggle(req, res) {
+  const recipe = req.recipe;
+  const already = recipe.lovedBy.some((id) => id.equals(req.user._id));
+  if (already) {
+    await Promise.all([Recipe.updateOne({ _id: recipe._id }, { $pull: { lovedBy: req.user._id } }), User.updateOne({ _id: req.user._id }, { $pull: { lovedRecipes: recipe._id } })]);
+    req.flash("success", `"${recipe.title}" was removed from your favorites.`);
+  } else {
+    await Promise.all([Recipe.updateOne({ _id: recipe._id }, { $addToSet: { lovedBy: req.user._id } }), User.updateOne({ _id: req.user._id }, { $addToSet: { lovedRecipes: recipe._id } })]);
+    req.flash("success", `"${recipe.title}" was added to your favorites!`);
+  }
+  if (req.get("Accept") && req.get("Accept").includes("application/json")) {
+    return res.json({ loved: !already, count: recipe.lovedBy.length + (already ? -1 : 1) });
+  }
+  middleware.back(req, res, recipe.url);
+}
 
-        if (foundUserLike) {
-            // user already liked, removing like
-            foundRecipe.lovedBy.pull(req.user._id);
-        } else {
-            // adding the new user like
-            foundRecipe.lovedBy.push(req.user._id);
-        }
-
-        foundRecipe.save(function (err) {
-            if (err) {
-                console.log(err);
-                return res.redirect("/");
-            }
-        });
-      // Update the user 
-        User.findById(req.user.id, function (err, foundUser) {
-        if (err) {
-            console.log(err);
-            return res.redirect("/");
-        }
-
-        // check if req.user._id exists in foundRecipe.likes
-        var foundRecipeLike = foundUser.lovedRecipes.some(function (like) {
-            return like.equals(foundRecipe._id);
-        });
-
-        if (foundUserLike) {
-            // user already liked, removing like
-            foundUser.lovedRecipes.pull(foundRecipe._id);
-           foundUser.save(function (err) {
-               if (err) {
-                   console.log(err);
-                   return res.redirect("/");
-               }
-               req.flash("success", foundRecipe.title + " was removed from your favorites!");
-               res.redirect("back");
-           });
-        } else {
-            // adding the new user like
-         foundUser.lovedRecipes.push(foundRecipe._id);
-           foundUser.save(function (err) {
-               if (err) {
-                   console.log(err);
-                   return res.redirect("/");
-               }
-               req.flash("success", foundRecipe.title + " was added to your favorites!");
-               res.redirect("/recipes/"+ foundRecipe._id);
-           });
-        }
-    });
-    });
-});
+router.post("/", middleware.socialRateLimit, middleware.isLoggedIn, middleware.loadRecipe, toggle);
+router.delete("/", middleware.socialRateLimit, middleware.isLoggedIn, middleware.loadRecipe, toggle);
 
 module.exports = router;

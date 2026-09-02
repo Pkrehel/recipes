@@ -1,759 +1,216 @@
 <!DOCTYPE html>
-<html>
-
+<html lang="en">
 <head>
-<!-- Google Tag Manager -->
-<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
-new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
-j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-})(window,document,'script','dataLayer','GTM-PC3Q9KK');</script>
-<!-- End Google Tag Manager -->
-
-  <title>Homepage</title>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-  <link rel="stylesheet" type="text/css" href="/stylesheets/main.css">
-  <link rel="stylesheet" type="text/css" href="/stylesheets/custom.css">
-  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
-  <link href="https://fonts.googleapis.com/css?family=Nunito:300,400,600,700|Roboto:300,400,500" rel="stylesheet">
-  <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
-  <script src="https://cdn.tiny.cloud/1/a5dmcvc482cq0zqorxvkxjzewccn4q6fdvw6lday1s4jdoyv/tinymce/5/tinymce.min.js" referrerpolicy="origin"></script>
-  
-  <style>
-  #cooking-container{
-    height: 100%;
-    width: 100%;
-    display: none;
-    text-align: center;
-    background-color: #ffde6b;
-  }
-  #cooking h4 {
-    position: relative;
-    margin: 0 auto;
-    top: 25vh;
-    text-align: center;
-    font-family: "Amatic SC";
-    font-size: 2vh;
-    color: #333;
-    opacity: 0.75;
-    animation: pulse 2.75s linear infinite;
-  }
-  #cooking {
-    width: 50%;
-    max-width: 600px;
-    display: inline-block;
-    text-align: center;
-    position: relative;
-    margin: 0 auto;
-    top: 25vh;
-    height: 45vh;
-    overflow: hidden;
-  }
-  #cooking .bubble {
-    position: absolute;
-    border-radius: 100%;
-    box-shadow: 0 0 0.25vh #4d4d4d;
-    opacity: 0;
-  }
-  #cooking .bubble:nth-child(1) {
-    margin-top: 2.5vh;
-    left: 58%;
-    width: 2.5vh;
-    height: 2.5vh;
-    background-color: #454545;
-    animation: bubble 2s cubic-bezier(0.53, 0.16, 0.39, 0.96) infinite;
-  }
-  #cooking .bubble:nth-child(2) {
-    margin-top: 3vh;
-    left: 52%;
-    width: 2vh;
-    height: 2vh;
-    background-color: #3d3d3d;
-    animation: bubble 2s ease-in-out 0.35s infinite;
-  }
-  #cooking .bubble:nth-child(3) {
-    margin-top: 1.8vh;
-    left: 50%;
-    width: 1.5vh;
-    height: 1.5vh;
-    background-color: #333;
-    animation: bubble 1.5s cubic-bezier(0.53, 0.16, 0.39, 0.96) 0.55s infinite;
-  }
-  #cooking .bubble:nth-child(4) {
-    margin-top: 2.7vh;
-    left: 56%;
-    width: 1.2vh;
-    height: 1.2vh;
-    background-color: #2b2b2b;
-    animation: bubble 1.8s cubic-bezier(0.53, 0.16, 0.39, 0.96) 0.9s infinite;
-  }
-  #cooking .bubble:nth-child(5) {
-    margin-top: 2.7vh;
-    left: 63%;
-    width: 1.1vh;
-    height: 1.1vh;
-    background-color: #242424;
-    animation: bubble 1.6s ease-in-out 1s infinite;
-  }
-  #cooking #area {
-    position: absolute;
-    bottom: 0;
-    right: 0;
-    width: 50%;
-    height: 50%;
-    background-color: transparent;
-    transform-origin: 15% 60%;
-    animation: flip 2.1s ease-in-out infinite;
-  }
-  #cooking #area #sides {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    transform-origin: 15% 60%;
-    animation: switchSide 2.1s ease-in-out infinite;
-  }
-  #cooking #area #sides #handle {
-    position: absolute;
-    bottom: 18%;
-    right: 80%;
-    width: 35%;
-    height: 20%;
-    background-color: transparent;
-    border-top: 1vh solid #333;
-    border-left: 1vh solid transparent;
-    border-radius: 100%;
-    transform: rotate(20deg) rotateX(0deg) scale(1.3, 0.9);
-  }
-  #cooking #area #sides #pan {
-    position: absolute;
-    bottom: 20%;
-    right: 30%;
-    width: 50%;
-    height: 8%;
-    background-color: #333;
-    border-radius: 0 0 1.4em 1.4em;
-    transform-origin: -15% 0;
-  }
-  #cooking #area #pancake {
-    position: absolute;
-    top: 24%;
-    width: 100%;
-    height: 100%;
-    transform: rotateX(85deg);
-    animation: jump 2.1s ease-in-out infinite;
-  }
-  #cooking #area #pancake #pastry {
-    position: absolute;
-    bottom: 26%;
-    right: 20%;
-    width: 40%;
-    height: 45%;
-    background-color: #333;
-    box-shadow: 0 0 3px 0 #333;
-    border-radius: 100%;
-    transform-origin: -20% 0;
-    animation: fly 2.1s ease-in-out infinite;
-  }
+  <title><%= meta.title %></title>
+  <meta name="description" content="<%= meta.description %>">
+  <meta name="robots" content="<%= meta.robots %>">
+  <% if (meta.canonical) { %><link rel="canonical" href="<%= meta.canonical %>"><% } %>
+  <% if (meta.prev) { %><link rel="prev" href="<%= meta.prev %>"><% } %>
+  <% if (meta.next) { %><link rel="next" href="<%= meta.next %>"><% } %>
 
+  <!-- Open Graph / Twitter -->
+  <meta property="og:site_name" content="<%= meta.site.name %>">
+  <meta property="og:type" content="<%= meta.ogType %>">
+  <meta property="og:title" content="<%= meta.rawTitle %>">
+  <meta property="og:description" content="<%= meta.description %>">
+  <% if (meta.canonical) { %><meta property="og:url" content="<%= meta.canonical %>"><% } %>
+  <meta property="og:locale" content="<%= meta.site.locale %>">
+  <% if (meta.image) { %>
+  <meta property="og:image" content="<%= meta.image %>">
+  <meta property="og:image:alt" content="<%= meta.imageAlt %>">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="<%= meta.image %>">
+  <% } else { %>
+  <meta name="twitter:card" content="summary">
+  <% } %>
+  <meta name="twitter:title" content="<%= meta.rawTitle %>">
+  <meta name="twitter:description" content="<%= meta.description %>">
+  <% if (meta.site.twitter) { %><meta name="twitter:site" content="<%= meta.site.twitter %>"><% } %>
+  <% if (meta.publishedTime) { %><meta property="article:published_time" content="<%= new Date(meta.publishedTime).toISOString() %>"><% } %>
+  <% if (meta.modifiedTime) { %><meta property="article:modified_time" content="<%= new Date(meta.modifiedTime).toISOString() %>"><% } %>
 
-    
- #cooking-container-navigation {
-    height: 30px;
-    min-width: 220px;
-    }
-  #cooking-navigation {
-    display: inline;
-    position: relative;
-    margin: 0 auto;
-    overflow: hidden;
-  }
-    
-    .right{
-      position: relative;
-      width: auto;
-      float: right;
-      text-align: left;
-    }
-    
-/*Navigation animations   */
-  #cooking-navigation #area {
-    position: absolute;
-    top: 10px;
-    left: 20px;
-    width: 100%;
-    height: 100%;
-    background-color: transparent;
-    transform-origin: 15% 60%;
-    animation: navigation-flip 4s ease-in-out infinite;
-  }
-  #cooking-navigation #area #sides {
-    position: absolute;
-    width: 10px;
-    height: 10px;
-    transform-origin: 15% 60%;
-  }
-  #cooking-navigation #area #sides #handle {
-    position: absolute;
-    bottom: 18%;
-    right: 80%;
-    width: 17px;
-    height: 17px;
-    background-color: transparent;
-    border-top: 1vh solid #333;
-    border-left: 1vh solid transparent;
-    border-radius: 100%;
-    transform: rotate(20deg) rotateX(0deg) scale(1.3, 0.9);
-  }
-  #cooking-navigation #area #sides #pan {
-    position: absolute;
-    width: 35px;
-    height: 6px;
-    background-color: #333;
-    border-radius: 0 0 1.4em 1.4em;
-    transform-origin: -15% 0;
-  }
-  #cooking-navigation #area #pancake {
-    position: absolute;
-    left: 30px;
-    top: 24%;
-    width: 100%;
-    height: 100%;
-    animation: navigation-jump 4s ease infinite;
-  }
-  #cooking-navigation #area #pancake #pastry {
-    position: absolute;
-    bottom: 5%;
-    right: -20%;
-    width: 17px;
-    height: 17px;
-    background-color: #eda635;
-    border: 2px #ffffff solid;
-    border-radius: 100%;
-    animation: navigation-fly 1.5s ease-in-out infinite;
-  }
-    
-  @keyframes jump {
-    0% {
-      top: 24%;
-      transform: rotateX(85deg);
-    }
-    25% {
-      top: 10%;
-      transform: rotateX(0deg);
-    }
-    50% {
-      top: 30%;
-      transform: rotateX(85deg);
-    }
-    75% {
-      transform: rotateX(0deg);
-    }
-    100% {
-      transform: rotateX(85deg);
-    }
-  }
-  @keyframes flip {
-    0% {
-      transform: rotate(0deg);
-    }
-    5% {
-      transform: rotate(-27deg);
-    }
-    30%,
-    50% {
-      transform: rotate(0deg);
-    }
-    55% {
-      transform: rotate(27deg);
-    }
-    83.3% {
-      transform: rotate(0deg);
-    }
-    100% {
-      transform: rotate(0deg);
-    }
-  }
-  @keyframes switchSide {
-    0% {
-      transform: rotateY(0deg);
-    }
-    50% {
-      transform: rotateY(180deg);
-    }
-    100% {
-      transform: rotateY(0deg);
-    }
-  }
-  @keyframes fly {
-    0% {
-      bottom: 26%;
-      transform: rotate(0deg);
-    }
-    10% {
-      bottom: 40%;
-    }
-    50% {
-      bottom: 26%;
-      transform: rotate(-190deg);
-    }
-    80% {
-      bottom: 40%;
-    }
-    100% {
-      bottom: 26%;
-      transform: rotate(0deg);
-    }
-  }
-  @keyframes bubble {
-    0% {
-      transform: scale(0.15, 0.15);
-      top: 80%;
-      opacity: 0;
-    }
-    50% {
-      transform: scale(1.1, 1.1);
-      opacity: 1;
-    }
-    100% {
-      transform: scale(0.33, 0.33);
-      top: 60%;
-      opacity: 0;
-    }
-  }
-  @keyframes pulse {
-    0% {
-      transform: scale(1, 1);
-      opacity: 0.25;
-    }
-    50% {
-      transform: scale(1.2, 1);
-      opacity: 1;
-    }
-    100% {
-      transform: scale(1, 1);
-      opacity: 0.25;
-    }
-  }
-    
-  @keyframes navigation-fly {
-    0% {
-      bottom: 0%;
-    }
-    25% {
-      bottom: 30%;
-    }
-    40% {
-      bottom: 40%;
-    }
-    75%{
-      bottom: 30%;
-    }
-    100% {
-      bottom: 0%;
-    }
-  }
-  @keyframes navigation-jump {
-    0% {
-      top: 0px;
-      transform: rotateX(-90deg);
-    }
-    25% {
-      top: -4px;
-      transform: rotateX(-20deg);
-    }
-    30%{
-      top: -12px;
-      transform: rotateX(-85deg);  
-    }
-    40% {
-      top:-13px;
-      transform: rotateX(-120deg);
-    }
-    65% {
-      top:-8px;
-      transform: rotateX(-40deg);
-    }
-    100% {
-      top:0px;
-      transform: rotateX(-90deg);
-    }
-  }
-  @keyframes navigation-flip {
-    0% {
-      transform: rotate(0deg);
-    }
-    10% {
-      transform: rotate(-27deg);
-    }
-    30%,
-    50% {
-      transform: rotate(0deg);
-    }
-    100% {
-      transform: rotate(0deg);
-    }
-  }
-</style>
+  <!-- Structured data -->
+  <% meta.jsonLd.forEach(function (json) { %>
+  <script type="application/ld+json"><%- json %></script>
+  <% }); %>
+
+  <link rel="icon" href="/images/icons/knife-60x60.png" type="image/png">
+  <link rel="apple-touch-icon" href="/images/icons/knife-60x60.png">
+  <link rel="alternate" type="application/json" title="Recipes API" href="/api/v1/recipes">
+
+  <link rel="preconnect" href="https://res.cloudinary.com" crossorigin>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="/vendor/bootstrap/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer">
+  <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css?family=Nunito:300,400,600,700|Roboto:300,400,500|Amatic+SC:700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/stylesheets/main.css">
+  <link rel="stylesheet" href="/stylesheets/custom.css">
+  <link rel="stylesheet" href="/stylesheets/animation.css">
+  <link rel="stylesheet" href="/stylesheets/site.css">
+
+  <% if (gtmId) { %>
+  <!-- Google Tag Manager -->
+  <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);})(window,document,'script','dataLayer','<%= gtmId %>');</script>
+  <!-- End Google Tag Manager -->
+  <% } %>
 </head>
 
 <body>
-<!-- Google Tag Manager (noscript) -->
-<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-PC3Q9KK"
-height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
-<!-- End Google Tag Manager (noscript) -->
+<% if (gtmId) { %>
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=<%= gtmId %>" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+<% } %>
 
-<div id="cooking-container">
+<!-- Full-page "flipping pancake" loading animation, shown while a recipe uploads -->
+<div id="cooking-container" role="status" aria-live="polite">
   <div id="cooking">
-  <div class="bubble"></div>
-  <div class="bubble"></div>
-  <div class="bubble"></div>
-  <div class="bubble"></div>
-  <div class="bubble"></div>
-  <div id="area">
-    <div id="sides">
-      <div id="pan"></div>
-      <div id="handle"></div>
+    <div class="bubble"></div>
+    <div class="bubble"></div>
+    <div class="bubble"></div>
+    <div class="bubble"></div>
+    <div class="bubble"></div>
+    <div id="area">
+      <div id="sides">
+        <div id="pan"></div>
+        <div id="handle"></div>
+      </div>
+      <div id="pancake">
+        <div id="pastry"></div>
+      </div>
     </div>
-    <div id="pancake">
-      <div id="pastry"></div>
-    </div>
+    <h4>Uploading Your Recipe...</h4>
   </div>
-      <h4>Uploading Your Recipe...</h4>
 </div>
-</div>
-  <div id="fullPageHide">
-  <div class="container">
-    <nav class="navbar navbar-expand-md fixed-top-sm justify-content-start flex-nowrap bg-light navbar-light pl-0 pr-0">
-  <a href="/" class="navbar-brand">
-    <div id="cooking-container-navigation">
-      <div id="cooking-navigation" class="left">
-      <div id="area">
-        <div id="sides">
-          <div id="pan"></div>
-          <div id="handle"></div>
-        </div>
-        <div id="pancake">
-          <div id="pastry"></div>
-        </div>
-      </div>
-    </div>
-      <div class="right">
-      <h6>Flippin' Good Recipes</h6>
-      </div>
-    </div>
-  </a>
-  
-  <!--SIGN UP / LOGIN BUTTON-->
-  <% if(!currentUser) { %>
-  <a href="#0" class="btn btn-outline-primary ml-auto d-none d-sm-block js-cd-panel-trigger" data-panel="main">
-    <i class="far fa-user-circle"></i> Sign Up / Login</a>
-    <% } %>
-      <% if(currentUser) { %>
-      <div class="ml-auto">
-      <form class="form-inline d-none d-md-block">
-        
-        <div class="dropdown d-inline">
-          <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Profile</button>
-          <div class="dropdown-menu text-center p-2" aria-labelledby="dropdownMenu2">
-            <a href="/users/<%= currentUser.id %>" class="mb-2 btn btn-outline-dark w-100">View Profile</a>
-            <a href="/logout" class="btn btn-outline-danger w-100">Logout</a>
+
+<div id="fullPageHide">
+<a class="sr-only sr-only-focusable" href="#main-content">Skip to main content</a>
+<div class="container">
+  <nav class="navbar navbar-expand-md fixed-top-sm justify-content-start flex-nowrap bg-light navbar-light pl-0 pr-0" aria-label="Primary">
+    <a href="/" class="navbar-brand" aria-label="<%= meta.site.name %> home">
+      <div id="cooking-container-navigation">
+        <div id="cooking-navigation" class="left" aria-hidden="true">
+          <div id="area">
+            <div id="sides">
+              <div id="pan"></div>
+              <div id="handle"></div>
+            </div>
+            <div id="pancake">
+              <div id="pastry"></div>
+            </div>
           </div>
         </div>
-          <a href="/recipes/new">
-             <div class="btn btn-outline-primary ml-4">Post A Recipe</div>
-          </a>
-      </form>
+        <div class="right">
+          <h6><%= meta.site.name %></h6>
+        </div>
       </div>
-  <% } %>  
-    <button class="navbar-toggler ml-auto border-0" type="button" data-toggle="collapse" data-target="#navbar2">
-        <i class="fa fa-search"></i>
+    </a>
+
+    <% if (!currentUser) { %>
+    <a href="#0" class="btn btn-outline-primary ml-auto d-none d-sm-block js-cd-panel-trigger" data-panel="main">
+      <i class="far fa-user-circle" aria-hidden="true"></i> Sign Up / Login</a>
+    <% } else { %>
+    <div class="ml-auto d-none d-md-flex align-items-center">
+      <div class="dropdown d-inline">
+        <button class="btn btn-secondary dropdown-toggle" type="button" id="profileMenu" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><%= currentUser.avatar %> <%= currentUser.screenName %></button>
+        <div class="dropdown-menu dropdown-menu-right text-center p-2" aria-labelledby="profileMenu">
+          <a href="/users/<%= currentUser._id %>" class="mb-2 btn btn-outline-dark w-100">My Profile</a>
+          <a href="#0" class="mb-2 btn btn-outline-dark w-100 js-cd-panel-trigger" data-panel="main"><i class="fas fa-heart text-danger" aria-hidden="true"></i> Favorites</a>
+          <form action="/logout" method="POST" class="m-0"><button type="submit" class="btn btn-outline-danger w-100">Logout</button></form>
+        </div>
+      </div>
+      <a href="/recipes/new" class="btn btn-outline-primary ml-3">Post A Recipe</a>
+    </div>
+    <% } %>
+    <button class="navbar-toggler ml-auto border-0" type="button" data-toggle="collapse" data-target="#navbar2" aria-controls="navbar2" aria-expanded="false" aria-label="Toggle search and categories">
+      <i class="fa fa-search" aria-hidden="true"></i>
     </button>
-</nav>
-    <nav class="navbar navbar-expand-md bg-light navbar-light p-0">
-      <div class="navbar-collapse collapse pt-2 pt-md-0" id="navbar2"> 
+  </nav>
+
+  <nav class="navbar navbar-expand-md bg-light navbar-light p-0" aria-label="Search and browse">
+    <div class="navbar-collapse collapse pt-2 pt-md-0" id="navbar2">
       <ul class="navbar-nav">
         <li class="nav-item mb-2 mr-2">
-          <form action="/s" class="form-inline" method="GET">
+          <form action="/s" class="form-inline" method="GET" role="search">
             <div class="input-group">
-                <div id="input_container">
-                  <input class="form-control" id="searchbar" name="search" type="search" placeholder="Search Recipes " aria-label="Search">
-                  <i class="fa fa-search search-icon"></i>
-                </div>
-
-                  <div class="input-group-append">
-                    <button class="btn btn-outline-secondary text-dark" value="Search" type="submit">Search</button>
-                  </div>
-                </div>
+              <div id="input_container">
+                <input class="form-control" id="searchbar" name="search" type="search" placeholder="Search recipes" aria-label="Search recipes" value="<%= searchQuery %>" maxlength="100">
+                <i class="fa fa-search search-icon" aria-hidden="true"></i>
+              </div>
+              <div class="input-group-append">
+                <button class="btn btn-outline-secondary text-dark" type="submit">Search</button>
+              </div>
+            </div>
           </form>
         </li>
         <li class="nav-item dropdown megamenu-li">
-          <a class="nav-link btn btn-outline-primary dropdown-toggle" href="" id="dropdown01" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Categories</a>
-          <div class="dropdown-menu megamenu bg-light border border-secondary" aria-labelledby="dropdown01">
-              <div class="row">
-               <div class="col-sm-6 col-lg-3 mb-2">
-                <h5>Diet Type</h5>
-                <a class="dropdown-item" href="/?allergens=Vegetarian&pageTitle=Vegetarian Recipes">Vegetarian</a>
-                <a class="dropdown-item" href="/?allergens=Vegan&pageTitle=Vegan Recipes">Vegan</a>
-                <a class="dropdown-item" href="/?allergens=Gluten-Free&pageTitle=Gluten-Free Recipes">Gluten-Free</a>
-               </div>
-               <div class="col-sm-6 col-lg-3 mb-2">
-                <h5>Time of Day</h5>
-                <a class="dropdown-item" href="/?category=Breakfast&pageTitle=Breakfast Recipes">Breakfast</a>
-                <a class="dropdown-item" href="/?category=Lunch&pageTitle=Lunch Recipes">Lunch</a>
-                <a class="dropdown-item" href="/?category=Dinner&pageTitle=Dinner Recipes">Dinner</a>
-               </div>
-               <div class="col-sm-6 col-lg-3 mb-2">
-                <h5>Difficulty</h5>
-                <a class="dropdown-item" href="/?difficulty=0&pageTitle=Beginner Recipes">Beginner</a>
-                <a class="dropdown-item" href="/?difficulty=1&pageTitle=Intermediate Recipes">Intermediate</a>
-                <a class="dropdown-item" href="/?difficulty=2&pageTitle=Challenging Recipes">Challenging</a>
-               </div>
-               <div class="col-sm-6 col-lg-3 mb-2">
-                <h5>Kitchen Time</h5>
-                <a class="dropdown-item" href="/?lt=11&pageTitle=Quick Recipes">Quick <span class="small">(10 minutes or less)</span></a>
-                 <a class="dropdown-item" href="/?lt=46&gt=11&pageTitle=Medium Recipes">Medium <span class="small">(11-45 minutes)</span></a>
-                 <a class="dropdown-item" href="/?gt=46&pageTitle=Long Recipes">Long <span class="small">(> 45 minutes)</span></a>
-               </div>
+          <a class="nav-link btn btn-outline-primary dropdown-toggle" href="#" id="browseMenu" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Browse Recipes</a>
+          <div class="dropdown-menu megamenu bg-light border border-secondary" aria-labelledby="browseMenu">
+            <div class="row">
+              <div class="col-sm-6 col-lg-3 mb-2">
+                <h5>Diet</h5>
+                <a class="dropdown-item" href="/recipes/collections/vegetarian">Vegetarian</a>
+                <a class="dropdown-item" href="/recipes/collections/vegan">Vegan</a>
+                <a class="dropdown-item" href="/recipes/collections/gluten-free">Gluten-Free</a>
+                <a class="dropdown-item" href="/recipes/collections/dairy-free">Dairy-Free</a>
+                <a class="dropdown-item" href="/recipes/collections/nut-free">Nut-Free</a>
               </div>
-               <hr>
-               <div class="row">
-                 <div class="col-sm-6 col-lg-3 mb-2"><a href="/?sortBy=-1&orderBy=createdAt&pageTitle=Recent Recipes">Recent</a></div>
-                 <div class="col-sm-6 col-lg-3 mb-2"><a href="/?sortBy=-1&orderBy=views&pageTitle=Most Viewed Recipes">Most Viewed</a></div>
-                 <div class="col-sm-6 col-lg-3 mb-2"><a href="/?sortBy=-1&orderBy=rating&pageTitle=Highest Rated Recipes">Highest Rating</a></div>
-                 <div class="col-sm-6 col-lg-3 mb-2"><a href="/recipes/new" class="btn btn-primary">Post A New Recipe</a></div>
-               </div>
-             </div>
+              <div class="col-sm-6 col-lg-3 mb-2">
+                <h5>Meal</h5>
+                <a class="dropdown-item" href="/recipes/collections/breakfast">Breakfast</a>
+                <a class="dropdown-item" href="/recipes/collections/lunch">Lunch</a>
+                <a class="dropdown-item" href="/recipes/collections/dinner">Dinner</a>
+                <a class="dropdown-item" href="/recipes/collections/snack">Snacks</a>
+                <a class="dropdown-item" href="/recipes/collections/dessert">Dessert</a>
+                <a class="dropdown-item" href="/recipes/collections/beverage">Drinks</a>
+              </div>
+              <div class="col-sm-6 col-lg-3 mb-2">
+                <h5>Difficulty</h5>
+                <a class="dropdown-item" href="/recipes/collections/easy">Easy</a>
+                <a class="dropdown-item" href="/recipes/collections/intermediate">Intermediate</a>
+                <a class="dropdown-item" href="/recipes/collections/challenging">Challenging</a>
+              </div>
+              <div class="col-sm-6 col-lg-3 mb-2">
+                <h5>Kitchen Time</h5>
+                <a class="dropdown-item" href="/recipes/collections/quick">Quick <span class="small">(10 min or less)</span></a>
+                <a class="dropdown-item" href="/recipes/collections/under-45-minutes">Under 45 minutes</a>
+                <a class="dropdown-item" href="/recipes/collections/weekend-projects">Weekend projects</a>
+              </div>
+            </div>
+            <hr>
+            <div class="row">
+              <div class="col-sm-6 col-lg-3 mb-2"><a href="/">Newest</a></div>
+              <div class="col-sm-6 col-lg-3 mb-2"><a href="/recipes/collections/most-viewed">Most Viewed</a></div>
+              <div class="col-sm-6 col-lg-3 mb-2"><a href="/recipes/collections/highest-rated">Highest Rated</a></div>
+              <div class="col-sm-6 col-lg-3 mb-2"><a href="/recipes/new" class="btn btn-primary">Post A New Recipe</a></div>
+            </div>
+          </div>
         </li>
       </ul>
     </div>
-    </nav>
+  </nav>
 </div>
-  <div class="container">
-    <div class="row">
-      <div class="col-md-12 m-2">
-        <div class="alert-container">
-        <% if(error && error.length > 0) { %>
-          <div class="alert alert-danger m-0 p-1 w-100" role="alert">
-            <button type="button" class="close" data-dismiss="alert" aria-label="Close">x</button>
-            <p class="mb-0 text-center">
-              <%= error %>
-            </p>
-          </div>
-          <% } %>
-            <% if(error && success.length > 0) { %>
-              <div class="alert alert-success m-0 p-1 w-100" role="alert">
-                <button type="button" class="close" data-dismiss="alert" aria-label="Close">x</button>
-                <p class="mb-0 text-center">
-                  <%= success %>
-                </p>
-              </div>
-            <% } %>
-        </div>
-      </div>
+
+<div class="container">
+  <div class="alert-container mt-2">
+    <% if (error && error.length > 0) { %>
+    <div class="alert alert-danger alert-dismissible m-0 p-2 w-100" role="alert">
+      <button type="button" class="close" data-dismiss="alert" aria-label="Close">&times;</button>
+      <p class="mb-0 text-center"><%= error %></p>
     </div>
-  </div>
-  <!--END OF (SECONDARY NAV)-->
-
-  <!--SLIDING MENU BAR-->
-  <!--NO CURRENT USER - SIGN UP SLIDEOUT-->
-  <%if(!currentUser) { %>
-    <div class="cd-panel cd-panel--from-right js-cd-panel-main">
-      <div class="container">
-        <header class="cd-panel__header">
-          <!--Create Account / Login Buttons-->
-          <div class="container">
-            <div class="row text-center">
-              <div class="col-6 accountToggleButton">
-                <h1>Sign Up</h1>
-              </div>
-              <div class="col-6 accountToggleButton">
-                <h1>Login</h1>
-              </div>
-            </div>
-            <a href="#0" class="cd-panel__close js-cd-close">Close</a>
-          </div>
-        </header>
-      </div>
-      <div class="cd-panel__container">
-        <div class="cd-panel__content">
-
-          <!--SIGN UP FORM-->
-          <div class="accountToggleContainer">
-            <h4 class="text-center font-weight-bold text-primary">Sign Up</h4>
-            <div class="dropdown-divider"></div>
-            <form action="/register" method="POST">
-              <div class="form-group text-dark"> <label>First Name</label>
-                <input type="text text-dark" name="firstName" class="form-control" placeholder="First Name" minlength="1" maxlength="50" , required>
-              </div>
-              <div class="form-group text-dark"> <label>Username</label>
-                <input type="text text-dark" name="screenName" class="form-control" placeholder="different from email" minlength="4" maxlength="30" , required>
-              </div>
-              <div class="form-group text-dark" required><label>Email address</label>
-                <input type="email" name="username" class="form-control text-dark" required>
-              </div>
-              <div class="form-group text-dark"> <label>Password</label>
-                <input type="password" name="password" class="form-control" placeholder="Password" autocomplete=off>
-              </div>
-              <div class="form-group avatars text-dark"> <label>Choose an Avatar</label>
-                <div class="btn-group btn-group-toggle row" data-toggle="buttons">
-                  <div class="col-xs-1">
-                    <label class="btn avatar">
-                    <input type="radio" name="avatar" value="😛" autocomplete="off">😛
-                  </label>
-                  </div>
-                  <div class="col-xs-1">
-                    <label class="btn avatar">
-                    <input type="radio" name="avatar" value="😎" autocomplete="off">😎
-                    </label>
-                  </div>
-                  <div class="col-xs-1">
-                    <label class="btn avatar">
-                    <input type="radio" name="avatar" value="🍉" autocomplete="off">🍉
-                  </label>
-                  </div>
-                  <div class="col-xs-1">
-                    <label class="btn avatar">
-                    <input type="radio" name="avatar" value="🌶" autocomplete="off">🌶
-                  </label>
-                  </div>
-                  <div class="col-xs-1">
-                    <label class="btn avatar">
-                    <input type="radio" name="avatar" value="🍅" autocomplete="off">🍅
-                  </label>
-                  </div>
-                  <div class="col-xs-1">
-                    <label class="btn avatar">
-                    <input type="radio" name="avatar" value="🍍" autocomplete="off">🍍
-                  </label>
-                  </div>
-                  <div class="col-xs-1">
-                    <label class="btn avatar">
-                    <input type="radio" name="avatar" value="🍄" autocomplete="off">🍄
-                  </label>
-                  </div>
-                  <div class="col-xs-1">
-                    <label class="btn avatar">
-                    <input type="radio" name="avatar" value="🍲" autocomplete="off">🍲
-                  </label>
-                  </div>
-                  <div class="col-xs-1">
-                    <label class="btn avatar">
-                    <input type="radio" name="avatar" value="☕" autocomplete="off">☕
-                  </label>
-                  </div>
-                  <div class="col-xs-1">
-                    <label class="btn avatar">
-                    <input type="radio" name="avatar" value="🍜" autocomplete="off">🍜
-                  </label>
-                  </div>
-                  <div class="col-xs-1">
-                    <label class="btn avatar">
-                    <input type="radio" name="avatar" value="🍷" autocomplete="off">🍷
-                    </label>
-                  </div>
-                </div>
-              </div>
-              <button type="submit" class="btn btn-secondary btn-block btn-lg my-2"><b>Create Account</b></button>
-            </form>
-          </div>
-
-          <!--LOGIN FORM:-->
-          <div class="accountToggleContainer" style="display: none">
-            <h4 class="text-center font-weight-bold text-primary">Login</h4>
-            <div class="dropdown-divider"></div>
-            <form class="px-1 py-2" action="/login" method="POST">
-              <div class="form-group">
-                <label for="nav-dropdown-email">Email</label>
-                <input type="email" class="form-control" id="nav-dropdown-email" name="username" required>
-              </div>
-              <div class="form-group">
-                <label for="nav-dropdown-password">Password</label>
-                <input type="password" class="form-control" id="nav-dropdown-password" name="password" placeholder="Password" autocomplete=off required>
-              </div>
-              <div class="w-100">
-                <button type="submit" class="btn btn-secondary btn-block btn-lg my-2"><b>Sign In</b></button>
-              </div>
-            </form>
-            <div class="small">
-              <p class="text-center">Don't have an account? <b><a href="/register">Create Profile</a></b></p>
-              <p class="text-center">Forgot your password? <b><a href="/forgot">Reset Password</a></b></p>
-            </div>
-            <div class="dropdown-divider"></div>
-          </div>
-        </div>
-      </div>
-    </div>
-  <% } %>
-  <!-- cd-panel -->
-
-    <!--CURRENT USER - Recipe Book-->
-    <%if(currentUser) { %>
-      <div class="cd-panel cd-panel--from-right js-cd-panel-main container">
-        <!--Top Header Container-->
-        <div class="row">
-          <header class="cd-panel__header container">
-            <!--Top Header-->
-              <div class="col-12 text-center">
-                <h1>Favorite Recipes</h1>
-              </div>
-              <a href="#0" class="cd-panel__close js-cd-close">Close</a>
-          </header>
-        </div>
-
-          <div class="cd-panel__container">
-            <div class="cd-panel__content">
-                <div class="row">
-                    <div class="col-12">
-                        <div class="container">
-                                  <div class="row">
-                                  <% if(currentUser.lovedRecipes.length === 0) { %>
-                                  <p>You have not favorited any recipes yet! Click the <span><i class="fas fa-heart"></i></span> icon to favorite a recipe.</p>
-                                    <% } %>
-                                  <% if(currentUser.lovedRecipes.length > 0) { %>
-                                  <% for(var i = 0; i < currentUser.lovedRecipes.length; i++) { %>
-                                      <div class="col-xs-12 col-sm-6 mb-3">
-                                          <div class="card card-light w-100">
-                                            <div class="img-container">
-                                              <img class="card-img-top smallImageSlideout" src="<%= currentUser.lovedRecipes[i].image %>">
-                                              <div class="recipeBookButton text-center">
-                                                <form action="/recipes/<%=currentUser.lovedRecipes[i]._id %>/love?_method=DELETE" method="POST">
-                                                  <button type="submit" class="btn rounded-circle like-btn-homepage">
-                                                  <i class="fas fa-heart-broken"></i>
-                                                  </button>
-                                                </form>
-                                            </div>
-                                              </div>
-                                              <div class="card-body smallImageSlideoutBody px-1 py-2 text-center">
-                                                  <h5 class="card-title"><%= currentUser.lovedRecipes[i].title %></h5>
-                                                  <h6 class="card-subtitle mb-2 text-muted"><i class="far fa-clock"></i>&nbsp;<%= currentUser.lovedRecipes[i].totalTime %> minutes</h6>
-                                                    <form action="/recipes/<%= currentUser.lovedRecipes[i]._id %>" method="GET">
-                                                      <button class="btn btn-outline-primary text-center btn-block recipe-view-button my-1">View</button>
-                                                    </form>
-                                              </div>
-                                          </div>
-                                      </div>
-                                  <% } %>
-                                  <% } %>
-                                  </div>
-                              </div>
-                    </div>
-                </div>
-                <div class="row" id="invisible-sliding-footer"></div>
-            <!--Sliding Menu Footer-->
-              <div class="slider-footer-container">
-                <div class="slider-footer-contents container">
-                  <div class="row">
-                    <div class="col-12">
-                      <a href="/logout" class="btn btn-outline-danger btn-block btn-lg my-2">Logout</a>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-          </div>
-      </div>
     <% } %>
-    <main role="main" class="container mt-3">
+    <% if (success && success.length > 0) { %>
+    <div class="alert alert-success alert-dismissible m-0 p-2 w-100" role="alert">
+      <button type="button" class="close" data-dismiss="alert" aria-label="Close">&times;</button>
+      <p class="mb-0 text-center"><%= success %></p>
+    </div>
+    <% } %>
+  </div>
+</div>
+
+<%- include("./slide-panel") %>
+
+<main id="main-content" class="container">
