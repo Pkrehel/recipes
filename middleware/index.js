@@ -27,6 +27,8 @@ function isLoggedIn(req, res, next) {
 }
 
 function isVerified(req, res, next) {
+  // Set REQUIRE_EMAIL_VERIFICATION=false to let any logged-in user post (useful before SMTP is configured).
+  if (process.env.REQUIRE_EMAIL_VERIFICATION === "false") return next();
   if (req.user && req.user.verified) return next();
   req.flash("error", "Please verify your email address before posting. Check your inbox or request a new link from your profile.");
   res.redirect(req.user ? `/users/${req.user._id}` : "/login");
