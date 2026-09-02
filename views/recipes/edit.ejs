@@ -1,13 +1,11 @@
 <%- include("../partials/header") %>
 <%- include("./_form", { mode: "edit", recipe: recipe }) %>
 
-<div class="card border-danger mt-4">
-  <div class="card-body">
-    <h2 class="h5 text-danger">Delete this recipe</h2>
-    <p class="small text-muted mb-2">This permanently removes the recipe, its photo, reviews and comments.</p>
-    <form action="/recipes/<%= recipe.slug %>?_method=DELETE" method="POST" onsubmit="return confirm('Delete this recipe? This cannot be undone.');">
-      <button type="submit" class="btn btn-outline-danger">Delete Recipe</button>
-    </form>
-  </div>
+<div class="surface surface-pad mt-4" style="border-color: #f0c9bf;">
+  <h2 class="h5 text-danger">Delete this recipe</h2>
+  <p class="small text-muted mb-2">Permanently removes the recipe, its photo, reviews and comments.</p>
+  <form action="/recipes/<%= recipe.slug %>?_method=DELETE" method="POST" onsubmit="return confirm('Delete this recipe? This cannot be undone.');">
+    <button type="submit" class="btn btn-outline-danger btn-sm">Delete recipe</button>
+  </form>
 </div>
 <%- include("../partials/footer") %>

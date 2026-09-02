@@ -1,17 +1,21 @@
 <%- include("./partials/header") %>
 
-<header class="py-3">
-  <h1 class="text-primary font-weight-bold h2 mb-1">Search results for &ldquo;<%= term %>&rdquo;</h1>
-  <p class="small text-muted mb-0"><%= count %> recipe<%= count === 1 ? "" : "s" %> found</p>
-</header>
+<div class="section-head">
+  <div>
+    <p class="eyebrow mb-1">Search</p>
+    <h1>&ldquo;<%= term %>&rdquo;</h1>
+  </div>
+  <span class="count"><%= count %> result<%= count === 1 ? "" : "s" %></span>
+</div>
 
 <% if (recipes.length === 0) { %>
-  <div class="text-center py-5">
-    <p class="lead">No recipes matched &ldquo;<%= term %>&rdquo;.</p>
-    <p class="text-muted">Try a different ingredient or dish name, or <a href="/">browse the newest recipes</a>.</p>
+  <div class="empty">
+    <h3>Nothing matched &ldquo;<%= term %>&rdquo;</h3>
+    <p class="mb-3">Try a different ingredient or dish name.</p>
+    <a href="/" class="btn btn-outline-primary">Browse the latest recipes</a>
   </div>
 <% } else { %>
-  <div class="row">
+  <div class="recipe-grid">
     <% recipes.forEach(function (r, i) { %>
       <%- include("./partials/recipe-card", { r: r, eager: i < 3 }) %>
     <% }); %>
