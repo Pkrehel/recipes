@@ -142,7 +142,7 @@ test("verified user can create a recipe with slug and structured data", async ()
   assert.deepEqual(recipe.suitableForDiet, ["https://schema.org/VegetarianDiet"]);
   assert.equal(recipe.recipeYield, "4 servings");
   assert.ok(ld.find((d) => d["@type"] === "BreadcrumbList"));
-  assert.match(show.text, /res\.cloudinary\.com\/demo\/image\/upload\/f_auto,q_auto,w_800,h_600,c_fill,g_auto\//);
+  assert.match(show.text, /res\.cloudinary\.com\/demo\/image\/upload\/f_auto,q_auto,w_1200,h_675,c_fill,g_auto\//);
 });
 
 test("legacy ObjectId URL 301s to slug", async () => {

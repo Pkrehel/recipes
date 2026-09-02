@@ -1,21 +1,25 @@
 <%- include("../partials/header") %>
 <% var avatars = ["😛", "😎", "🍉", "🌶", "🍅", "🍍", "🍄", "🍲", "☕", "🍜", "🍷", "🍳"]; %>
 
-<header class="py-3">
-  <h1 class="h2 text-primary"><%= foundUser.avatar %> <%= isOwner ? "Your Profile" : foundUser.screenName %></h1>
-  <% if (foundUser.bio) { %><p class="text-muted"><%= foundUser.bio %></p><% } %>
-  <p class="small text-muted mb-0"><%= foundUser.recipes.length %> recipe<%= foundUser.recipes.length === 1 ? "" : "s" %> · <%= foundUser.lovedRecipes.length %> favorite<%= foundUser.lovedRecipes.length === 1 ? "" : "s" %> · Joined <%= formatDate(foundUser.createdAt) %></p>
+<header class="profile-head">
+  <div class="profile-avatar" aria-hidden="true"><%= foundUser.avatar %></div>
+  <div>
+    <h1 class="mb-1"><%= isOwner ? "Your profile" : foundUser.screenName %></h1>
+    <% if (foundUser.bio) { %><p class="mb-1" style="color: var(--ink-2)"><%= foundUser.bio %></p><% } %>
+    <p class="small text-muted mb-0"><%= foundUser.recipes.length %> recipe<%= foundUser.recipes.length === 1 ? "" : "s" %> · <%= foundUser.lovedRecipes.length %> favorite<%= foundUser.lovedRecipes.length === 1 ? "" : "s" %> · Joined <%= formatDate(foundUser.createdAt) %></p>
+  </div>
+  <% if (isOwner) { %><a href="/recipes/new" class="btn btn-accent ml-auto d-none d-sm-inline-flex"><i class="fas fa-plus mr-1" aria-hidden="true"></i> Post a recipe</a><% } %>
 </header>
 
 <% if (isOwner && !currentUser.verified) { %>
-<div class="alert alert-warning">
-  <strong>Please verify your email.</strong> We sent a link to <%= currentUser.username %>. You need to verify before you can post recipes.
-  <form action="/verify/resend" method="POST" class="d-inline ml-2"><button class="btn btn-sm btn-outline-dark">Resend link</button></form>
+<div class="surface surface-pad mb-4 d-sm-flex align-items-center justify-content-between" style="background: var(--butter-soft); border-color: #f0d98a;">
+  <div><strong>Please verify your email.</strong> We sent a link to <%= currentUser.username %>. Verification is required before posting recipes.</div>
+  <form action="/verify/resend" method="POST" class="mt-2 mt-sm-0 ml-sm-3"><button class="btn btn-sm btn-outline-secondary">Resend link</button></form>
 </div>
 <% } %>
 
 <ul class="nav nav-tabs" id="profileTabs" role="tablist">
-  <li class="nav-item"><a class="nav-link active" id="recipes-tab" data-toggle="tab" href="#recipes" role="tab" aria-controls="recipes" aria-selected="true"><%= isOwner ? "My Recipes" : "Recipes" %></a></li>
+  <li class="nav-item"><a class="nav-link active" id="recipes-tab" data-toggle="tab" href="#recipes" role="tab" aria-controls="recipes" aria-selected="true"><%= isOwner ? "My recipes" : "Recipes" %></a></li>
   <li class="nav-item"><a class="nav-link" id="favorites-tab" data-toggle="tab" href="#favorites" role="tab" aria-controls="favorites" aria-selected="false">Favorites</a></li>
   <% if (isOwner) { %><li class="nav-item"><a class="nav-link" id="settings-tab" data-toggle="tab" href="#settings" role="tab" aria-controls="settings" aria-selected="false">Settings</a></li><% } %>
 </ul>
@@ -23,65 +27,68 @@
 <div class="tab-content pt-4" id="profileTabContent">
   <div class="tab-pane fade show active" id="recipes" role="tabpanel" aria-labelledby="recipes-tab">
     <% if (foundUser.recipes.length === 0) { %>
-      <p class="text-muted"><%= isOwner ? "You haven't posted any recipes yet." : foundUser.screenName + " hasn't posted any recipes yet." %> <% if (isOwner) { %><a href="/recipes/new">Share your first recipe</a>.<% } %></p>
-    <% } else { %>
-      <div class="row">
-        <% foundUser.recipes.forEach(function (r) { %><%- include("../partials/recipe-card", { r: r }) %><% }); %>
+      <div class="empty">
+        <h3><%= isOwner ? "You haven't posted a recipe yet" : foundUser.screenName + " hasn't posted any recipes yet" %></h3>
+        <% if (isOwner) { %><a href="/recipes/new" class="btn btn-primary mt-2">Share your first recipe</a><% } %>
       </div>
+    <% } else { %>
+      <div class="recipe-grid"><% foundUser.recipes.forEach(function (r) { %><%- include("../partials/recipe-card", { r: r }) %><% }); %></div>
     <% } %>
   </div>
 
   <div class="tab-pane fade" id="favorites" role="tabpanel" aria-labelledby="favorites-tab">
     <% if (foundUser.lovedRecipes.length === 0) { %>
-      <p class="text-muted"><%= isOwner ? "You haven't favorited any recipes yet. Click the heart on a recipe to save it here." : foundUser.screenName + " hasn't favorited any recipes yet." %></p>
-    <% } else { %>
-      <div class="row">
-        <% foundUser.lovedRecipes.forEach(function (r) { %><%- include("../partials/recipe-card", { r: r }) %><% }); %>
+      <div class="empty">
+        <h3>No favorites yet</h3>
+        <p class="mb-0"><%= isOwner ? "Tap the heart on any recipe to save it here." : foundUser.screenName + " hasn't favorited any recipes yet." %></p>
       </div>
+    <% } else { %>
+      <div class="recipe-grid"><% foundUser.lovedRecipes.forEach(function (r) { %><%- include("../partials/recipe-card", { r: r }) %><% }); %></div>
     <% } %>
   </div>
 
   <% if (isOwner) { %>
   <div class="tab-pane fade" id="settings" role="tabpanel" aria-labelledby="settings-tab">
     <div class="row">
-      <div class="col-md-7">
-        <form action="/users/<%= foundUser._id %>?_method=PUT" method="POST">
-          <div class="form-group">
-            <label for="firstName">First name</label>
-            <input type="text" class="form-control" id="firstName" name="firstName" value="<%= foundUser.firstName %>" maxlength="50" required>
-          </div>
-          <div class="form-group">
-            <label for="screenName">Username <small class="text-muted">(shown publicly)</small></label>
-            <input type="text" class="form-control" id="screenName" name="screenName" value="<%= foundUser.screenName %>" minlength="3" maxlength="30" pattern="[A-Za-z0-9_\-. ]+" required>
-          </div>
-          <div class="form-group">
-            <label for="username">Email address</label>
-            <input type="email" class="form-control" id="username" name="username" value="<%= foundUser.username %>" required>
-            <small class="form-text text-muted">Changing your email will require re-verification.</small>
-          </div>
-          <div class="form-group">
-            <label for="bio">Short bio <small class="text-muted">(shown on your public profile)</small></label>
-            <textarea class="form-control" id="bio" name="bio" rows="3" maxlength="500" placeholder="Home cook from Michigan who loves..."><%= foundUser.bio || "" %></textarea>
-          </div>
-          <fieldset class="form-group">
-            <legend class="col-form-label">Avatar</legend>
-            <div class="btn-group btn-group-toggle d-flex flex-wrap" data-toggle="buttons">
-              <% avatars.forEach(function (a) { %>
-              <label class="btn avatar <%= foundUser.avatar === a ? 'active' : '' %>"><input type="radio" name="avatar" value="<%= a %>" autocomplete="off" <%= foundUser.avatar === a ? 'checked' : '' %>> <%= a %></label>
-              <% }); %>
+      <div class="col-lg-7 mb-4">
+        <div class="surface surface-pad">
+          <h2 class="h4 mb-3">Profile</h2>
+          <form action="/users/<%= foundUser._id %>?_method=PUT" method="POST">
+            <div class="form-group">
+              <label for="firstName">First name</label>
+              <input type="text" class="form-control" id="firstName" name="firstName" value="<%= foundUser.firstName %>" maxlength="50" required>
             </div>
-          </fieldset>
-          <button class="btn btn-primary">Save changes</button>
-        </form>
+            <div class="form-group">
+              <label for="screenName">Username <small class="text-muted font-weight-normal">(shown publicly)</small></label>
+              <input type="text" class="form-control" id="screenName" name="screenName" value="<%= foundUser.screenName %>" minlength="3" maxlength="30" pattern="[A-Za-z0-9_\-. ]+" required>
+            </div>
+            <div class="form-group">
+              <label for="username">Email</label>
+              <input type="email" class="form-control" id="username" name="username" value="<%= foundUser.username %>" required>
+              <small class="form-text">Changing your email requires re-verification.</small>
+            </div>
+            <div class="form-group">
+              <label for="bio">Short bio <small class="text-muted font-weight-normal">(public)</small></label>
+              <textarea class="form-control" id="bio" name="bio" rows="3" maxlength="500" placeholder="Home cook from Michigan who loves..."><%= foundUser.bio || "" %></textarea>
+            </div>
+            <fieldset class="form-group avatars">
+              <legend class="col-form-label pt-0">Avatar</legend>
+              <div class="btn-group-toggle d-flex flex-wrap" data-toggle="buttons">
+                <% avatars.forEach(function (a) { %>
+                <label class="btn avatar <%= foundUser.avatar === a ? 'active' : '' %>"><input type="radio" name="avatar" value="<%= a %>" autocomplete="off" <%= foundUser.avatar === a ? 'checked' : '' %>><%= a %></label>
+                <% }); %>
+              </div>
+            </fieldset>
+            <button class="btn btn-primary">Save changes</button>
+          </form>
+        </div>
       </div>
-      <div class="col-md-5 mt-4 mt-md-0">
-        <div class="card">
-          <div class="card-body">
-            <h3 class="h6">Account</h3>
-            <p class="small mb-2">Email: <%= foundUser.username %> <%- currentUser.verified ? '<span class="badge badge-success">verified</span>' : '<span class="badge badge-warning">unverified</span>' %></p>
-            <a href="/forgot" class="btn btn-sm btn-outline-secondary mb-2">Change password</a>
-            <form action="/logout" method="POST"><button class="btn btn-sm btn-outline-danger">Log out</button></form>
-          </div>
+      <div class="col-lg-5">
+        <div class="surface surface-pad">
+          <h2 class="h5">Account</h2>
+          <p class="small mb-3"><%= foundUser.username %> <%- currentUser.verified ? '<span class="badge badge-soft" style="color: var(--sage)">verified</span>' : '<span class="badge badge-soft" style="color: var(--butter-deep)">unverified</span>' %></p>
+          <a href="/forgot" class="btn btn-sm btn-outline-secondary mb-2 btn-block">Change password</a>
+          <form action="/logout" method="POST"><button class="btn btn-sm btn-outline-danger btn-block">Log out</button></form>
         </div>
       </div>
     </div>
