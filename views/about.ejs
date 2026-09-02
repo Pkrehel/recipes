@@ -1,18 +1,18 @@
 <%- include("./partials/header") %>
-<article class="py-3 about-page">
-  <h1 class="text-primary">About <%= meta.site.name %></h1>
-  <p class="lead"><%= meta.site.tagline %></p>
-  <p><%= meta.site.name %> is a free community recipe site built by a home cook for home cooks. Anyone can create an account, publish recipes with a photo, ingredients and step-by-step directions, and save the recipes they love.</p>
-
-  <h2 class="h4 mt-4">How it works</h2>
-  <p><strong>Browse.</strong> Recipes are organized by meal (breakfast, lunch, dinner, snacks, dessert, drinks), by diet (vegetarian, vegan, gluten-free, dairy-free, nut-free), by difficulty and by how long they take. Use the search bar to look up an ingredient or dish.</p>
-  <p><strong>Share.</strong> Verified members can post recipes. Every recipe includes prep and cook time, servings, a category and a photo, so readers know exactly what to expect.</p>
-  <p><strong>Rate and discuss.</strong> Members can leave a 1 to 5 star review with notes, comment with questions or substitutions, and favorite recipes to find them again later.</p>
-
-  <h2 class="h4 mt-4">Open and machine-readable</h2>
-  <p>Every recipe page publishes <a href="https://schema.org/Recipe" rel="noopener" target="_blank">schema.org Recipe</a> structured data, and a read-only JSON API is available at <code>/api/v1/recipes</code>. A <a href="/sitemap.xml">sitemap</a> and <a href="/llms.txt">llms.txt</a> are also provided.</p>
-
-  <h2 class="h4 mt-4">Contact</h2>
-  <p>Questions, bugs or ideas? Reach out through the site owner's <a href="https://www.linkedin.com/in/palmer-krehel/" rel="noopener" target="_blank">LinkedIn</a>.</p>
+<article class="mx-auto py-4" style="max-width: 720px;">
+  <p class="eyebrow">About</p>
+  <h1><%= meta.site.name %></h1>
+  <p class="lead" style="color: var(--ink-2)"><%= meta.site.tagline %></p>
+  <div class="surface surface-pad mt-4">
+    <p><%= meta.site.name %> is a free community recipe site built by a home cook for home cooks. Anyone can create an account, publish recipes with a photo, ingredients and step-by-step directions, and save the recipes they love.</p>
+    <h2 class="h4 mt-4">How it works</h2>
+    <p><strong>Browse.</strong> Recipes are organized by meal, by diet (vegetarian, vegan, gluten-free, dairy-free, nut-free), by difficulty and by how long they take. Use the search bar to look up an ingredient or dish.</p>
+    <p><strong>Share.</strong> Members can post recipes. Every recipe includes prep and cook time, servings, a category and a photo, so readers know exactly what to expect.</p>
+    <p><strong>Rate and discuss.</strong> Members can leave a 1 to 5 star review with notes, comment with questions or substitutions, and favorite recipes to find them again later.</p>
+    <h2 class="h4 mt-4">Open and machine-readable</h2>
+    <p>Every recipe page publishes <a href="https://schema.org/Recipe" rel="noopener" target="_blank">schema.org Recipe</a> structured data, and a read-only JSON API is available at <code>/api/v1/recipes</code>. A <a href="/sitemap.xml">sitemap</a> and <a href="/llms.txt">llms.txt</a> are also provided.</p>
+    <h2 class="h4 mt-4">Contact</h2>
+    <p class="mb-0">Questions, bugs or ideas? Reach out through the site owner's <a href="https://www.linkedin.com/in/palmer-krehel/" rel="noopener" target="_blank">LinkedIn</a>.</p>
+  </div>
 </article>
 <%- include("./partials/footer") %>

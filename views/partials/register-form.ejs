@@ -1,31 +1,29 @@
 <% var p = typeof idPrefix !== "undefined" ? idPrefix : "reg"; %>
 <% var avatarList = typeof avatars !== "undefined" ? avatars : ["😛", "😎", "🍉", "🌶", "🍅", "🍍", "🍄", "🍲", "☕", "🍜", "🍷", "🍳"]; %>
 <form action="/register" method="POST">
-  <div class="form-group text-dark">
-    <label for="<%= p %>-firstName">First Name</label>
+  <div class="form-group">
+    <label for="<%= p %>-firstName">First name</label>
     <input type="text" id="<%= p %>-firstName" name="firstName" class="form-control" minlength="1" maxlength="50" autocomplete="given-name" required>
   </div>
-  <div class="form-group text-dark">
-    <label for="<%= p %>-screenName">Username <small class="text-muted">(shown publicly)</small></label>
+  <div class="form-group">
+    <label for="<%= p %>-screenName">Username <small class="text-muted font-weight-normal">(shown publicly)</small></label>
     <input type="text" id="<%= p %>-screenName" name="screenName" class="form-control" minlength="3" maxlength="30" pattern="[A-Za-z0-9_\-. ]+" title="Letters, numbers, spaces, underscores, dots and dashes" autocomplete="nickname" required>
   </div>
-  <div class="form-group text-dark">
-    <label for="<%= p %>-email">Email address</label>
+  <div class="form-group">
+    <label for="<%= p %>-email">Email</label>
     <input type="email" id="<%= p %>-email" name="username" class="form-control" autocomplete="email" required>
   </div>
-  <div class="form-group text-dark">
-    <label for="<%= p %>-password">Password <small class="text-muted">(8+ characters)</small></label>
+  <div class="form-group">
+    <label for="<%= p %>-password">Password <small class="text-muted font-weight-normal">(8+ characters)</small></label>
     <input type="password" id="<%= p %>-password" name="password" class="form-control" minlength="8" maxlength="128" autocomplete="new-password" required>
   </div>
-  <fieldset class="form-group avatars text-dark">
-    <legend class="col-form-label pt-0">Choose an avatar</legend>
-    <div class="btn-group btn-group-toggle d-flex flex-wrap" data-toggle="buttons">
+  <fieldset class="form-group avatars">
+    <legend class="col-form-label pt-0">Pick an avatar</legend>
+    <div class="btn-group-toggle d-flex flex-wrap" data-toggle="buttons">
       <% avatarList.forEach(function (a, i) { %>
-      <label class="btn avatar <%= i === 0 ? 'active' : '' %>">
-        <input type="radio" name="avatar" value="<%= a %>" autocomplete="off" <%= i === 0 ? 'checked' : '' %>> <%= a %>
-      </label>
+      <label class="btn avatar <%= i === 0 ? 'active' : '' %>"><input type="radio" name="avatar" value="<%= a %>" autocomplete="off" <%= i === 0 ? 'checked' : '' %>><%= a %></label>
       <% }); %>
     </div>
   </fieldset>
-  <button type="submit" class="btn btn-secondary btn-block btn-lg my-2"><b>Create Account</b></button>
+  <button type="submit" class="btn btn-primary btn-lg btn-block">Create account</button>
 </form>

@@ -1,18 +1,47 @@
 <%- include("./partials/header") %>
+<% var isFrontPage = basePath === "/" && current === 1 && Object.keys(query).length === 0; %>
 
-<header class="py-3">
-  <h1 class="text-primary font-weight-bold h2 mb-1"><%= pageTitle %></h1>
-  <% if (typeof description !== "undefined" && description) { %><p class="text-muted mb-0"><%= description %></p><% } %>
-  <% if (count > 0) { %><p class="small text-muted mb-0"><%= count %> recipe<%= count === 1 ? "" : "s" %></p><% } %>
-</header>
+<% if (isFrontPage) { %>
+<section class="hero">
+  <h1>Recipes worth <em>flipping</em> for.</h1>
+  <p class="lead">Real recipes from real home cooks: ingredients, step-by-step directions, honest reviews.</p>
+  <form action="/s" method="GET" role="search" class="hero-search">
+    <label for="hero-search" class="sr-only">Search recipes</label>
+    <input id="hero-search" class="form-control" name="search" type="search" placeholder="Search by dish or ingredient" maxlength="100" autocomplete="off">
+    <button class="btn btn-primary" type="submit">Search</button>
+  </form>
+  <div class="hero-chips">
+    <a class="chip" href="/recipes/collections/dinner">Dinner</a>
+    <a class="chip" href="/recipes/collections/breakfast">Breakfast</a>
+    <a class="chip" href="/recipes/collections/dessert">Dessert</a>
+    <a class="chip" href="/recipes/collections/quick">Under 10 min</a>
+    <a class="chip" href="/recipes/collections/vegetarian">Vegetarian</a>
+    <a class="chip" href="/recipes/collections/gluten-free">Gluten-free</a>
+    <a class="chip" href="/recipes/collections/highest-rated">Top rated</a>
+  </div>
+</section>
+<% } %>
+
+<div class="section-head">
+  <% if (isFrontPage) { %>
+  <h2>Latest recipes</h2>
+  <% } else { %>
+  <div>
+    <h1><%= pageTitle %></h1>
+    <% if (typeof description !== "undefined" && description) { %><p class="page-intro mb-0 mt-2"><%= description %></p><% } %>
+  </div>
+  <% } %>
+  <% if (count > 0) { %><span class="count"><%= count %> recipe<%= count === 1 ? "" : "s" %></span><% } %>
+</div>
 
 <% if (recipes.length === 0) { %>
-  <div class="text-center py-5">
-    <p class="lead">No recipes here yet.</p>
-    <% if (currentUser) { %><a href="/recipes/new" class="btn btn-primary">Be the first to share one</a><% } else { %><a href="/register" class="btn btn-primary">Create an account to share a recipe</a><% } %>
+  <div class="empty">
+    <h3>No recipes here yet</h3>
+    <p class="mb-3">Be the first to add one to this collection.</p>
+    <% if (currentUser) { %><a href="/recipes/new" class="btn btn-primary">Share a recipe</a><% } else { %><a href="/register" class="btn btn-primary">Create an account</a><% } %>
   </div>
 <% } else { %>
-  <div class="row" id="recentRecipesSection">
+  <div class="recipe-grid">
     <% recipes.forEach(function (r, i) { %>
       <%- include("./partials/recipe-card", { r: r, eager: i < 3 }) %>
     <% }); %>
